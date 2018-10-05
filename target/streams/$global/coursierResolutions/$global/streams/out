@@ -1,0 +1,9 @@
+[error] coursier.ResolutionException: Encountered 1 error(s) in dependency resolution:
+[error]     org.scalafx:scalafx_2.12:8.0.181-R14-SNAPSHOT:
+[error]         not found:
+[error]             /home/kieran/.ivy2/local/org.scalafx/scalafx_2.12/8.0.181-R14-SNAPSHOT/ivys/ivy.xml
+[error]             https://artifactory.flexys.co.uk/artifactory/sbt-v-release/org.scalafx/scalafx_2.12/8.0.181-R14-SNAPSHOT/ivys/ivy.xml
+[error]             https://artifactory.flexys.co.uk/artifactory/ivy-v-release/org.scalafx/scalafx_2.12/8.0.181-R14-SNAPSHOT/ivys/ivy.xml
+[error]             https://artifactory.flexys.co.uk/artifactory/mvn-v-release/org/scalafx/scalafx_2.12/8.0.181-R14-SNAPSHOT/scalafx_2.12-8.0.181-R14-SNAPSHOT.pom
+[error]             https://artifactory.flexys.co.uk/artifactory/sbt-v-snapshot/org.scalafx/scalafx_2.12/8.0.181-R14-SNAPSHOT/ivys/ivy.xml
+[error]             https://artifactory.flexys.co.uk/artifactory/mvn-v-snapshot/org/scalafx/scalafx_2.12/8.0.181-R14-SNAPSHOT/scalafx_2.12-8.0.181-R14-SNAPSHOT.pom

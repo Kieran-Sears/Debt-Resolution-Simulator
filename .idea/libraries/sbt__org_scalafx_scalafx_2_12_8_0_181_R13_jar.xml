@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="sbt: org.scalafx:scalafx_2.12:8.0.181-R13:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/artifactory.flexys.co.uk/artifactory/mvn-v-release/org/scalafx/scalafx_2.12/8.0.181-R13/scalafx_2.12-8.0.181-R13.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/artifactory.flexys.co.uk/artifactory/mvn-v-release/org/scalafx/scalafx_2.12/8.0.181-R13/scalafx_2.12-8.0.181-R13-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/artifactory.flexys.co.uk/artifactory/mvn-v-release/org/scalafx/scalafx_2.12/8.0.181-R13/scalafx_2.12-8.0.181-R13-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
