@@ -14,7 +14,19 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-library:2.12.7:jar" level="project" />
-    <orderEntry type="library" name="sbt: org.scalafx:scalafx_2.12:8.0.181-R13:jar" level="project" />
     <orderEntry type="library" name="sbt: org.scala-lang:scala-reflect:2.12.7:jar" level="project" />
+    <orderEntry type="module-library">
+      <library name="sbt: unmanaged-jars">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/jfxrt.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/scala-library-2.12.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/scala-reflect-2.12.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/scalafx_2.12-8.0.181-R13.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="sbt: org.scalafx:scalafx_2.12:8.0.181-R13:jar" level="project" />
   </component>
 </module>

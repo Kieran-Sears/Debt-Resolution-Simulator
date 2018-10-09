@@ -25,7 +25,7 @@ object Main extends JFXApp {
   val batches = Timer.timingRoutine(totalTime, interval, batchSize, inputData)
   val timeSeries = EventProcessor.eventRoutine(batches, totalTime, interval)
 
-  View.graphResults(timeSeries)
+  View.initialiseView(timeSeries)
 
 }
 

@@ -11,7 +11,7 @@ import simple.DebtVsAge.Main.stage
 
 object View {
 
-  def initialiseView(): Unit ={
+  def initialiseView(timeSeries: List[State]): Unit = {
     stage = new JFXApp.PrimaryStage {
       title = "Debt Analysis"
       scene = new Scene(800, 800) {
@@ -19,59 +19,48 @@ object View {
         val tabPane = new TabPane
         val mainPane = new BorderPane
 
+        tabPane.tabs = graphResults(timeSeries)
+
         mainPane.center = tabPane
         mainPane.prefHeight = 800
         mainPane.prefWidth = 800
 
         root = mainPane
       }
+    }
   }
 
   def graphResults(timeSeries: List[State]) = {
-    stage = new JFXApp.PrimaryStage {
-      title = "Debt Analysis"
-      scene = new Scene(800, 800) {
+    val tabA = makeLineGraphTab(
+      "batches",
+      timeSeries.map(ts => (ts.time, ts.stats.batchArrears)))
 
-        val tabPane = new TabPane
-        val mainPane = new BorderPane
+    val tabB = makeLineGraphTab(
+      "totals",
+      timeSeries.map(ts => (ts.time, ts.stats.totalArrears)))
 
-        val tabA = makeLineGraphTab(
-          "batches",
-          timeSeries.map(ts => (ts.time, ts.stats.batchArrears)))
+    val tabC = makeLineGraphTab(
+      "aging",
+      timeSeries
+        .map(ts => ts.time)
+        .zip(timeSeries.reverse.map(ts => ts.stats.totalArrears))
+    )
 
-        val tabB = makeLineGraphTab(
-          "totals",
-          timeSeries.map(ts => (ts.time, ts.stats.totalArrears)))
+    Seq(tabA, tabB, tabC)
+  }
 
-        val tabC = makeLineGraphTab(
-          "aging",
-          timeSeries
-            .map(ts => ts.time)
-            .zip(timeSeries.reverse.map(ts => ts.stats.totalArrears))
-        )
+  def makeLineGraphTab(name: String, data: Seq[(String, Double)]) = {
+    val pData =
+      XYChart.Series[String, Number](name, ObservableBuffer(data.map {
+        case (x, y) => XYChart.Data[String, Number](x, y)
+      }))
 
-        tabPane.tabs = tabPane.tabs.asInstanceOf[Seq[Tab]] ++ Seq(tabA, tabB, tabC)
+    val tab = new Tab
+    tab.text = name
+    tab.content =
+      new BarChart(CategoryAxis(), NumberAxis(), ObservableBuffer(pData))
 
-        mainPane.center = tabPane
-        mainPane.prefHeight = 800
-        mainPane.prefWidth = 800
-        root = mainPane
-      }
-    }
-
-    def makeLineGraphTab(name: String, data: Seq[(String, Double)]) = {
-      val pData =
-        XYChart.Series[String, Number](name, ObservableBuffer(data.map {
-          case (x, y) => XYChart.Data[String, Number](x, y)
-        }))
-
-      val tab = new Tab
-      tab.text = name
-      tab.content =
-        new BarChart(CategoryAxis(), NumberAxis(), ObservableBuffer(pData))
-
-      tab
-    }
+    tab
   }
 
 }
