@@ -11,7 +11,7 @@ import simple.DebtVsAge.Main.stage
 
 object View {
 
-  def initialiseView(timeSeries: List[State]): Unit = {
+  def initialiseView(timeSeries: State): Unit = {
     stage = new JFXApp.PrimaryStage {
       title = "Debt Analysis"
       scene = new Scene(800, 800) {
@@ -30,20 +30,26 @@ object View {
     }
   }
 
-  def graphResults(timeSeries: List[State]) = {
+  def graphResults(currentState: State) = {
     val tabA = makeLineGraphTab(
       "batches",
-      timeSeries.map(ts => (ts.time, ts.stats.batchArrears)))
+      currentState.history
+        .foldLeft[List[(String, Double)]](Nil)((acc, state: State) =>
+          acc :+ (timeToString(state.time), state.stats.batchArrears))
+    )
 
     val tabB = makeLineGraphTab(
       "totals",
-      timeSeries.map(ts => (ts.time, ts.stats.totalArrears)))
+      currentState.history
+        .foldLeft[List[(String, Double)]](Nil)((acc, state: State) =>
+          acc :+ (timeToString(state.time), state.stats.totalArrears)))
 
     val tabC = makeLineGraphTab(
       "aging",
-      timeSeries
-        .map(ts => ts.time)
-        .zip(timeSeries.reverse.map(ts => ts.stats.totalArrears))
+      currentState.history
+        .map(state => timeToString(state.time))
+        .zip((currentState.history :+ currentState).reverse
+          .map(ts => ts.stats.batchArrears))
     )
 
     Seq(tabA, tabB, tabC)
@@ -57,10 +63,12 @@ object View {
 
     val tab = new Tab
     tab.text = name
-    tab.content =
-      new BarChart(CategoryAxis(), NumberAxis(), ObservableBuffer(pData))
+    tab.content = new BarChart(CategoryAxis("time"),
+                               NumberAxis("arrears"),
+                               ObservableBuffer(pData))
 
     tab
   }
 
+  def timeToString(time: Int) = time.toString + "-" + (time + Main.interval)
 }

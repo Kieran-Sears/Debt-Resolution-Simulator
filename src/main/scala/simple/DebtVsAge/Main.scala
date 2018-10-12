@@ -4,31 +4,52 @@ import scalafx.application.JFXApp
 
 object Main extends JFXApp {
 
-  // generate customers with accounts that have arrears
-  val sampleSize = 1000
-  val averageDebt = 100
-  val debtVarianceOverTime = DebtTimeVariance.IncLin
+  val custGenParams =
+    CustomerGeneratorParameters(10, DebtTimeVariance.None, 1, 10)
 
-  // start the timing control off
-  val totalTime = 100
+  val totalSimulationRunTime = 100
   val interval = 10
-  val batchSize = 100
 
-  val inputData =
-    Generator.customerGen(sampleSize,
-                          averageDebt,
-                          debtVarianceOverTime,
-                          totalTime,
-                          interval,
-                          batchSize)
+  var currentTime = 0
+  var currentState = State(0, Stats(0, 0, totalSimulationRunTime), Nil)
 
-  val batches = Timer.timingRoutine(totalTime, interval, batchSize, inputData)
-  val timeSeries = EventProcessor.eventRoutine(batches, totalTime, interval)
+  while (currentTime <= totalSimulationRunTime) {
 
-  View.initialiseView(timeSeries)
+    val newBatchOfCustomers = Generator.customerGen(currentTime, custGenParams)
 
+    val batchArrears = newBatchOfCustomers.foldLeft(0d)((acc, customer) =>
+      acc + customer.account.arrears)
+
+    val totalArrears = batchArrears + currentState.stats.totalArrears
+
+    val batchAge = currentTime
+
+    val newStats = Stats(batchArrears, totalArrears, batchAge)
+
+    currentState =
+      State(currentTime, newStats, currentState.history :+ currentState)
+
+    currentTime = currentTime + interval
+  }
+
+  View.initialiseView(currentState)
 }
 
 case class Customer(account: Account)
 
-case class Account(arrears: Double, age: Int)
+case class Account(arrears: Double)
+
+case class State(time: Int, stats: Stats, history: List[State])
+
+case class Stats(batchArrears: Double, totalArrears: Double, batchAge: Int)
+
+case class CustomerGeneratorParameters(
+    customerStartingDebt: Double,
+    debtVarianceOverTime: DebtTimeVariance.Value,
+    arrearsBias: Double,
+    batchSize: Int,
+)
+
+object DebtTimeVariance extends Enumeration {
+  val Increase, Decrease, None = Value
+}

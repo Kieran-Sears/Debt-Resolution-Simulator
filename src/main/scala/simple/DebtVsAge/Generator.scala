@@ -1,36 +1,18 @@
 package simple.DebtVsAge
 
-import scala.util.Random
-
 object Generator {
 
-  def customerGen(quantity: Int,
-                  averageDebt: Double,
-                  timeVariance: DebtTimeVariance.Value,
-                  totalTime: Int,
-                  interval: Int,
-                  batchSize: Int): List[Customer] = {
-
-    (for (i <- 1 to quantity) yield {
-      val weight = i * (quantity / batchSize)
-      val arrears = timeVariance match {
+  def customerGen(time: Int, params: CustomerGeneratorParameters) =
+    (for (_ <- 1 to params.batchSize) yield {
+      val arrears = params.debtVarianceOverTime match {
         case DebtTimeVariance.None =>
-          Random
-            .nextGaussian() * 10 + averageDebt
-        case DebtTimeVariance.IncLin =>
-          Random
-            .nextGaussian() * 10 + averageDebt + weight
-        case DebtTimeVariance.DecLin =>
-          Random
-            .nextGaussian() * 10 + averageDebt - weight
+          params.customerStartingDebt
+        case DebtTimeVariance.Increase =>
+          params.customerStartingDebt + (params.arrearsBias * time)
+        case DebtTimeVariance.Decrease =>
+          params.customerStartingDebt - (params.arrearsBias * time)
       }
-      Customer(Account(arrears = arrears, age = 0))
+      Customer(Account(arrears))
     }).toList
 
-  }
-
-}
-
-object DebtTimeVariance extends Enumeration {
-  val IncLin, DecLin, None = Value
 }
