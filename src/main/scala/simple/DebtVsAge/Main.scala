@@ -13,7 +13,7 @@ object Main extends JFXApp {
   var currentTime = 0
   var currentState = State(0, Stats(0, 0, totalSimulationRunTime), Nil)
 
-  while (currentTime <= totalSimulationRunTime) {
+  while (currentTime <= totalSimulationRunTime) { // TODO change for FOR loop to avoid data loss
 
     val newBatchOfCustomers = Generator.customerGen(currentTime, custGenParams)
 

@@ -2,8 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b359cc4-0510-40ab-b809-e6c611f78d00" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/modules/Simulations.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Simulations.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/build.sbt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3abb924c781487199639$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3abb924c781487199639.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$3abb924c781487199639.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$57f5416bc5eef719799e$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$57f5416bc5eef719799e.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$57f5416bc5eef719799e.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$5aecd3738c6c07485e17$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$5aecd3738c6c07485e17.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$5aecd3738c6c07485e17.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$8a4c16b720455277646d$.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$8a4c16b720455277646d.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$8a4c16b720455277646d.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/compileIncremental/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/compileIncremental/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/copyResources/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/copyResources/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/dependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/dependencyClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/externalDependencyClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/managedClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/dependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/dependencyClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/externalDependencyClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/fullClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/fullClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/managedClasspath/$global/streams/export" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/.history" beforeDir="false" afterPath="$PROJECT_DIR$/target/.history" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/test/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/externalDependencyClasspath/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/test/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/managedClasspath/$global/streams/export" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -35,28 +61,28 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="sbt" value="5" />
-          <entry key="scala" value="28" />
+          <entry key="sbt" value="6" />
+          <entry key="scala" value="30" />
           <entry key="xml" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Scala" value="28" />
+          <entry key="Scala" value="30" />
           <entry key="XML" value="2" />
-          <entry key="sbt" value="5" />
+          <entry key="sbt" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="sbt" value="36" />
-          <entry key="scala" value="9766" />
+          <entry key="sbt" value="38" />
+          <entry key="scala" value="10117" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Scala" value="9766" />
-          <entry key="sbt" value="36" />
+          <entry key="Scala" value="10117" />
+          <entry key="sbt" value="38" />
         </counts>
       </usages-collector>
     </session>
@@ -66,8 +92,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1320">
-              <caret line="66" column="53" selection-start-line="66" selection-start-column="53" selection-end-line="66" selection-end-column="53" />
+            <state relative-caret-position="280">
+              <caret line="14" column="28" lean-forward="true" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
               <folding>
                 <element signature="e#26#52#0" expanded="true" />
               </folding>
@@ -78,17 +104,38 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="11" column="38" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
+            <state relative-caret-position="360">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="95">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/MainSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="118">
+              <caret line="20" column="53" lean-forward="true" selection-start-line="20" selection-start-column="53" selection-end-line="20" selection-end-column="53" />
+              <folding>
+                <element signature="e#0#45#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/build.sbt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="8" column="72" selection-start-line="8" selection-start-column="72" selection-end-line="8" selection-end-column="72" />
             </state>
           </provider>
         </entry>
@@ -109,21 +156,23 @@
         <option value="$PROJECT_DIR$/src/main/scala/Main.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Customer.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AnalyticalProcessor.scala" />
-        <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/EventProcessor.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Timer.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/State.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Analyser.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala" />
+        <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/MainSpec.scala" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="-2" />
-    <option name="width" value="1920" />
-    <option name="height" value="1037" />
+    <option name="x" value="1632" />
+    <option name="y" value="25" />
+    <option name="width" value="960" />
+    <option name="height" value="1010" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -172,6 +221,12 @@
               <item name="simple" type="462c0819:PsiDirectoryNode" />
               <item name="DebtVsAge" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Simulations" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -184,8 +239,8 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1539357631412" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/jfxrt.jar!/" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1539361575903" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../collaborate-api" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4506133" />
@@ -208,7 +263,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Application">
+  <component name="RunManager" selected="ScalaTest.MainSpec.Main should run for only the designated amount of time">
     <configuration name="Application" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="1.8" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -285,12 +340,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MainSpec.Main should run for only the designated amount of time" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+      <module name="Simulations" />
+      <setting name="path" value="MainSpec" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="showProgressMessages" value="true" />
+      <setting name="useSbt" value="false" />
+      <setting name="useUiWithSbt" value="false" />
+      <envs />
+      <setting name="testKind" value="Test name" />
+      <setting name="path" value="MainSpec" />
+      <setting name="testName" value="Main should run for only the designated amount of time" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Application" />
       <item itemvalue="Scala Console.Scala Console" />
+      <item itemvalue="ScalaTest.MainSpec.Main should run for only the designated amount of time" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="ScalaTest.MainSpec.Main should run for only the designated amount of time" />
         <item itemvalue="Scala Console.Scala Console" />
       </list>
     </recent_temporary>
@@ -322,7 +397,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$/build.sbt" value="2275183482" />
+        <entry key="$PROJECT_DIR$/build.sbt" value="2723281240" />
         <entry key="$PROJECT_DIR$/project/build.properties" value="249398541" />
       </map>
     </option>
@@ -349,6 +424,23 @@
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="MainSpec_Main_should_run_for_only_the_designated_amount_of_time - 2018.10.12 at 17h 17m 10s.xml">
+      <configuration name="MainSpec.Main should run for only the designated amount of time" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="MainSpec_Main_should_run_for_only_the_designated_amount_of_time - 2018.10.12 at 17h 17m 47s.xml">
+      <configuration name="MainSpec.Main should run for only the designated amount of time" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="MainSpec_Main_should_run_for_only_the_designated_amount_of_time - 2018.10.12 at 17h 18m 08s.xml">
+      <configuration name="MainSpec.Main should run for only the designated amount of time" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="MainSpec_Main_should_run_for_only_the_designated_amount_of_time - 2018.10.12 at 17h 20m 37s.xml">
+      <configuration name="MainSpec.Main should run for only the designated amount of time" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="MainSpec_Main_should_run_for_only_the_designated_amount_of_time - 2018.10.12 at 17h 21m 07s.xml">
+      <configuration name="MainSpec.Main should run for only the designated amount of time" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+  </component>
   <component name="ToolWindowManager">
     <frame x="672" y="25" width="1920" height="1010" extended-state="6" />
     <editor active="true" />
@@ -362,7 +454,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32954547" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49893278" visible="true" weight="0.33068183" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49893278" visible="true" weight="0.32954547" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -417,55 +509,54 @@
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.sbt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Timer.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/State.scala">
+    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Timer.scala" />
+    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/State.scala" />
+    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Analyser.scala" />
+    <entry file="file://$PROJECT_DIR$/src/test/scala/Main/spec.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="40">
-          <caret line="2" selection-start-line="2" selection-end-line="4" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Analyser.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="5" column="4" lean-forward="true" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="77" />
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="11" column="38" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
+        <state relative-caret-position="360">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.sbt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="72" selection-start-line="8" selection-start-column="72" selection-end-line="8" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1320">
-          <caret line="66" column="53" selection-start-line="66" selection-start-column="53" selection-end-line="66" selection-end-column="53" />
+        <state relative-caret-position="280">
+          <caret line="14" column="28" lean-forward="true" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
           <folding>
             <element signature="e#26#52#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala">
+    <entry file="file://$PROJECT_DIR$/src/test/scala/MainSpec.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        <state relative-caret-position="118">
+          <caret line="20" column="53" lean-forward="true" selection-start-line="20" selection-start-column="53" selection-end-line="20" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
