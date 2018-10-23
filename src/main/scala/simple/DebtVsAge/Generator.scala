@@ -1,5 +1,7 @@
 package simple.DebtVsAge
 
+import simple.DebtVsAge.model.{Account, Customer}
+
 object Generator {
 
   def customerGen(time: Int, params: CustomerGeneratorParameters) =

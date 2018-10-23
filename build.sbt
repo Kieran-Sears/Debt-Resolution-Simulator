@@ -4,6 +4,18 @@ version := "0.1"
 
 scalaVersion := "2.12.7"
 
-libraryDependencies += "org.scalafx" %% "scalafx" % "8.0.181-R13"
+lazy val akkaVersion = "2.5.16"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
+  "com.typesafe.akka" %% "akka-persistence" % akkaVersion,
+  "org.iq80.leveldb"            % "leveldb"          % "0.7",
+  "org.fusesource.leveldbjni"   % "leveldbjni-all"   % "1.8",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+)
+
+
+javaOptions in Test += s"-Dconfig.file=${sourceDirectory.value}/test/resources/application.test.conf"
+
+fork in Test := true

@@ -1,47 +1,26 @@
 package simple.DebtVsAge
 
-import scalafx.application.JFXApp
+import java.util.UUID
 
-object Main extends JFXApp {
+import simple.DebtVsAge.model.Actions.{AddCustomers, Repeat}
+import simple.DebtVsAge.model.{ActionQueue, State}
 
-  val custGenParams =
+object Main extends App {
+
+  val customerGenerationParameters =
     CustomerGeneratorParameters(10, DebtTimeVariance.None, 1, 10)
 
-  val totalSimulationRunTime = 100
-  val interval = 10
+  val runtimeDuration = 100
 
-  var currentTime = 0
-  var currentState = State(0, Stats(0, 0, totalSimulationRunTime), Nil)
+  val addCustomersEvery10SecondsFor100Seconds = State(
+    actionQueue = ActionQueue()
+      .addNewAction(0, AddCustomers(UUID.randomUUID(), Some(Repeat(10, 100)))))
 
-  while (currentTime <= totalSimulationRunTime) { // TODO change for FOR loop to avoid data loss
+  val snapshotInterval = 50
 
-    val newBatchOfCustomers = Generator.customerGen(currentTime, custGenParams)
+  Simulation(addCustomersEvery10SecondsFor100Seconds)
 
-    val batchArrears = newBatchOfCustomers.foldLeft(0d)((acc, customer) =>
-      acc + customer.account.arrears)
-
-    val totalArrears = batchArrears + currentState.stats.totalArrears
-
-    val batchAge = currentTime
-
-    val newStats = Stats(batchArrears, totalArrears, batchAge)
-
-    currentState =
-      State(currentTime, newStats, currentState.history :+ currentState)
-
-    currentTime = currentTime + interval
-  }
-
-  View.initialiseView(currentState)
 }
-
-case class Customer(account: Account)
-
-case class Account(arrears: Double)
-
-case class State(time: Int, stats: Stats, history: List[State])
-
-case class Stats(batchArrears: Double, totalArrears: Double, batchAge: Int)
 
 case class CustomerGeneratorParameters(
     customerStartingDebt: Double,
