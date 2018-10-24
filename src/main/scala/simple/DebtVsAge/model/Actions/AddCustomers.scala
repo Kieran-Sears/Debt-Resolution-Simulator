@@ -17,15 +17,18 @@ case class AddCustomers(actionId: UUID, repeat: Option[Repeat]) extends Action {
 
     val newStats = Statistics(batchArrears, newTotalArrears)
 
-    val removedAction = currentState.actionQueue
-      .removeActionFromActionQueue(currentState.time, actionId)
+    val queueWithActionRemoved = ActionQueue
+      .removeActionFromActionQueue(currentState.time,
+                                   actionId,
+                                   currentState.actionQueue)
 
-    val updatedActionQueue = repeatAction(currentState.time, removedAction)
+    val updatedQueue = repeatAction(currentState.time, queueWithActionRemoved)
 
-    val newState = State(currentState.time,
-                         newStats,
-                         updatedActionQueue,
-                         currentState.history :+ currentState)
+    val newState =
+      State(currentState.time,
+            newStats,
+            updatedQueue,
+            currentState.history :+ currentState)
 
     val nextActionTime = repeat
       .map(rep => currentState.time + rep.interval)
@@ -54,18 +57,19 @@ case class AddCustomers(actionId: UUID, repeat: Option[Repeat]) extends Action {
       acc + customer.account.arrears)
   }
 
-  def repeatAction(currentTime: Int, actionQueue: ActionQueue): ActionQueue = {
+  def repeatAction(currentTime: Int, queue: Map[Int, List[Action]]) = {
     repeat
       .map(repeatInstructions => {
         if (currentTime < repeatInstructions.finishTime) {
-          actionQueue.addNewAction(currentTime + repeatInstructions.interval,
+          ActionQueue.addNewAction(currentTime + repeatInstructions.interval,
                                    AddCustomers(UUID.randomUUID(),
-                                                Some(repeatInstructions)))
+                                                Some(repeatInstructions)),
+                                   queue)
         } else {
-          actionQueue
+          queue
         }
       })
-      .getOrElse(actionQueue)
+      .getOrElse(queue)
   }
 
 }

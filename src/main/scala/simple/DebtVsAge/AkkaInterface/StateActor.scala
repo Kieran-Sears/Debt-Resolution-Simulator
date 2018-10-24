@@ -11,14 +11,21 @@ class StateActor extends PersistentActor {
   override def receiveCommand: Receive = {
     case tickOnTime: TickOnTime => {
 
-      if (tickOnTime.newTime == Int.MaxValue) {}
+      if (tickOnTime.newTime == Int.MaxValue || !state.actionQueue.keySet
+            .contains(tickOnTime.newTime)) {
+        View.displaySimulationResults(state)
+        System.exit(1)
+      }
 
       // perform actions on new time
       val (nextChronologicalActionTime, stateWithUpdatedActionQueue) =
-        state.actionQueue.performActions(tickOnTime.newTime, state)
+        ActionQueue.performActions(tickOnTime.newTime, state)
+
+      println(stateWithUpdatedActionQueue.stats)
 
       self ! UpdateState(
-        stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime))
+        stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime,
+                                         history = state.history :+ state))
 
       self ! TickOnTime(state.time, nextChronologicalActionTime)
 

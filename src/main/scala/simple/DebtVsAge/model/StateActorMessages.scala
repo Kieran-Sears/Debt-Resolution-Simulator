@@ -1,8 +1,10 @@
 package simple.DebtVsAge.model
 
+import simple.DebtVsAge.model.Actions.Action
+
 case class State(time: Int = 0,
                  stats: Statistics = Statistics(),
-                 actionQueue: ActionQueue = ActionQueue(),
+                 actionQueue: Map[Int, List[Action]] = Map(),
                  history: List[State] = Nil)
 
 case class UpdateState(state: State)

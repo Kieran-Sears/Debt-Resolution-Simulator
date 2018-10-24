@@ -10,15 +10,14 @@ object Main extends App {
   val customerGenerationParameters =
     CustomerGeneratorParameters(10, DebtTimeVariance.None, 1, 10)
 
-  val runtimeDuration = 100
-
-  val addCustomersEvery10SecondsFor100Seconds = State(
-    actionQueue = ActionQueue()
-      .addNewAction(0, AddCustomers(UUID.randomUUID(), Some(Repeat(10, 100)))))
+  val initQueue = ActionQueue
+    .addNewAction(0,
+                  AddCustomers(UUID.randomUUID(), Some(Repeat(10, 100))),
+                  Map())
 
   val snapshotInterval = 50
 
-  Simulation(addCustomersEvery10SecondsFor100Seconds)
+  Simulation(State(actionQueue = initQueue))
 
 }
 
