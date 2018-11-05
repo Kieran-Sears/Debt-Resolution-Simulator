@@ -3,9 +3,8 @@ package simple.DebtVsAge.model.Actions
 import java.util.UUID
 
 import simple.DebtVsAge.model._
-import simple.DebtVsAge.{DebtTimeVariance, Main}
 
-case class AddCustomers(actionId: UUID, repeat: Option[Repeat]) extends Action {
+case class AddCustomers(actionId: UUID, repeat: Option[Repeat], config: CustomerGenConfig) extends Action {
 
   override def perform(currentState: State) = {
 
@@ -38,15 +37,14 @@ case class AddCustomers(actionId: UUID, repeat: Option[Repeat]) extends Action {
   }
 
   def makeBatchOfCustomers(currentTime: Int) = {
-    val params = Main.customerGenerationParameters
-    (for (_ <- 1 to params.batchSize) yield {
-      val arrears = params.debtVarianceOverTime match {
+    (for (_ <- 1 to config.batchSize) yield {
+      val arrears = config.debtVarianceOverTime match {
         case DebtTimeVariance.None =>
-          params.customerStartingDebt
+          config.customerStartingDebt
         case DebtTimeVariance.Increase =>
-          params.customerStartingDebt + (params.arrearsBias * currentTime)
+          config.customerStartingDebt + (config.arrearsBias * currentTime)
         case DebtTimeVariance.Decrease =>
-          params.customerStartingDebt - (params.arrearsBias * currentTime)
+          config.customerStartingDebt - (config.arrearsBias * currentTime)
       }
       Customer(Account(arrears))
     }).toList
@@ -63,7 +61,7 @@ case class AddCustomers(actionId: UUID, repeat: Option[Repeat]) extends Action {
         if (currentTime < repeatInstructions.finishTime) {
           ActionQueue.addNewAction(currentTime + repeatInstructions.interval,
                                    AddCustomers(UUID.randomUUID(),
-                                                Some(repeatInstructions)),
+                                                Some(repeatInstructions), config),
                                    queue)
         } else {
           queue

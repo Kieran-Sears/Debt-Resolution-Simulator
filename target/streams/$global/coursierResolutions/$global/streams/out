@@ -1,9 +1,2 @@
-[error] coursier.ResolutionException: Encountered 1 error(s) in dependency resolution:
-[error]     com.oracle:javafx-runtime:2.0:
-[error]         not found:
-[error]             /home/kieran/.ivy2/local/com.oracle/javafx-runtime/2.0/ivys/ivy.xml
-[error]             https://artifactory.flexys.co.uk/artifactory/sbt-v-release/com.oracle/javafx-runtime/2.0/ivys/ivy.xml
-[error]             https://artifactory.flexys.co.uk/artifactory/ivy-v-release/com.oracle/javafx-runtime/2.0/ivys/ivy.xml
-[error]             https://artifactory.flexys.co.uk/artifactory/mvn-v-release/com/oracle/javafx-runtime/2.0/javafx-runtime-2.0.pom
-[error]             https://artifactory.flexys.co.uk/artifactory/sbt-v-snapshot/com.oracle/javafx-runtime/2.0/ivys/ivy.xml
-[error]             https://artifactory.flexys.co.uk/artifactory/mvn-v-snapshot/com/oracle/javafx-runtime/2.0/javafx-runtime-2.0.pom
+[0m[[0m[0minfo[0m] [0m[0mUpdating simulations[0m
+[0m[[0m[0minfo[0m] [0m[0mResolved simulations dependencies[0m

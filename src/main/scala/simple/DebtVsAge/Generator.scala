@@ -1,10 +1,10 @@
 package simple.DebtVsAge
 
-import simple.DebtVsAge.model.{Account, Customer}
+import simple.DebtVsAge.model._
 
 object Generator {
 
-  def customerGen(time: Int, params: CustomerGeneratorParameters) =
+  def customerGen(time: Int, params: CustomerGenConfig) =
     (for (_ <- 1 to params.batchSize) yield {
       val arrears = params.debtVarianceOverTime match {
         case DebtTimeVariance.None =>

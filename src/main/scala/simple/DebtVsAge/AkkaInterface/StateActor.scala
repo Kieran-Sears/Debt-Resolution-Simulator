@@ -1,20 +1,22 @@
 package simple.DebtVsAge.AkkaInterface
 
 import akka.persistence.PersistentActor
-import simple.DebtVsAge.{Main, View}
 import simple.DebtVsAge.model._
 
 class StateActor extends PersistentActor {
   def persistenceId = "StateActor"
   var state = State()
+  var snapshotInterval = 10
 
   override def receiveCommand: Receive = {
     case tickOnTime: TickOnTime => {
 
-      if (tickOnTime.newTime == Int.MaxValue || !state.actionQueue.keySet
-            .contains(tickOnTime.newTime)) {
-        View.displaySimulationResults(state)
-        System.exit(1)
+      val stopEarly = tickOnTime.stopTime.contains(tickOnTime.newTime)
+      val noActionsLeft = !state.actionQueue.keySet.contains(tickOnTime.newTime)
+      val ranOutOfTime = tickOnTime.newTime == Int.MaxValue
+
+      if (ranOutOfTime || noActionsLeft || stopEarly) {
+        // TODO return state to original sender
       }
 
       // perform actions on new time
@@ -27,20 +29,16 @@ class StateActor extends PersistentActor {
         stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime,
                                          history = state.history :+ state))
 
-      self ! TickOnTime(state.time, nextChronologicalActionTime)
+      self ! TickOnTime(state.time, nextChronologicalActionTime, tickOnTime.stopTime)
 
     }
 
     case UpdateState(newState: State) => {
 
-      if (newState.history.length % Main.snapshotInterval == 0)
+      if (newState.history.length % snapshotInterval == 0)
         saveSnapshot(state)
       state = newState
 
-    }
-
-    case EndState(state: State) => {
-      View.displaySimulationResults(state)
     }
   }
 
