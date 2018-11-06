@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Simulations.iml" filepath="$PROJECT_DIR$/.idea/modules/Simulations.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/simulations-build.iml" filepath="$PROJECT_DIR$/.idea/modules/simulations-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Debt-Resolution-Simuator.iml" filepath="$PROJECT_DIR$/.idea/modules/Debt-Resolution-Simuator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/root-build.iml" filepath="$PROJECT_DIR$/.idea/modules/root-build.iml" />
     </modules>
   </component>
 </project>

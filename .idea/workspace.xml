@@ -1,170 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3d85917e-bc0e-4fb7-80a1-c76172b26b6c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/jfxrt.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/org_scalafx_scalafx_2_12_8_0_181_R13.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__com_google_guava_guava_16_0_1_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__com_typesafe_akka_akka_actor_2_12_2_5_16_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__com_typesafe_akka_akka_persistence_2_12_2_5_16_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__com_typesafe_akka_akka_protobuf_2_12_2_5_16_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__com_typesafe_akka_akka_testkit_2_12_2_5_16_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__com_typesafe_config_1_3_3_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/sbt__com_typesafe_config_1_3_3_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_fusesource_leveldbjni_leveldbjni_all_1_8_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/sbt__org_fusesource_leveldbjni_leveldbjni_all_1_8_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_iq80_leveldb_leveldb_0_7_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/sbt__org_iq80_leveldb_leveldb_0_7_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_iq80_leveldb_leveldb_api_0_7_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/sbt__org_iq80_leveldb_leveldb_api_0_7_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_scala_lang_modules_scala_java8_compat_2_12_0_8_0_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_scala_lang_modules_scala_xml_2_12_1_0_6_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_scala_lang_scala_library_2_12_7_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_scala_lang_scala_reflect_2_12_7_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_scalactic_scalactic_2_12_3_0_5_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/sbt__org_scalatest_scalatest_2_12_3_0_5_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/Simulations.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/Simulations.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/simulations-build.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/simulations-build.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sbt.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sbt.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/scala_compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/scala_compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="94eb49ee-e63c-4aed-9971-9dfd4fdf8e14" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sbt" beforeDir="false" afterPath="$PROJECT_DIR$/build.sbt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/jfxrt.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/scala-library-2.12.7.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/scala-reflect-2.12.7.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/scalafx_2.12-8.0.181-R13.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/build.properties" beforeDir="false" afterPath="$PROJECT_DIR$/project/build.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$6aaec21c1b73302174ea$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$6aaec21c1b73302174ea.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$6aaec21c1b73302174ea.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$6acac45f8db764dae9ac$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$6acac45f8db764dae9ac.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$6acac45f8db764dae9ac.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$c0207f4eef8b40547217$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$c0207f4eef8b40547217.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$c0207f4eef8b40547217.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d1a6665388d4d76ec4ca$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d1a6665388d4d76ec4ca.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d1a6665388d4d76ec4ca.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d2e826cd99ac4cb3d4d8$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d2e826cd99ac4cb3d4d8.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d2e826cd99ac4cb3d4d8.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d87868e9ef0e5a393e00$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d87868e9ef0e5a393e00.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$d87868e9ef0e5a393e00.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$db732436d2dbf41e3bdb$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$db732436d2dbf41e3bdb.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/config-classes/$db732436d2dbf41e3bdb.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/dependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/dependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/externalDependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/compile/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/compile/managedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/dependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/dependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/externalDependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/fullClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/fullClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project/target/streams/runtime/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/project/target/streams/runtime/managedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/StateActor.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/StateActor.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Simulation.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/Action.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/Action.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/AddCustomers.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/AddCustomers.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/StateActorMessages.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/StateActorMessages.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Statistics.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Statistics.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/.history" beforeDir="false" afterPath="$PROJECT_DIR$/target/.history" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/journal/000005.sst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/journal/000008.sst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/journal/000047.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/it/scala/simulation/tests/HttpServiceSpec.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/it/scala/simulation/tests/HttpServiceSpec.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/persistence/journal/000003.log" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/persistence/journal/CURRENT" beforeDir="false" afterPath="$PROJECT_DIR$/target/persistence/journal/CURRENT" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/persistence/journal/LOG" beforeDir="false" afterPath="$PROJECT_DIR$/target/persistence/journal/LOG" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/journal/LOG.old" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/journal/MANIFEST-000046" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/snapshots/snapshot-StateActor-0-1540400794017" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/snapshots/snapshot-StateActor-0-1540400925632" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/persistence/snapshots/snapshot-StateActor-0-1540400982482" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/AkkaInterface/StateActor$$anonfun$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/AkkaInterface/StateActor$$anonfun$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/AkkaInterface/StateActor$$anonfun$receiveCommand$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/AkkaInterface/StateActor$$anonfun$receiveCommand$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/AkkaInterface/StateActor.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/AkkaInterface/StateActor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/CustomerGeneratorParameters$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/CustomerGeneratorParameters.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/DebtTimeVariance$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/DebtTimeVariance.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Generator$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Generator$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Generator.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Generator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Main$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Main$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Main$delayedInit$body.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Simulation$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/Simulation$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/View$.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/View.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Account$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Account$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Account.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Account.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/ActionQueue$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/ActionQueue$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/ActionQueue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/ActionQueue.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/Action.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/Action.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/AddCustomers$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/AddCustomers$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/AddCustomers.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/AddCustomers.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/Repeat$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/Repeat$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/Repeat.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Actions/Repeat.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Customer$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Customer$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Customer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Customer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/EndState$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/EndState$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/EndState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/EndState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/State$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/State$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/State.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/State.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/StateUpdated$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/StateUpdated$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/StateUpdated.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/StateUpdated.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Statistics$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Statistics$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Statistics.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/Statistics.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TickOnTime$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TickOnTime$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TickOnTime.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TickOnTime.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TimeTickedOn$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TimeTickedOn$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TimeTickedOn.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/TimeTickedOn.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/UpdateState$.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/UpdateState$.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/UpdateState.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simple/DebtVsAge/model/UpdateState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/org.scala-sbt.temp/temp-module-98ec89c315ed408f615fff2c4774286d17323b01/1.2.2/resolved.xml.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/org.scala-sbt.temp/temp-module-98ec89c315ed408f615fff2c4774286d17323b01/1.2.2/resolved.xml.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/ivy-report.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/ivy-report.xsl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/org.scala-sbt.temp-temp-module-98ec89c315ed408f615fff2c4774286d17323b01-compile.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/org.scala-sbt.temp-temp-module-98ec89c315ed408f615fff2c4774286d17323b01-optional.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/org.scala-sbt.temp-temp-module-98ec89c315ed408f615fff2c4774286d17323b01-provided.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/org.scala-sbt.temp-temp-module-98ec89c315ed408f615fff2c4774286d17323b01-runtime.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/resolution-cache/reports/org.scala-sbt.temp-temp-module-98ec89c315ed408f615fff2c4774286d17323b01-test.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/scala-2.12/simulations_2.12-0.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/$global/$global/dumpStructure/$global/streams/out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/$global/coursierArtifacts/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/coursierArtifacts/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/$global/coursierResolutions/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/coursierResolutions/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/$global/ivyConfiguration/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/ivyConfiguration/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/$global/ssExtractDependencies/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/$global/ssExtractDependencies/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/$global/$global/discoveredMainClasses/data" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/$global/$global/discoveredMainClasses/data" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/bgRun/$global/streams/out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/compile/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compile/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/persistence/journal/MANIFEST-000002" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/scala-2.12/classes/simulation/model/State.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/scala-2.12/classes/simulation/model/State.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncSetup/$global/streams/inc_compile_2.12.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/export" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/compileIncremental/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/copy-resources" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/copy-resources" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/copyResources/$global/streams/out" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/dependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/dependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/exportedProductJars/$global/streams/export" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/externalDependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/mainClass/$global/streams/out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/managedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/inputs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/packageBin/$global/streams/output" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/unmanagedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/unmanagedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/compile/unmanagedJars/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/compile/unmanagedJars/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/dependencyClasspathAsJars/$global/streams/export" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/exportedProductJars/$global/streams/export" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/runtime/externalDependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/fullClasspathAsJars/$global/streams/export" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/internalDependencyAsJars/$global/streams/export" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/runtime/managedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/unmanagedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/runtime/unmanagedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/runtime/unmanagedJars/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/runtime/unmanagedJars/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/externalDependencyClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/externalDependencyClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/managedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/managedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/unmanagedClasspath/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/unmanagedClasspath/$global/streams/export" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/streams/test/unmanagedJars/$global/streams/export" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/test/unmanagedJars/$global/streams/export" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/it/compileIncremental/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/it/compileIncremental/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/it/definedTests/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/it/definedTests/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/it/test/$global/streams/out" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/it/test/$global/streams/out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/streams/it/test/$global/streams/succeeded_tests" beforeDir="false" afterPath="$PROJECT_DIR$/target/streams/it/test/$global/streams/succeeded_tests" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-reports/simulation.tests.HttpServiceSpec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-reports/simulation.tests.HttpServiceSpec.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/project/project/target/" />
@@ -184,107 +36,21 @@
     <session id="277526498">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
-          <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.4" value="2" />
-          <entry key="project.opened" value="3" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="iml" value="1" />
-          <entry key="java" value="1" />
-          <entry key="sbt" value="1" />
-          <entry key="scala" value="37" />
-          <entry key="xml" value="2" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="IDEA_MODULE" value="1" />
-          <entry key="JAVA" value="1" />
-          <entry key="Scala" value="37" />
-          <entry key="XML" value="2" />
-          <entry key="sbt" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="sbt" value="31" />
-          <entry key="sbtShell" value="21" />
-          <entry key="scala" value="2863" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Scala" value="2863" />
-          <entry key="sbt" value="31" />
-          <entry key="sbtShell" value="21" />
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.opened" value="2" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="18" selection-start-line="18" selection-end-line="18" />
-              <folding>
-                <element signature="e#26#47#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/HttpAPIActor.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
-              <caret line="66" lean-forward="true" selection-start-line="66" selection-end-line="66" />
-              <folding>
-                <element signature="e#40#61#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
+    <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/StateActor.scala">
+        <entry file="file://$PROJECT_DIR$/src/it/scala/simulation/tests/HttpServiceSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="440">
-              <caret line="22" column="70" lean-forward="true" selection-start-line="22" selection-start-column="70" selection-end-line="22" selection-end-column="70" />
-              <folding>
-                <element signature="e#40#79#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.6/scala-library-2.12.6-sources.jar!/scala/Option.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="238" column="20" selection-start-line="238" selection-start-column="20" selection-end-line="238" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/StateActorMessages.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="15" column="76" selection-start-line="15" selection-start-column="76" selection-end-line="15" selection-end-column="76" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/SimulationConfig.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="160">
-              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+              <caret line="31" column="50" selection-start-line="31" selection-start-column="50" selection-end-line="31" selection-end-column="50" />
             </state>
           </provider>
         </entry>
@@ -297,22 +63,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala" />
-        <option value="$PROJECT_DIR$/build.sbt" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Enums.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Statistics.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/Action.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/AddCustomers.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/MarshallingImplicits.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/CustomerGeneratorParameters.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/CustomerGenConfig.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Simulation.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/SimulationConfig.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/StateActorMessages.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/HttpAPIActor.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/StateActor.scala" />
+        <option value="$PROJECT_DIR$/src/it/scala/simulation/tests/HttpServiceSpec.scala" />
       </list>
     </option>
   </component>
@@ -321,102 +72,67 @@
     <option name="width" value="1920" />
     <option name="height" value="1037" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simulations" type="b2602c69:ProjectViewProjectNode" />
               <item name="Simulations" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simulations" type="b2602c69:ProjectViewProjectNode" />
               <item name="Simulations" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simulations" type="b2602c69:ProjectViewProjectNode" />
               <item name="Simulations" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="it" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simulations" type="b2602c69:ProjectViewProjectNode" />
               <item name="Simulations" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="it" type="462c0819:PsiDirectoryNode" />
               <item name="scala" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simulations" type="b2602c69:ProjectViewProjectNode" />
               <item name="Simulations" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="it" type="462c0819:PsiDirectoryNode" />
               <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="simple" type="462c0819:PsiDirectoryNode" />
+              <item name="simulation" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
+              <item name="simulations" type="b2602c69:ProjectViewProjectNode" />
               <item name="Simulations" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="it" type="462c0819:PsiDirectoryNode" />
               <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="simple" type="462c0819:PsiDirectoryNode" />
-              <item name="DebtVsAge" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Simulations" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="simple" type="462c0819:PsiDirectoryNode" />
-              <item name="DebtVsAge" type="462c0819:PsiDirectoryNode" />
-              <item name="AkkaInterface" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Simulations" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="simple" type="462c0819:PsiDirectoryNode" />
-              <item name="DebtVsAge" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Simulations" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Simulations" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="scala" type="462c0819:PsiDirectoryNode" />
-              <item name="simple" type="462c0819:PsiDirectoryNode" />
-              <item name="DebtVsAge" type="462c0819:PsiDirectoryNode" />
-              <item name="model" type="462c0819:PsiDirectoryNode" />
-              <item name="Actions" type="462c0819:PsiDirectoryNode" />
+              <item name="simulation" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="Downloaded.Files.Path.Enabled" value="true" />
-    <property name="Repository.Attach.JavaDocs" value="false" />
-    <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541436382598" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../collaborate-api" />
-    <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541672192917" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -432,8 +148,8 @@
   </component>
   <component name="RunManager">
     <configuration name="simulation" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="simple.DebtVsAge.Main" />
-      <module name="Simulations" />
+      <option name="MAIN_CLASS_NAME" value="simulator.Main" />
+      <module name="Debt-Resolution-Simuator" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -452,11 +168,11 @@
           <value>
             <list>
               <ExternalProjectPojo>
-                <option name="name" value="simulations [file:/home/kieran/src/Simulations/]" />
+                <option name="name" value="root [file:/home/kieran/src/Simulations/]" />
                 <option name="path" value="$PROJECT_DIR$" />
               </ExternalProjectPojo>
               <ExternalProjectPojo>
-                <option name="name" value="simulations-build [file:/home/kieran/src/Simulations/]" />
+                <option name="name" value="root-build [file:/home/kieran/src/Simulations/]" />
                 <option name="path" value="$PROJECT_DIR$/project" />
               </ExternalProjectPojo>
             </list>
@@ -466,7 +182,8 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$/build.sbt" value="1922057636" />
+        <entry key="$PROJECT_DIR$" value="4624006167000" />
+        <entry key="$PROJECT_DIR$/build.sbt" value="2554943534" />
         <entry key="$PROJECT_DIR$/project/build.properties" value="2073824194" />
         <entry key="$PROJECT_DIR$/project/plugins.sbt" value="2203374974" />
       </map>
@@ -486,11 +203,11 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="3d85917e-bc0e-4fb7-80a1-c76172b26b6c" name="Default Changelist" comment="" />
-      <created>1541416107437</created>
+      <changelist id="94eb49ee-e63c-4aed-9971-9dfd4fdf8e14" name="Default Changelist" comment="" />
+      <created>1541600255074</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1541416107437</updated>
+      <updated>1541600255074</updated>
     </task>
     <servers />
   </component>
@@ -498,273 +215,48 @@
     <frame x="0" y="-2" width="1920" height="1037" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25506938" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2524013" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="Capture Tool" order="4" />
-      <window_info id="UI Designer" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Favorites" order="5" side_tool="true" />
+      <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3296582" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="8" weight="0.31532526" />
-      <window_info anchor="bottom" id="Terminal" order="9" />
+      <window_info anchor="bottom" id="Build" order="7" weight="0.3296582" />
+      <window_info anchor="bottom" id="sbt-shell-toolwindow" order="8" weight="0.3296582" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.3296582" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Build" order="11" weight="0.3296582" />
+      <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.3296582" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Gradle" order="5" />
-      <window_info anchor="right" id="Theme Preview" order="6" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" id="sbt" order="8" />
-      <window_info anchor="right" id="Maven Projects" order="9" />
+      <window_info anchor="right" id="sbt" order="4" />
+      <window_info anchor="right" id="Capture Analysis" order="5" />
+      <window_info anchor="right" id="Maven Projects" order="6" />
+      <window_info anchor="right" id="Gradle" order="7" />
+      <window_info anchor="right" id="Palette&#9;" order="8" />
+      <window_info anchor="right" id="Theme Preview" order="9" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.idea/modules/Simulations.iml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/sbt.xml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/View.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="13" lean-forward="true" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-          <folding>
-            <element signature="e#26#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.sbt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="17" column="58" selection-start-line="17" selection-start-column="58" selection-end-line="17" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-8-openjdk-amd64/src.zip!/java/util/UUID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-967">
-          <caret line="69" column="19" selection-start-line="69" selection-start-column="19" selection-end-line="69" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Enums.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="4" column="1" lean-forward="true" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Statistics.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Generator.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="31" selection-start-line="2" selection-start-column="31" selection-end-line="2" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/Action.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="e#40#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/ActionQueue.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="17" column="57" lean-forward="true" selection-start-line="17" selection-start-column="57" selection-end-line="17" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/MarshallingImplicits.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="91" lean-forward="true" selection-start-line="6" selection-start-column="91" selection-end-line="6" selection-end-column="91" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Actions/AddCustomers.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
-          <folding>
-            <element signature="e#40#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/Config.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="10" lean-forward="true" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Simulation.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="14" selection-start-line="14" selection-end-line="25" />
-          <folding>
-            <element signature="e#26#47#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/Main.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
-          <folding>
-            <element signature="e#26#47#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/SimulationConfig.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/model/StateActorMessages.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="15" column="76" selection-start-line="15" selection-start-column="76" selection-end-line="15" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/HttpAPIActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
-          <caret line="66" lean-forward="true" selection-start-line="66" selection-end-line="66" />
-          <folding>
-            <element signature="e#40#61#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.6/scala-library-2.12.6-sources.jar!/scala/Option.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="238" column="20" selection-start-line="238" selection-start-column="20" selection-end-line="238" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/simple/DebtVsAge/AkkaInterface/StateActor.scala">
+    <entry file="file://$PROJECT_DIR$/src/it/scala/simulation/tests/HttpServiceSpec.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
-          <caret line="22" column="70" lean-forward="true" selection-start-line="22" selection-start-column="70" selection-end-line="22" selection-end-column="70" />
-          <folding>
-            <element signature="e#40#79#0" expanded="true" />
-          </folding>
+          <caret line="31" column="50" selection-start-line="31" selection-start-column="50" selection-end-line="31" selection-end-column="50" />
         </state>
       </provider>
     </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>No facets are configured</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>scala-sdk-2.10.6</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>Simulations</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>com.typesafe.akka:akka-http-spray-json_2.12:10.0.0</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>
