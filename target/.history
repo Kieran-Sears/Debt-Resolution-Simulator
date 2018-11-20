@@ -1,0 +1,5 @@
+compile
+it:test
+it:test Debt-Resolution-Simulator
+it:test /Debt-Resolution-Simulator
+it:test

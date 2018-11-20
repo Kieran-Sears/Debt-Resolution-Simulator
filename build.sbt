@@ -21,8 +21,9 @@ libraryDependencies ++= Seq(
   "org.iq80.leveldb"              % "leveldb"          % "0.7",
   "org.fusesource.leveldbjni"     % "leveldbjni-all"   % "1.8",
   scalatest,
-  "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.5"
- 
+  "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.5",
+  "io.spray" % "spray-httpx" % "1.3.1"
+
 )
 
 lazy val root = (project in file("."))

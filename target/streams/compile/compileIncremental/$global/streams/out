@@ -1,1 +1,46 @@
-[0m[[0m[0mdebug[0m] [0m[0mNo changes[0m
+[0m[[0m[0mdebug[0m] [0m[0m[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial source changes: [0m
+[0m[[0m[0mdebug[0m] [0m[0m	removed:Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	added: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	modified: Set(/home/kieran/src/Debt-Resolution-Simulator/src/main/scala/simulator/model/ActionQueue.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set(simulator.model.ActionQueue)[0m
+[0m[[0m[0mdebug[0m] [0m[0m[0m
+[0m[[0m[0mdebug[0m] [0m[0mSources indirectly invalidated by:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	product: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	binary dep: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0m	external source: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated classes: Set(simulator.model.ActionQueue)[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated sources:Set(/home/kieran/src/Debt-Resolution-Simulator/src/main/scala/simulator/model/ActionQueue.scala)[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling 1 Scala source to /home/kieran/src/Debt-Resolution-Simulator/target/scala-2.12/classes ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.12:1.1.3:compile for Scala 2.12.6[0m
+[0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.12:1.1.3:compile for Scala 2.12.6[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 288b36c0 for Scala compiler version 2.12.6[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/classes:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.12.6/scala-library-2.12.6.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0m	-classpath[0m
+[0m[[0m[0mdebug[0m] [0m[0m	/home/kieran/src/Debt-Resolution-Simulator/target/scala-2.12/classes:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.12/1.1.0/scala-parser-combinators_2.12-1.1.0.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/fusesource/leveldbjni/leveldbjni-all/1.8/leveldbjni-all-1.8.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream-testkit_2.12/2.5.12/akka-stream-testkit_2.12-2.5.12.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalactic/scalactic_2.12/3.0.5/scalactic_2.12-3.0.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http_2.12/10.1.5/akka-http_2.12-10.1.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/16.0.1/guava-16.0.1.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/iq80/leveldb/leveldb-api/0.7/leveldb-api-0.7.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-spray-json_2.12/10.1.5/akka-http-spray-json_2.12-10.1.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.2/reactive-streams-1.0.2.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/io/spray/spray-util/1.3.1/spray-util-1.3.1.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.3/config-1.3.3.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.12/0.8.0/scala-java8-compat_2.12-0.8.0.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/jvnet/mimepull/mimepull/1.9.4/mimepull-1.9.4.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-persistence_2.12/2.5.16/akka-persistence_2.12-2.5.16.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scalatest/scalatest_2.12/3.0.5/scalatest_2.12-3.0.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf_2.12/2.5.16/akka-protobuf_2.12-2.5.16.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-core_2.12/10.1.5/akka-http-core_2.12-10.1.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/io/spray/spray-json_2.12/1.3.4/spray-json_2.12-1.3.4.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-reflect/2.12.6/scala-reflect-2.12.6.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/1.0.6/scala-xml_2.12-1.0.6.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-parsing_2.12/10.1.5/akka-parsing_2.12-10.1.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-testkit_2.12/2.5.16/akka-testkit_2.12-2.5.16.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-http-testkit_2.12/10.1.5/akka-http-testkit_2.12-10.1.5.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/parboiled/parboiled-scala_2.10/1.1.6/parboiled-scala_2.10-1.1.6.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/io/spray/spray-httpx/1.3.1/spray-httpx-1.3.1.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/io/spray/spray-http/1.3.1/spray-http-1.3.1.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/parboiled/parboiled-core/1.1.6/parboiled-core-1.1.6.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.12/2.5.16/akka-actor_2.12-2.5.16.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/org/iq80/leveldb/leveldb/0.7/leveldb-0.7.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_2.12/2.5.12/akka-stream_2.12-2.5.12.jar:/home/kieran/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.12/0.2.3/ssl-config-core_2.12-0.2.3.jar[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 0.184460971 s[0m
+[0m[[0m[0minfo[0m] [0m[0mDone compiling.[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from simulator.model.ActionQueue...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: Set(simulator.model.ActionQueue)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(simulator.model.ActionQueue)[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of simulator.model.MarshallingImplicits. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of simulator.model.State. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of simulator.actors.StateActor. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mNone of the modified names appears in source file of simulator.model.Actions.AddCustomers. This dependency is not being considered for invalidation.[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(simulator.model.ActionQueue,ModifiedNames(changes = UsedName(simulator;model;ActionQueue;init;,[Default]))) invalidates 1 classes due to The simulator.model.ActionQueue has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(simulator;model;ActionQueue;init;,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0m	> by transitive inheritance: Set(simulator.model.ActionQueue)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	> [0m
+[0m[[0m[0mdebug[0m] [0m[0m	> [0m
+[0m[[0m[0mdebug[0m] [0m[0m        [0m
+[0m[[0m[0mdebug[0m] [0m[0mNew invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mPreviously invalidated, but (transitively) depend on new invalidations:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	Set()[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll newly invalidated classes after taking into account (previously) recompiled classes:Set()[0m

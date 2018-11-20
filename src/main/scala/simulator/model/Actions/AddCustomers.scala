@@ -16,17 +16,14 @@ case class AddCustomers(actionId: UUID, repeat: Option[Repeat], config: Customer
 
     val newStats = Statistics(batchArrears, newTotalArrears)
 
-    val queueWithActionRemoved = ActionQueue
-      .removeActionFromActionQueue(currentState.time,
-                                   actionId,
-                                   currentState.actionQueue)
+    currentState.actionQueue.removeAction(currentState.time, actionId)
 
-    val updatedQueue = repeatAction(currentState.time, queueWithActionRemoved)
+    prepareNextRepetition(currentState)
 
     val newState =
       State(currentState.time,
             newStats,
-            updatedQueue,
+            currentState.actionQueue,
             currentState.history :+ currentState)
 
     val nextActionTime = repeat
@@ -55,19 +52,14 @@ case class AddCustomers(actionId: UUID, repeat: Option[Repeat], config: Customer
       acc + customer.account.arrears)
   }
 
-  def repeatAction(currentTime: Int, queue: Map[Int, List[Action]]) = {
-    repeat
-      .map(repeatInstructions => {
-        if (currentTime < repeatInstructions.finishTime) {
-          ActionQueue.addNewAction(currentTime + repeatInstructions.interval,
+  def prepareNextRepetition(state: State) = {
+    repeat.foreach(repeatInstructions => {
+        if (state.time < repeatInstructions.finishTime) {
+          state.actionQueue.addAction(state.time + repeatInstructions.interval,
                                    AddCustomers(UUID.randomUUID(),
-                                                Some(repeatInstructions), config),
-                                   queue)
-        } else {
-          queue
+                                                Some(repeatInstructions), config))
         }
       })
-      .getOrElse(queue)
   }
 
 }

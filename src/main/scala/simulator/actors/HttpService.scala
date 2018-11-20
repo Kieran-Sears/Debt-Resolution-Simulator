@@ -1,6 +1,7 @@
 package simulator.actors
 
 import java.util.UUID
+
 import akka.actor.{ActorSystem, Props}
 import akka.pattern.ask
 import akka.http.scaladsl.model.StatusCodes._
@@ -10,6 +11,7 @@ import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import simulator.model._
 
+import scala.concurrent.Await
 import scala.util.{Failure, Success}
 
 trait HttpService extends MarshallingImplicits {
@@ -20,10 +22,6 @@ trait HttpService extends MarshallingImplicits {
 
   val interfaceA = "localhost"
   val portA = 8080
-
-  val stateActor =
-    system.actorOf(Props(classOf[StateActor]),
-                   "stateActor_" + UUID.randomUUID())
 
 //  implicit def rejectionHandler: RejectionHandler =
 //    RejectionHandler
@@ -50,53 +48,25 @@ trait HttpService extends MarshallingImplicits {
 
 
   def initialiseSimulation: Route = {
-    pathPrefix("queue") {
+    pathPrefix("simulation") {
       post {
+        extractRequest map (request => {
+          println("initialise Simulation endpoint request : " + request)
+        })
+
         entity(as[SimulationConfig]) { conf =>
           {
-            // todo example of what is needed to kick off simulation
+            val stateActor =
+              system.actorOf(Props(classOf[StateActor]),
+                "stateActor_" + UUID.randomUUID())
 
-//            startState: State,
-//            timeFrom: Int,
-//            timeTill: Int,
-//            customerGenParams: CustomerGenConfig
-
-            stateActor ! UpdateState(conf.startState)
-            stateActor ! TickOnTime(conf.startTime, 0, conf.endTime)
-
-            onComplete(
-              (stateActor ? RunSimulation(conf)).mapTo[State]) {
-              case Success(state) => {
-                val results = getStats(state)
-                complete(results)
-              }
-              case Failure(error) => complete(error)
+            Await.result(stateActor ? RunSimulation(conf), timeout.duration).asInstanceOf[SimulationComplete] match {
+                  case results: SimulationResults => complete(results)
+                  case error: SimulationError => complete(error.reason)
             }
           }
         }
       }
     }
   }
-
-  def getStats(currentState: State) = {
-    SimulationResults(
-      batches =
-        currentState.history
-          .foldLeft[Map[Int, Double]](Map())((acc, state: State) =>
-            acc ++ Map(state.time -> state.stats.batchArrears)),
-      totals =
-        currentState.history
-          .foldLeft[Map[Int, Double]](Map())((acc, state: State) =>
-            acc ++ Map(state.time -> state.stats.totalArrears)),
-      aging =
-        currentState.history
-          .map(state => state.time)
-          .zip(
-            (currentState.history :+ currentState).reverse.map(ts => ts.stats.batchArrears)
-          ).toMap
-    )
-  }
-
-  def timeToString(time: Int) = time.toString + "-" + (time + 10)
-
 }

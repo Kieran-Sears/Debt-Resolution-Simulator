@@ -1,6 +1,7 @@
 package simulator.model
 
 import java.util.UUID
+
 import simulator.model.Actions.{Action, AddCustomers, Repeat}
 import spray.json.{DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -36,11 +37,12 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
       }
   }
 
+  implicit val actionQueueFormat = jsonFormat1(ActionQueue)
   implicit val statesFormat = jsonFormat4(State)
   implicit val stateFormat: JsonFormat[State] = lazyFormat(jsonFormat4(State))
   implicit val simulationConfigFormat = jsonFormat4(SimulationConfig)
   implicit val simulationResultsFormat = jsonFormat3(SimulationResults)
-
+  implicit val simulationErrorFormat = jsonFormat1(SimulationError)
 
   implicit def enumFormat[T <: Enumeration](implicit enu: T): RootJsonFormat[T#Value] =
     new RootJsonFormat[T#Value] {
