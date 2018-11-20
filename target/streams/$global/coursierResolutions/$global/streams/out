@@ -1,4 +1,0 @@
-[0m[[0m[0minfo[0m] [0m[0mUpdating root[0m
-[0m[[0m[0minfo[0m] [0m[0mResolved root dependencies[0m
-[0m[[0m[31merror[0m] [0m[0mcoursier.ResolutionException: Encountered 1 error(s) in dependency resolution:[0m
-[0m[[0m[31merror[0m] [0m[0m    io.spray:spray-json_2.12:1.2.5:[0m
