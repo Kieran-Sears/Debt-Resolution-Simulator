@@ -3,7 +3,7 @@ package simulator.model
 import java.util.UUID
 import simulator.model.Actions.Action
 
-case class ActionQueue(queue: Map[String, List[Action]])  {
+case class ActionQueue(queue: Map[String, List[Action]] = Map())  {
  // private var queue: Map[String, List[Action]] = Map()
 
 //  def apply(queue: Map[String, List[Action]] = Map()): Unit = {

@@ -4,7 +4,7 @@ import java.util.UUID
 
 import simulator.model._
 
-case class AddCustomers(actionId: UUID, repeat: Option[Repeat], config: CustomerGenConfig) extends Action {
+case class AddCustomers(actionId: UUID, repeat: Option[Repeat], config: CustomerGenConfig, kind: String = "addCustomers") extends Action {
 
   override def perform(currentState: State) = {
 

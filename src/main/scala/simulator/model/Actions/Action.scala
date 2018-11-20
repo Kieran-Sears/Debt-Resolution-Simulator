@@ -10,5 +10,6 @@ abstract class Action {
   val actionId: UUID
   val repeat: Option[Repeat]
   val config: Config
+  val kind: String
   def perform(state: State): (Int, State)
 }

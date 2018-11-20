@@ -10,8 +10,6 @@ val slf4jVersion = "1.7.25"
 
 lazy val scalatest = "org.scalatest" %% "scalatest" % "3.0.5"
 
-
-
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor"       % akkaVersion,
   "com.typesafe.akka" %% "akka-testkit"     % akkaVersion,

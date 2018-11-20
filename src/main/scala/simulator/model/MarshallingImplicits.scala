@@ -23,7 +23,7 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val customerGenParamsFormat = jsonFormat4(CustomerGenConfig)
   implicit val statisticsFormat = jsonFormat2(Statistics)
   implicit val repeatFormat = jsonFormat2(Repeat)
-  implicit val addCustomersFormat = jsonFormat3(AddCustomers)
+  implicit val addCustomersFormat = jsonFormat4(AddCustomers)
 
   implicit object ActionJsonFormat extends RootJsonFormat[Action] {
     def write(a: Action) = a match {
