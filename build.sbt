@@ -21,7 +21,15 @@ libraryDependencies ++= Seq(
   scalatest,
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.5",
   "io.spray" % "spray-httpx" % "1.3.1"
+)
 
+val sparkVersion = "2.4.0"
+libraryDependencies ++= Seq(
+  "org.apache.spark" %% "spark-core" % sparkVersion,
+  "org.apache.spark" %% "spark-streaming" % sparkVersion,
+  "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.6"
+  // "org.apache.spark" %% "spark-streaming-kafka-0-10" % "2.0.0",
+  // "com.datastax.spark" %% "spark-cassandra-connector" % "2.4.0"
 )
 
 lazy val root = (project in file("."))

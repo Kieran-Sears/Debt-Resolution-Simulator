@@ -10,9 +10,7 @@ import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import simulator.model._
-
 import scala.concurrent.Await
-import scala.util.{Failure, Success}
 
 trait HttpService extends MarshallingImplicits {
 
