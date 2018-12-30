@@ -10,17 +10,16 @@ class StateActor extends PersistentActor {
   var state = State()
   var snapshotInterval = 10
 
-
   override def receiveCommand: Receive = {
     case run: RunSimulation => {
       val originalSender = sender()
-      self ! UpdateState(run.config.startState)
-      self ! TickOnTime(run.config.startTime, 0, run.config.endTime, originalSender)
+      self ! UpdateState(run.state)
+      self ! TickOnTime(run.state.time, 0, run.state.configs.simulation.endTime, originalSender)
     }
     case tickOnTime: TickOnTime => {
 
       val stopEarly = tickOnTime.stopTime.contains(tickOnTime.newTime)
-      val noActionsLeft = !state.actionQueue.hasAction(tickOnTime.newTime.toString)
+      val noActionsLeft = !state.hasSystemAction(tickOnTime.newTime.toString)
       val ranOutOfTime = tickOnTime.newTime == Int.MaxValue
 
       if (ranOutOfTime || noActionsLeft || stopEarly) {
@@ -31,8 +30,8 @@ class StateActor extends PersistentActor {
 
       // perform actions on new time
       try {
-        val (nextChronologicalActionTime, stateWithUpdatedActionQueue) =
-         state.actionQueue.performActions(tickOnTime.newTime, state)
+        val  stateWithUpdatedActionQueue =
+         state.performActions(tickOnTime.newTime)
 
         println(stateWithUpdatedActionQueue.stats)
 
@@ -41,7 +40,7 @@ class StateActor extends PersistentActor {
             history = state.history :+ state))
 
         self ! TickOnTime(state.time,
-          nextChronologicalActionTime,
+          stateWithUpdatedActionQueue.getTimeOfNextSystemAction,
           tickOnTime.stopTime, tickOnTime.originalSender)
 
       } catch {

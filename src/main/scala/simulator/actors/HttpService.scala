@@ -23,17 +23,7 @@ trait HttpService extends MarshallingImplicits {
   val interfaceA = "localhost"
   val portA = 8080
 
-//  implicit def rejectionHandler: RejectionHandler =
-//    RejectionHandler
-//      .newBuilder()
-//      .handle {
-//        case AuthorizationFailedRejection =>
-//          // clause in here for excluding OPTIONS calls
-//          complete(
-//            (Unauthorized,
-//             "The supplied authentication is not authorized to access this resource"))
-//      }
-//      .result()
+  println(s"Starting Collaborate http interface at: $interfaceA:$portA")
 
   val route: Route = {
       options {
@@ -44,9 +34,6 @@ trait HttpService extends MarshallingImplicits {
         }
   }
 
-  println(s"Starting Collaborate http interface at: $interfaceA:$portA")
-
-
   def initialiseSimulation: Route = {
     pathPrefix("simulation") {
       post {
@@ -54,13 +41,14 @@ trait HttpService extends MarshallingImplicits {
           println("initialise Simulation endpoint request : " + request)
         })
 
-        entity(as[SimulationConfig]) { conf =>
+        entity(as[State]) { startState =>
           {
+
             val stateActor =
               system.actorOf(Props(classOf[StateActor]),
                 "stateActor_" + UUID.randomUUID())
 
-            Await.result(stateActor ? RunSimulation(conf), timeout.duration).asInstanceOf[SimulationComplete] match {
+            Await.result(stateActor ? RunSimulation(startState), timeout.duration).asInstanceOf[SimulationComplete] match {
                   case results: SimulationResults => complete(results)
                   case error: SimulationError => complete(error.reason)
             }

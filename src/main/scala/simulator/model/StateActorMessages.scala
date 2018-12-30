@@ -2,7 +2,7 @@ package simulator.model
 
 import akka.actor.ActorRef
 
-case class RunSimulation(config: SimulationConfig)
+case class RunSimulation(state: State)
 
 case class UpdateState(state: State)
 

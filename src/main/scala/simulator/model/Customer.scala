@@ -1,3 +1,5 @@
 package simulator.model
 
-case class Customer(account: Account)
+import java.util.UUID
+
+case class Customer(id: UUID = UUID.randomUUID(), arrears: Double)
