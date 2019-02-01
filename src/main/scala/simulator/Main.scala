@@ -1,7 +1,5 @@
 package simulator
 
-import java.util.logging.Logger
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.settings.ServerSettings
@@ -16,6 +14,7 @@ class Main(
     implicit val system: ActorSystem,
     implicit val materializer: ActorMaterializer,
     implicit val timeout: Timeout
+
 ) extends HttpService {
   def startServer(): Unit = {
     Http()
