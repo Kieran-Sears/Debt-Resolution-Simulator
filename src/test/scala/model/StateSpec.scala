@@ -1,39 +1,42 @@
 package model
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers, TryValues}
 import simulator.model.actions.SystemAction
 import simulator.model.actions.customer.PayInFull
 import simulator.model.actions.system.AddCustomers
-import simulator.model.{DebtTimeVariance, State, Statistics}
+import simulator.model.{State, Statistics, Variance}
 
-class StateSpec extends FlatSpec with Matchers {
+class StateSpec extends FlatSpec with Matchers with TryValues {
   "State " should "insert action upon AddAction" in {
-    val addCustomers = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
+    val addCustomers = AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
     val expectedQueue = State(systemActions = Map("0" -> List(addCustomers)))
     val state = State()
     state.addSystemAction(0, addCustomers) shouldEqual expectedQueue
   }
   it should "remove action upon removeAction" in {
-    val addCustomers1 = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
-    val addCustomers2 = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
+    val addCustomers1 = AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
+    val addCustomers2 = AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
     State()
       .addSystemAction(0, addCustomers1)
       .addSystemAction(0, addCustomers2)
-      .removeSystemAction(0, addCustomers2.actionId) shouldEqual State(
-      systemActions = Map("0" -> List(addCustomers1)))
+      .removeSystemAction(0, addCustomers2.actionId) shouldEqual State(systemActions = Map("0" -> List(addCustomers1)))
   }
   it should "remove action upon removeAction and remove key if no other actions are left" in {
-    val addCustomers = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
+    val addCustomers = AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
     State()
       .addSystemAction(0, addCustomers)
       .removeSystemAction(0, addCustomers.actionId) shouldEqual State()
   }
   it should "upon invoking performActions consume all " +
     "actions in the action queue for a given time without affecting other times" in {
-    val addCustomers0: SystemAction = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
-    val addCustomers1: SystemAction = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
-    val addCustomers2: SystemAction = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
-    val addCustomers3: SystemAction = AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = None, kind = "addCustomers")
+    val addCustomers0: SystemAction =
+      AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
+    val addCustomers1: SystemAction =
+      AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
+    val addCustomers2: SystemAction =
+      AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
+    val addCustomers3: SystemAction =
+      AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
 
     val initState = State(
       time = 1,
@@ -50,6 +53,6 @@ class StateSpec extends FlatSpec with Matchers {
     )
 
     val newState = initState.performActions(1)
-      newState.systemActions shouldEqual expectedSystemActions
+    newState.success.value.systemActions shouldEqual expectedSystemActions
   }
 }

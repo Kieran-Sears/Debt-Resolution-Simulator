@@ -1,5 +1,5 @@
 package simulator.model
 
-object DebtTimeVariance extends Enumeration {
+object Variance extends Enumeration {
   val Increase, Decrease, None = Value
 }

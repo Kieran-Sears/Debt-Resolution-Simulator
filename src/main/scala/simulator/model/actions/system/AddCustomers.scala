@@ -2,24 +2,36 @@ package simulator.model.actions.system
 
 import java.util.UUID
 
+import simulator.Generator
 import simulator.model.actions.{Repeat, SystemAction}
-import simulator.model.{Customer, DebtTimeVariance, State, Statistics}
+import simulator.model.{Customer, State, Statistics, Variance}
+import cats.implicits._
 
-case class AddCustomers(actionId: UUID = UUID.randomUUID(),
-                        numberOfCustomers: Int,
-                        startingDebt: Double,
-                        repeat: Option[Repeat],
-                        kind: String = "addCustomers")
-    extends SystemAction {
+import scala.util.{Failure, Success, Try}
 
-  override def perform(state: State) = {
+case class AddCustomers(
+  actionId: UUID = UUID.randomUUID(),
+  numberOfCustomers: Int,
+  arrearsBias: Double,
+  repeat: Option[Repeat],
+  kind: String = "addCustomers")
+  extends SystemAction {
+
+  override def perform(state: State): Try[State] = {
     val stateWithoutAction =
       state.removeSystemAction(state.time, actionId)
     val newQueue = prepareNextRepetition(stateWithoutAction)
     val newBatchOfCustomers = makeBatchOfCustomers(state)
-    val newStats = updateStatistics(state.stats, newBatchOfCustomers)
-    val updatedCustomerList = state.customers ++ newBatchOfCustomers
-    state.copy(stats = newStats, systemActions = newQueue, customers = updatedCustomerList)
+
+    newBatchOfCustomers match {
+      case Success(customers) => {
+        val newStats = updateStatistics(state.stats, customers)
+        val updatedCustomerList = state.customers ++ customers
+        Success(state.copy(stats = newStats, systemActions = newQueue, customers = updatedCustomerList))
+      }
+      case Failure(e) => Failure(e)
+    }
+
   }
 
   def updateStatistics(stats: Statistics, newBatchOfCustomers: List[Customer]) = {
@@ -28,21 +40,33 @@ case class AddCustomers(actionId: UUID = UUID.randomUUID(),
     Statistics(batchArrears, newTotalArrears)
   }
 
-  def makeBatchOfCustomers(state: State) = {
+  def makeBatchOfCustomers(state: State): Try[List[Customer]] = {
     val currentTime = state.time
-    val config = state.configs.customer
 
-    (for (_ <- 1 to numberOfCustomers) yield {
-      val arrears = config.debtVarianceOverTime match {
-        case DebtTimeVariance.None =>
-          startingDebt
-        case DebtTimeVariance.Increase =>
-          startingDebt + (config.arrearsBias * currentTime)
-        case DebtTimeVariance.Decrease =>
-          startingDebt - (config.arrearsBias * currentTime)
-      }
-      Customer(arrears = arrears)
-    }).toList
+    val c: Try[List[Customer]] = state.configs.customerConfigurations
+      .flatMap(customerConf => {
+        val numberOfStereotype = state.configs.simulationConfiguration.numberOfCustomers / 100 * customerConf.proportion
+        (0 to numberOfStereotype).map(_ => Generator.default.generateCustomer(customerConf, state.featureMap))
+      })
+      .sequence
+
+//    c match {
+//      case Success(customers) => {
+//        Success(for (customer: Customer <- customers) yield {
+//          state.configs.simulation.debtVarianceOverTime match {
+//            case Variance.None =>
+//              customer
+//            case Variance.Increase =>
+//              customer.copy(arrears = customer.arrears + (arrearsBias * currentTime))
+//            case Variance.Decrease =>
+//              customer.copy(arrears = customer.arrears - (arrearsBias * currentTime))
+//            case _ => customer
+//          }
+//        })
+//      }
+//      case Failure(e) => Failure(e)
+//    }
+    c
   }
 
   def calculateSumOfBatchArrears(batchOfCustomers: List[Customer]) = {
@@ -54,11 +78,9 @@ case class AddCustomers(actionId: UUID = UUID.randomUUID(),
       .map(repeatInstructions => {
         if (state.time < repeatInstructions.finishTime) {
           state
-            .addSystemAction(state.time + repeatInstructions.interval,
-                             AddCustomers(UUID.randomUUID(),
-                                          numberOfCustomers,
-                                          startingDebt,
-                                          Some(repeatInstructions)))
+            .addSystemAction(
+              state.time + repeatInstructions.interval,
+              AddCustomers(UUID.randomUUID(), numberOfCustomers, arrearsBias, Some(repeatInstructions)))
             .systemActions
         } else {
           state.systemActions

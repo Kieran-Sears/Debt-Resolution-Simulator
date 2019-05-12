@@ -19,11 +19,11 @@ import simulator.model.actions.{Repeat, SystemAction}
 import simulator.model._
 
 class HttpServiceSpec
-    extends WordSpec
-    with Matchers
-    with ScalatestRouteTest
-    with HttpService
-    with MarshallingImplicits {
+  extends WordSpec
+  with Matchers
+  with ScalatestRouteTest
+  with HttpService
+  with MarshallingImplicits {
 
   override implicit val materializer: ActorMaterializer = ActorMaterializer()
   override implicit val timeout: Timeout = Timeout(5 seconds)
@@ -43,7 +43,7 @@ class HttpServiceSpec
 
     "inform the API caller when an initial action has not been set" in {
       val customerGenConfig =
-        CustomerGenConfig(debtVarianceOverTime = DebtTimeVariance.None, kind = "customer")
+        CustomerConfig(debtVarianceOverTime = Variance.None, kind = "customer")
       val config = SimulationConfig(Some(State()), -1, None)
       Post("/simulation", config) ~> route ~> check {
 
@@ -55,14 +55,14 @@ class HttpServiceSpec
 
     "return results when sent a simulation configuration" in {
       val customerGenConfig =
-        CustomerGenConfig(DebtTimeVariance.None, 0d)
+        CustomerGenConfig(Variance.None, 0d)
       val addCustomerAction: SystemAction =
-        AddCustomers(numberOfCustomers = 1, startingDebt = 10, repeat = Some(Repeat(10, 100)), kind = "addCustomers")
+        AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = Some(Repeat(10, 100)), kind = "addCustomers")
       val initQueue = Map("0" -> List(addCustomerAction))
       val initState: State =
         State(systemActions = initQueue)
       val simConfig = SimulationConfig(Some(initState), -1, None)
-      val cusConfig = CustomerGenConfig()
+      val cusConfig = CustomerConfig()
       val startingState = State(configs = Configurations(cusConfig, simConfig))
       Post("/simulation", startingState) ~> route ~> check {
         response.status shouldEqual StatusCodes.OK
@@ -71,4 +71,3 @@ class HttpServiceSpec
 
   }
 }
-

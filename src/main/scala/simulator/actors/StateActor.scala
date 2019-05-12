@@ -5,6 +5,8 @@ import java.util.NoSuchElementException
 import akka.persistence.PersistentActor
 import simulator.model._
 
+import scala.util.{Failure, Success}
+
 class StateActor extends PersistentActor {
   def persistenceId = "StateActor"
   var state = State()
@@ -14,7 +16,7 @@ class StateActor extends PersistentActor {
     case run: RunSimulation => {
       val originalSender = sender()
       self ! UpdateState(run.state)
-      self ! TickOnTime(run.state.time, 0, run.state.configs.simulation.endTime, originalSender)
+      self ! TickOnTime(run.state.time, 0, run.state.configs.simulationConfiguration.endTime, originalSender)
     }
     case tickOnTime: TickOnTime => {
 
@@ -29,30 +31,27 @@ class StateActor extends PersistentActor {
       }
 
       // perform actions on new time
-      try {
-        val  stateWithUpdatedActionQueue =
-         state.performActions(tickOnTime.newTime)
+      state.performActions(tickOnTime.newTime) match {
+        case Success(stateWithUpdatedActionQueue) =>
+          println(stateWithUpdatedActionQueue.stats)
 
-        println(stateWithUpdatedActionQueue.stats)
+          self ! UpdateState(
+            stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime, history = state.history :+ state))
 
-        self ! UpdateState(
-          stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime,
-            history = state.history :+ state))
-
-        self ! TickOnTime(state.time,
-          stateWithUpdatedActionQueue.getTimeOfNextSystemAction,
-          tickOnTime.stopTime, tickOnTime.originalSender)
-
-
-
-      } catch {
-        case noElement : NoSuchElementException => {
-          println("trying to return error back: " + noElement.getMessage)
-          tickOnTime.originalSender ! SimulationError("Could not find next action for time " + tickOnTime.newTime)
-        }
-        case unknown: Throwable =>  tickOnTime.originalSender ! SimulationError("exception for performing actions not caught : " + unknown.getMessage)
+          self ! TickOnTime(
+            state.time,
+            stateWithUpdatedActionQueue.getTimeOfNextSystemAction,
+            tickOnTime.stopTime,
+            tickOnTime.originalSender)
+        case Failure(error) =>
+          error match {
+            case _: NoSuchElementException =>
+              tickOnTime.originalSender ! SimulationError("Could not find next action for time " + tickOnTime.newTime)
+            case unknown: Throwable =>
+              tickOnTime.originalSender ! SimulationError(
+                "exception for performing actions not caught : " + unknown.getMessage)
+          }
       }
-
     }
 
     case UpdateState(newState: State) => {
@@ -68,23 +67,20 @@ class StateActor extends PersistentActor {
       this.state = newState
   }
 
-
   def generateSimulationresults(currentState: State) = {
     SimulationResults(
-      batches =
-        currentState.history
-          .foldLeft[Map[String, Double]](Map())((acc, state: State) =>
+      batches = currentState.history
+        .foldLeft[Map[String, Double]](Map())((acc, state: State) =>
           acc ++ Map(timeToString(state.time) -> state.stats.batchArrears)),
-      totals =
-        currentState.history
-          .foldLeft[Map[String, Double]](Map())((acc, state: State) =>
+      totals = currentState.history
+        .foldLeft[Map[String, Double]](Map())((acc, state: State) =>
           acc ++ Map(timeToString(state.time) -> state.stats.totalArrears)),
-      aging =
-        currentState.history
-          .map(state => timeToString(state.time))
-          .zip(
-            (currentState.history :+ currentState).reverse.map(ts => ts.stats.batchArrears)
-          ).toMap
+      aging = currentState.history
+        .map(state => timeToString(state.time))
+        .zip(
+          (currentState.history :+ currentState).reverse.map(ts => ts.stats.batchArrears)
+        )
+        .toMap
     )
   }
 

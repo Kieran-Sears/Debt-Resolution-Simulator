@@ -40,11 +40,12 @@ val otherDependencies = Seq(
   "com.intel.analytics.bigdl" % "bigdl-SPARK_2.3" % "0.7.0",
   "org.iq80.leveldb"              % "leveldb"          % "0.7",
   "org.fusesource.leveldbjni"     % "leveldbjni-all"   % "1.8",
-  "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.6"
+  "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.6",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0"
  // "org.platanios" %% "tensorflow" % tensorflowVersion classifier "linux-cpu-x86_64"
 )
 
-libraryDependencies ++= (akkaDependencies ++ sparkDependencies ++ circeDependencies ++ otherDependencies).map(_.exclude(org = "org.slf4j", "slf4j-log4j12"))
+libraryDependencies ++= (akkaDependencies ++ sparkDependencies ++ circeDependencies ++ otherDependencies)//.map(_.exclude(org = "org.slf4j", "slf4j-log4j12"))
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)

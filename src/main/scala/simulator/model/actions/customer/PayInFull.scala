@@ -3,12 +3,16 @@ package simulator.model.actions.customer
 import java.util.UUID
 
 import simulator.model.actions.{CustomerAction, Repeat}
-import simulator.model.{State}
+import simulator.model.State
 
-case class PayInFull (actionId: UUID = UUID.randomUUID(),
-                      customerId: UUID,
-                      repeat: Option[Repeat] = None,
-                      kind: String = "payInFull") extends CustomerAction {
+import scala.util.Success
+
+case class PayInFull(
+  actionId: UUID = UUID.randomUUID(),
+  customerId: UUID,
+  repeat: Option[Repeat] = None,
+  kind: String = "payInFull")
+  extends CustomerAction {
 
   override def perform(state: State) = {
 
@@ -24,7 +28,7 @@ case class PayInFull (actionId: UUID = UUID.randomUUID(),
     val stateWithoutAction =
       state.removeCustomerAction(state.time, actionId)
 
-    stateWithoutAction.copy(stats = newStats, customers = customerListWithCustomerRemoved)
+    Success(stateWithoutAction.copy(stats = newStats, customers = customerListWithCustomerRemoved))
   }
 
-  }
+}

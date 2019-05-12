@@ -4,28 +4,38 @@ import java.util.UUID
 
 import simulator.model.actions._
 
-case class State(time: Int = 0,
-                 stats: Statistics = Statistics(),
-                 systemActions: Map[String, List[SystemAction]] = Map(),
-                 customerActions: Map[String, List[CustomerAction]] = Map(),
-                 agentActions: Map[String, List[AgentAction]] = Map(),
-                 customers: List[Customer] = Nil,
-                 history: List[State] = Nil,
-                 configs: Configurations = Configurations()) {
+import scala.util.{Failure, Success, Try}
+
+case class State(
+  time: Int = 0,
+  stats: Statistics = Statistics(),
+  systemActions: Map[String, List[SystemAction]] = Map(),
+  customerActions: Map[String, List[CustomerAction]] = Map(),
+  agentActions: Map[String, List[AgentAction]] = Map(),
+  customers: List[Customer] = Nil,
+  history: List[State] = Nil,
+  featureMap: IndexedSeq[Attribute] = IndexedSeq(),
+  configs: Configurations = Configurations()) {
 
   /*
   cycles through all actions for the current time-frame updating the state
   as it goes, it also calculates the next time to tick the simulation onto
   based on the next chronological action in the updated states ActionQueue
    */
-  def performActions(time: Int): State = {
+  def performActions(time: Int): Try[State] = {
     val currentActions = systemActions(time.toString)
 
-    val stateWithUpdatedActions = currentActions.foldLeft(this)((state, action) => {
-        action.perform(state)
+    val stateWithUpdatedActions = currentActions.foldLeft(Try(this))((state, action) => {
+      state match {
+        case Success(s) => action.perform(s)
+        case Failure(e) => Failure(e)
+      }
     })
+    stateWithUpdatedActions match {
+      case Success(swua) => Success(swua.copy(history = history :+ this))
+      case Failure(e) => Failure(e)
+    }
 
-     stateWithUpdatedActions.copy( history = history :+ this )
   }
 
   def removeCustomer(customerId: UUID) = {
@@ -34,8 +44,7 @@ case class State(time: Int = 0,
 
   def addSystemAction(time: Int, action: SystemAction) =
     if (systemActions.keySet.contains(time.toString))
-      this.copy(
-        systemActions = systemActions + (time.toString -> (systemActions(time.toString) :+ action)))
+      this.copy(systemActions = systemActions + (time.toString -> (systemActions(time.toString) :+ action)))
     else this.copy(systemActions = systemActions + (time.toString -> List(action)))
 
   def removeSystemAction(time: Int, actionId: UUID) = {
@@ -60,8 +69,7 @@ case class State(time: Int = 0,
 
   def addAgentAction(time: Int, action: AgentAction) =
     if (systemActions.keySet.contains(time.toString))
-      this.copy(
-        agentActions = agentActions + (time.toString -> (agentActions(time.toString) :+ action)))
+      this.copy(agentActions = agentActions + (time.toString -> (agentActions(time.toString) :+ action)))
     else this.copy(agentActions = agentActions + (time.toString -> List(action)))
 
   def removeAgentAction(time: Int, actionId: UUID) = {
@@ -86,8 +94,7 @@ case class State(time: Int = 0,
 
   def addCustomerAction(time: Int, action: CustomerAction) =
     if (customerActions.keySet.contains(time.toString))
-      this.copy(
-        customerActions = customerActions + (time.toString -> (customerActions(time.toString) :+ action)))
+      this.copy(customerActions = customerActions + (time.toString -> (customerActions(time.toString) :+ action)))
     else this.copy(customerActions = customerActions + (time.toString -> List(action)))
 
   def removeCustomerAction(time: Int, actionId: UUID) = {
