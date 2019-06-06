@@ -2,7 +2,6 @@ package simulator.model
 
 import java.util.UUID
 
-import simulator.model.actions._
 import spray.json.{DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import simulator.model.actions.customer.PayInFull
@@ -21,13 +20,17 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
     }
   }
 
+  implicit val effectTypeFormat = enumFormat(EffectType)
+  implicit val actionTypeFormat = enumFormat(ActionType)
   implicit val timeVarianceFormat = enumFormat(Variance)
-  implicit val scalarFormat = jsonFormat5(Scalar)
-  implicit val categoricalFormat = jsonFormat3(Categorical)
+  implicit val scalarConfigFormat = jsonFormat4(Scalar)
+  implicit val optionConfigFormat = jsonFormat3(OptionConfig)
+  implicit val categoricalConfigFormat = jsonFormat2(Categorical)
+  implicit val effectConfigFormat = jsonFormat4(EffectConfig)
+  implicit val FeatureValueFormat = jsonFormat2(FeatureValue)
 
   implicit object AttributeValueJsonFormat extends RootJsonFormat[Value] {
     def write(a: Value) = {
-      println(a.toString)
       a match {
         case v: Scalar => v.toJson
         case v: Categorical => v.toJson
@@ -36,7 +39,6 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
     }
 
     def read(value: JsValue) = {
-      println(value.toString)
       value.asJsObject.fields("kind") match {
         case JsString("scalar") => value.convertTo[Scalar]
         case JsString("categorical") => value.convertTo[Categorical]
@@ -45,12 +47,12 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
     }
   }
 
-  implicit val attributeFormat = jsonFormat2(Attribute)
-  implicit val customerGenParamsFormat = jsonFormat6(CustomerConfig)
-  implicit val actionGenParamsFormat = jsonFormat1(ActionConfig)
+  implicit val attributeConfigFormat = jsonFormat2(AttributeConfig)
+  implicit val customerConfigFormat = jsonFormat6(CustomerConfig)
+  implicit val actionConfigFormat = jsonFormat4(ActionConfig)
   implicit val statisticsFormat = jsonFormat2(Statistics)
   implicit val repeatFormat = jsonFormat2(Repeat)
-  implicit val customerFormat = jsonFormat5(Customer)
+  implicit val customerFormat = jsonFormat6(Customer)
 
   // System Actions
   implicit val addCustomersFormat = jsonFormat5(AddCustomers)
@@ -63,7 +65,7 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val simulationConfigFormat = jsonFormat5(SimulationConfig)
   implicit val simulationResultsFormat = jsonFormat3(SimulationResults)
   implicit val simulationErrorFormat = jsonFormat1(SimulationError)
-  implicit val configurationsFormat = jsonFormat3(Configurations)
+  implicit val configurationsFormat = jsonFormat6(Configurations)
 
   implicit object SystemActionJsonFormat extends RootJsonFormat[SystemAction] {
     def write(a: SystemAction) = a match {

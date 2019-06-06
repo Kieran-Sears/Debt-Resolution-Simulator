@@ -2,14 +2,28 @@ package simulator.model
 
 import java.util.UUID
 
+case class CustomerConfig(
+  id: String,
+  arrears: Scalar,
+  satisfaction: Scalar,
+  attributeConfigurations: List[String] = Nil,
+  proportion: Int = 100,
+  kind: String = "customer")
+
 case class Customer(
   id: UUID = UUID.randomUUID(),
   arrears: Double,
-  featureValues: List[Double] = Nil,
+  satisfaction: Double,
+  featureValues: List[FeatureValue] = Nil,
   difficulty: Option[Int] = None,
-  assignedLabel: Int)
+  assignedLabel: Option[Int] = None)
 
-case class Attribute(
+case class FeatureValue(
+  id: String,
+  value: Double
+)
+
+case class AttributeConfig(
   id: String,
   value: Value
 )
@@ -17,7 +31,6 @@ case class Attribute(
 trait Value
 
 case class Scalar(
-  start: Double,
   variance: Variance.Value,
   min: Double,
   max: Double,
@@ -25,7 +38,12 @@ case class Scalar(
 ) extends Value
 
 case class Categorical(
-  startValue: Int = -1,
   options: List[String],
   kind: String = "categorical"
 ) extends Value
+
+case class OptionConfig(
+  id: String,
+  kind: String = "option",
+  probability: Int
+)

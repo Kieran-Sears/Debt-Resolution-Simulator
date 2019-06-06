@@ -2,8 +2,7 @@ package simulator.model.actions.customer
 
 import java.util.UUID
 
-import simulator.model.actions.{CustomerAction, Repeat}
-import simulator.model.State
+import simulator.model._
 
 import scala.util.Success
 
@@ -28,7 +27,7 @@ case class PayInFull(
     val stateWithoutAction =
       state.removeCustomerAction(state.time, actionId)
 
-    Success(stateWithoutAction.copy(stats = newStats, customers = customerListWithCustomerRemoved))
+    stateWithoutAction.copy(stats = newStats, customers = customerListWithCustomerRemoved)
   }
 
 }

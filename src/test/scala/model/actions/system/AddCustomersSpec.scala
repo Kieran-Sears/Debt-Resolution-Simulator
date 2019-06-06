@@ -2,7 +2,6 @@ package model.actions.system
 
 import org.scalatest.{FlatSpec, Matchers, TryValues}
 import simulator.model._
-import simulator.model.actions.SystemAction
 import simulator.model.actions.system.AddCustomers
 
 class AddCustomersSpec extends FlatSpec with Matchers with TryValues {
@@ -16,7 +15,7 @@ class AddCustomersSpec extends FlatSpec with Matchers with TryValues {
     val newStateWithNoActions = addCustomers.perform(emptyStateWithActionInQueue)
     val expectedStats = Statistics(10.0, 10.0)
 
-    newStateWithNoActions.success.value.stats shouldEqual expectedStats
+    newStateWithNoActions.stats shouldEqual expectedStats
   }
 
   it should "update the customers list in the state" in {
@@ -27,7 +26,7 @@ class AddCustomersSpec extends FlatSpec with Matchers with TryValues {
     val newStateWithNoActions = addCustomers.perform(emptyStateWithActionInQueue)
     val expectedState = State(stats = Statistics(10.0, 10.0))
 
-    newStateWithNoActions.success.value.customers.length shouldEqual 1
+    newStateWithNoActions.customers.length shouldEqual 1
   }
 
 }

@@ -2,10 +2,6 @@ package simulator.model
 
 import java.util.UUID
 
-import simulator.model.actions._
-
-import scala.util.{Failure, Success, Try}
-
 case class State(
   time: Int = 0,
   stats: Statistics = Statistics(),
@@ -14,7 +10,7 @@ case class State(
   agentActions: Map[String, List[AgentAction]] = Map(),
   customers: List[Customer] = Nil,
   history: List[State] = Nil,
-  featureMap: IndexedSeq[Attribute] = IndexedSeq(),
+  featureMap: IndexedSeq[AttributeConfig] = IndexedSeq(),
   configs: Configurations = Configurations()) {
 
   /*
@@ -22,20 +18,13 @@ case class State(
   as it goes, it also calculates the next time to tick the simulation onto
   based on the next chronological action in the updated states ActionQueue
    */
-  def performActions(time: Int): Try[State] = {
+  def performActions(time: Int): State = {
     val currentActions = systemActions(time.toString)
 
-    val stateWithUpdatedActions = currentActions.foldLeft(Try(this))((state, action) => {
-      state match {
-        case Success(s) => action.perform(s)
-        case Failure(e) => Failure(e)
-      }
+    val stateWithUpdatedActions = currentActions.foldLeft(this)((state, action) => {
+      action.perform(state)
     })
-    stateWithUpdatedActions match {
-      case Success(swua) => Success(swua.copy(history = history :+ this))
-      case Failure(e) => Failure(e)
-    }
-
+    stateWithUpdatedActions.copy(history = history :+ this)
   }
 
   def removeCustomer(customerId: UUID) = {

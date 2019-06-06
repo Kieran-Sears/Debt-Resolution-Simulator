@@ -31,27 +31,28 @@ class StateActor extends PersistentActor {
       }
 
       // perform actions on new time
-      state.performActions(tickOnTime.newTime) match {
-        case Success(stateWithUpdatedActionQueue) =>
-          println(stateWithUpdatedActionQueue.stats)
+      val stateWithUpdatedActionQueue = state.performActions(tickOnTime.newTime)
 
-          self ! UpdateState(
-            stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime, history = state.history :+ state))
+//      match {
+//        case Success(stateWithUpdatedActionQueue) =>
+      println(stateWithUpdatedActionQueue.stats)
 
-          self ! TickOnTime(
-            state.time,
-            stateWithUpdatedActionQueue.getTimeOfNextSystemAction,
-            tickOnTime.stopTime,
-            tickOnTime.originalSender)
-        case Failure(error) =>
-          error match {
-            case _: NoSuchElementException =>
-              tickOnTime.originalSender ! SimulationError("Could not find next action for time " + tickOnTime.newTime)
-            case unknown: Throwable =>
-              tickOnTime.originalSender ! SimulationError(
-                "exception for performing actions not caught : " + unknown.getMessage)
-          }
-      }
+      self ! UpdateState(stateWithUpdatedActionQueue.copy(time = tickOnTime.newTime, history = state.history :+ state))
+
+      self ! TickOnTime(
+        state.time,
+        stateWithUpdatedActionQueue.getTimeOfNextSystemAction,
+        tickOnTime.stopTime,
+        tickOnTime.originalSender)
+//        case Failure(error) =>
+//          error match {
+//            case _: NoSuchElementException =>
+//              tickOnTime.originalSender ! SimulationError("Could not find next action for time " + tickOnTime.newTime)
+//            case unknown: Throwable =>
+//              tickOnTime.originalSender ! SimulationError(
+//                "exception for performing actions not caught : " + unknown.getMessage)
+//          }
+//      }
     }
 
     case UpdateState(newState: State) => {

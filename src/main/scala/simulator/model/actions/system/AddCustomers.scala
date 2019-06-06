@@ -3,11 +3,7 @@ package simulator.model.actions.system
 import java.util.UUID
 
 import simulator.Generator
-import simulator.model.actions.{Repeat, SystemAction}
-import simulator.model.{Customer, State, Statistics, Variance}
-import cats.implicits._
-
-import scala.util.{Failure, Success, Try}
+import simulator.model._
 
 case class AddCustomers(
   actionId: UUID = UUID.randomUUID(),
@@ -17,21 +13,15 @@ case class AddCustomers(
   kind: String = "addCustomers")
   extends SystemAction {
 
-  override def perform(state: State): Try[State] = {
+  override def perform(state: State): State = {
     val stateWithoutAction =
       state.removeSystemAction(state.time, actionId)
     val newQueue = prepareNextRepetition(stateWithoutAction)
-    val newBatchOfCustomers = makeBatchOfCustomers(state)
+    val customers = makeBatchOfCustomers(state)
 
-    newBatchOfCustomers match {
-      case Success(customers) => {
-        val newStats = updateStatistics(state.stats, customers)
-        val updatedCustomerList = state.customers ++ customers
-        Success(state.copy(stats = newStats, systemActions = newQueue, customers = updatedCustomerList))
-      }
-      case Failure(e) => Failure(e)
-    }
-
+    val newStats = updateStatistics(state.stats, customers)
+    val updatedCustomerList = state.customers ++ customers
+    state.copy(stats = newStats, systemActions = newQueue, customers = updatedCustomerList)
   }
 
   def updateStatistics(stats: Statistics, newBatchOfCustomers: List[Customer]) = {
@@ -40,33 +30,14 @@ case class AddCustomers(
     Statistics(batchArrears, newTotalArrears)
   }
 
-  def makeBatchOfCustomers(state: State): Try[List[Customer]] = {
-    val currentTime = state.time
-
-    val c: Try[List[Customer]] = state.configs.customerConfigurations
+  def makeBatchOfCustomers(state: State): List[Customer] = {
+    state.configs.customerConfigurations
       .flatMap(customerConf => {
         val numberOfStereotype = state.configs.simulationConfiguration.numberOfCustomers / 100 * customerConf.proportion
-        (0 to numberOfStereotype).map(_ => Generator.default.generateCustomer(customerConf, state.featureMap))
+        (0 to numberOfStereotype).map(_ =>
+          Generator.default
+            .generateCustomer(customerConf, state.configs.attributeConfigurations, state.configs.optionConfigurations))
       })
-      .sequence
-
-//    c match {
-//      case Success(customers) => {
-//        Success(for (customer: Customer <- customers) yield {
-//          state.configs.simulation.debtVarianceOverTime match {
-//            case Variance.None =>
-//              customer
-//            case Variance.Increase =>
-//              customer.copy(arrears = customer.arrears + (arrearsBias * currentTime))
-//            case Variance.Decrease =>
-//              customer.copy(arrears = customer.arrears - (arrearsBias * currentTime))
-//            case _ => customer
-//          }
-//        })
-//      }
-//      case Failure(e) => Failure(e)
-//    }
-    c
   }
 
   def calculateSumOfBatchArrears(batchOfCustomers: List[Customer]) = {

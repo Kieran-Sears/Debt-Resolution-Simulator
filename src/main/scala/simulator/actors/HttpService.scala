@@ -62,10 +62,8 @@ class HttpService(
         entity(as[Configurations]) { configs =>
           {
             val (customers, state) = gen.actualiseConfigs(configs)
-            customers match {
-              case Success(c) => complete(OK, c)
-              case Failure(e) => complete(InternalServerError, e.getMessage)
-            }
+
+            complete(OK, customers)
           }
         }
       }

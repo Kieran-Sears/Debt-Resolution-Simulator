@@ -1,12 +1,10 @@
 package model
 
 import org.scalatest.{FlatSpec, Matchers, TryValues}
-import simulator.model.actions.SystemAction
-import simulator.model.actions.customer.PayInFull
 import simulator.model.actions.system.AddCustomers
-import simulator.model.{State, Statistics, Variance}
+import simulator.model.{State, SystemAction}
 
-class StateSpec extends FlatSpec with Matchers with TryValues {
+class StateSpec extends FlatSpec with Matchers {
   "State " should "insert action upon AddAction" in {
     val addCustomers = AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = None, kind = "addCustomers")
     val expectedQueue = State(systemActions = Map("0" -> List(addCustomers)))
@@ -53,6 +51,6 @@ class StateSpec extends FlatSpec with Matchers with TryValues {
     )
 
     val newState = initState.performActions(1)
-    newState.success.value.systemActions shouldEqual expectedSystemActions
+    newState.systemActions shouldEqual expectedSystemActions
   }
 }
