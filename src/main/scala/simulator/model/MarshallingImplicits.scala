@@ -4,8 +4,8 @@ import java.util.UUID
 
 import spray.json.{DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import simulator.model.actions.customer.PayInFull
-import simulator.model.actions.system.AddCustomers
+//import simulator.model.actions.customer.PayInFull
+//import simulator.model.actions.system.AddCustomers
 import spray.json._
 
 trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
@@ -24,10 +24,10 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val actionTypeFormat = enumFormat(ActionType)
   implicit val timeVarianceFormat = enumFormat(Variance)
   implicit val scalarConfigFormat = jsonFormat4(Scalar)
-  implicit val optionConfigFormat = jsonFormat3(OptionConfig)
+  implicit val optionConfigFormat = jsonFormat4(OptionConfig)
   implicit val categoricalConfigFormat = jsonFormat2(Categorical)
-  implicit val effectConfigFormat = jsonFormat4(EffectConfig)
-  implicit val FeatureValueFormat = jsonFormat2(FeatureValue)
+  implicit val effectConfigFormat = jsonFormat5(EffectConfig)
+  implicit val FeatureValueFormat = jsonFormat3(Attribute)
 
   implicit object AttributeValueJsonFormat extends RootJsonFormat[Value] {
     def write(a: Value) = {
@@ -40,25 +40,25 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
 
     def read(value: JsValue) = {
       value.asJsObject.fields("kind") match {
-        case JsString("scalar") => value.convertTo[Scalar]
-        case JsString("categorical") => value.convertTo[Categorical]
-        case _ => throw DeserializationException("Could not Unmarshal Action of Unknown Type")
+        case JsString("Scalar") => value.convertTo[Scalar]
+        case JsString("Categorical") => value.convertTo[Categorical]
+        case _ => throw DeserializationException("Could not Unmarshal AttributeValue of Unknown Type")
       }
     }
   }
 
-  implicit val attributeConfigFormat = jsonFormat2(AttributeConfig)
-  implicit val customerConfigFormat = jsonFormat6(CustomerConfig)
-  implicit val actionConfigFormat = jsonFormat4(ActionConfig)
-  implicit val statisticsFormat = jsonFormat2(Statistics)
   implicit val repeatFormat = jsonFormat2(Repeat)
-  implicit val customerFormat = jsonFormat6(Customer)
+  implicit val attributeConfigFormat = jsonFormat3(AttributeConfig)
+  implicit val customerConfigFormat = jsonFormat7(CustomerConfig)
+  implicit val actionConfigFormat = jsonFormat6(ActionConfig)
+  implicit val statisticsFormat = jsonFormat2(Statistics)
+  implicit val customerFormat = jsonFormat7(Customer)
 
   // System Actions
-  implicit val addCustomersFormat = jsonFormat5(AddCustomers)
+  // implicit val addCustomersFormat = jsonFormat7(AddCustomers)
 
   // Customer Actions
-  implicit val payInFullFormat = jsonFormat4(PayInFull)
+  // implicit val payInFullFormat = jsonFormat6(PayInFull)
 
   // Agent Actions
 
@@ -67,44 +67,64 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val simulationErrorFormat = jsonFormat1(SimulationError)
   implicit val configurationsFormat = jsonFormat6(Configurations)
 
-  implicit object SystemActionJsonFormat extends RootJsonFormat[SystemAction] {
-    def write(a: SystemAction) = a match {
-      case p: AddCustomers => p.toJson
-      case _ => throw DeserializationException("Not yet implemented marshalling for System Action")
-    }
+//  implicit object ActionJsonFormat extends RootJsonFormat[Action] {
+//    def write(a: Action) = a match {
+//      case p: CustomerAction => p.toJson
+//      case p: AgentAction => p.toJson
+//      case p: SystemAction => p.toJson
+//      case _ => throw DeserializationException("Not yet implemented marshalling for Action")
+//    }
+//
+//    def read(value: JsValue) =
+//      value.asJsObject.fields("kind") match {
+//        case JsString("Customer") => value.convertTo[CustomerAction]
+//        case JsString("Agent") => value.convertTo[AgentAction]
+//        case _ => throw DeserializationException("Could not Unmarshal Action of Unknown Type")
+//      }
+//  }
+//
+//  implicit object SystemActionJsonFormat extends RootJsonFormat[SystemAction] {
+//    def write(a: SystemAction) = a match {
+//      case p: AddCustomers => p.toJson
+//      case _ => throw DeserializationException("Not yet implemented marshalling for System Action")
+//    }
+//
+//    def read(value: JsValue) =
+//      value.asJsObject.fields("kind") match {
+//        case JsString("AddCustomers") => value.convertTo[AddCustomers]
+//        case _ => throw DeserializationException("Could not Unmarshal SystemAction of Unknown Type")
+//      }
+//  }
+//
+//  implicit object CustomerActionJsonFormat extends RootJsonFormat[CustomerAction] {
+//    def write(a: CustomerAction) = a match {
+//      case p: PayInFull => p.toJson
+//      case _ => throw DeserializationException("Not yet implemented marshalling for Customer Action")
+//    }
+//
+//    def read(value: JsValue) =
+//      value.asJsObject.fields("kind") match {
+//        case JsString("PayInFull") => value.convertTo[PayInFull]
+//        case _ => throw DeserializationException("Could not Unmarshal CustomerAction of Unknown Type")
+//      }
+//  }
+//  implicit object AgentActionJsonFormat extends RootJsonFormat[AgentAction] {
+//    def write(a: AgentAction) = a match {
+//      case _ => throw DeserializationException("Not yet implemented marshalling for Agent Action")
+//    }
+//
+//    def read(value: JsValue) =
+//      value.asJsObject.fields("kind") match {
+//        case _ => throw DeserializationException("Could not Unmarshal AgentAction of Unknown Type")
+//      }
+//  }
 
-    def read(value: JsValue) =
-      value.asJsObject.fields("kind") match {
-        case JsString("addCustomers") => value.convertTo[AddCustomers]
-        case _ => throw DeserializationException("Could not Unmarshal Action of Unknown Type")
-      }
-  }
+  implicit val effectFormat = jsonFormat7(Effect)
+  implicit val actionFormat = jsonFormat5(Action)
+  implicit val trainingDataFormat = jsonFormat2(TrainingData)
 
-  implicit object CustomerActionJsonFormat extends RootJsonFormat[CustomerAction] {
-    def write(a: CustomerAction) = a match {
-      case p: PayInFull => p.toJson
-      case _ => throw DeserializationException("Not yet implemented marshalling for Customer Action")
-    }
-
-    def read(value: JsValue) =
-      value.asJsObject.fields("kind") match {
-        case JsString("payInFull") => value.convertTo[PayInFull]
-        case _ => throw DeserializationException("Could not Unmarshal Action of Unknown Type")
-      }
-  }
-  implicit object AgentActionJsonFormat extends RootJsonFormat[AgentAction] {
-    def write(a: AgentAction) = a match {
-      case _ => throw DeserializationException("Not yet implemented marshalling for Agent Action")
-    }
-
-    def read(value: JsValue) =
-      value.asJsObject.fields("kind") match {
-        case _ => throw DeserializationException("Could not Unmarshal Action of Unknown Type")
-      }
-  }
-
-  implicit val statesFormat = jsonFormat9(State)
-  implicit val stateFormat: JsonFormat[State] = lazyFormat(jsonFormat9(State))
+  implicit val statesFormat = jsonFormat7(State)
+  implicit val stateFormat: JsonFormat[State] = lazyFormat(jsonFormat7(State))
 
   implicit def enumFormat[T <: Enumeration](implicit enu: T): RootJsonFormat[T#Value] =
     new RootJsonFormat[T#Value] {

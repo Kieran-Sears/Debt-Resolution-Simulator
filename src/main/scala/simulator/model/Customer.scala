@@ -3,7 +3,8 @@ package simulator.model
 import java.util.UUID
 
 case class CustomerConfig(
-  id: String,
+  id: UUID = UUID.randomUUID(),
+  name: String,
   arrears: Scalar,
   satisfaction: Scalar,
   attributeConfigurations: List[String] = Nil,
@@ -12,19 +13,22 @@ case class CustomerConfig(
 
 case class Customer(
   id: UUID = UUID.randomUUID(),
+  name: String,
   arrears: Double,
   satisfaction: Double,
-  featureValues: List[FeatureValue] = Nil,
+  featureValues: List[Attribute] = Nil,
   difficulty: Option[Int] = None,
   assignedLabel: Option[Int] = None)
 
-case class FeatureValue(
-  id: String,
+case class Attribute(
+  id: UUID = UUID.randomUUID(),
+  name: String,
   value: Double
 )
 
 case class AttributeConfig(
-  id: String,
+  id: UUID = UUID.randomUUID(),
+  name: String,
   value: Value
 )
 
@@ -43,7 +47,8 @@ case class Categorical(
 ) extends Value
 
 case class OptionConfig(
-  id: String,
+  id: UUID = UUID.randomUUID(),
+  name: String,
   kind: String = "option",
   probability: Int
 )

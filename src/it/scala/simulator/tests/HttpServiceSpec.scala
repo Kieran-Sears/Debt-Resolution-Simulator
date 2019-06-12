@@ -1,21 +1,15 @@
 package simulator.tests
 
-import java.util.UUID
-
 import akka.actor.ActorRef
-import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import org.scalatest.{Matchers, WordSpec}
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import spray.json._
-
 import scala.concurrent.duration._
 import akka.stream.ActorMaterializer
 import akka.testkit.{TestActor, TestProbe}
 import akka.util.Timeout
 import simulator.actors.HttpService
 import simulator.model.actions.system.AddCustomers
-import simulator.model.actions.{Repeat, SystemAction}
 import simulator.model._
 
 class HttpServiceSpec
@@ -42,8 +36,10 @@ class HttpServiceSpec
     }
 
     "inform the API caller when an initial action has not been set" in {
+      val arrears = Scalar()
+      val satisfaction = Scalar()
       val customerGenConfig =
-        CustomerConfig(debtVarianceOverTime = Variance.None, kind = "customer")
+        CustomerConfig(id = "Terry", arrears = arrears, satisfaction = satisfaction, kind = "customer")
       val config = SimulationConfig(Some(State()), -1, None)
       Post("/simulation", config) ~> route ~> check {
 
@@ -54,8 +50,10 @@ class HttpServiceSpec
     }
 
     "return results when sent a simulation configuration" in {
+      val arrears = Scalar()
+      val satisfaction = Scalar()
       val customerGenConfig =
-        CustomerGenConfig(Variance.None, 0d)
+        CustomerConfig(id = "Terry", arrears = arrears, satisfaction = satisfaction, kind = "customer")
       val addCustomerAction: SystemAction =
         AddCustomers(numberOfCustomers = 1, arrearsBias = 10, repeat = Some(Repeat(10, 100)), kind = "addCustomers")
       val initQueue = Map("0" -> List(addCustomerAction))

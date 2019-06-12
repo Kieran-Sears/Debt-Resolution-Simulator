@@ -1,31 +1,29 @@
-import java.util.UUID
-
 import org.scalatest.{FlatSpec, Matchers}
-import simulator.Generator
+import simulator.ConfigurationGenerator
 import simulator.model._
 
-class GeneratorSpec extends FlatSpec with Matchers {
+class ConfigurationGeneratorSpec extends FlatSpec with Matchers {
 
   "Generator" should
     "when given a valid customer configuration return a customer with normalised values" in {
     val customerConfig = CustomerConfig(
-      id = "Mary",
+      name = "Mary",
       arrears = Scalar(Variance.None, 50, 500),
       satisfaction = Scalar(Variance.None, 10, 50),
       attributeConfigurations = List("Age", "Income", "Tenure")
     )
     val attributeConfig = List(
-      AttributeConfig("Age", Scalar(Variance.None, 18, 85)),
-      AttributeConfig("Income", Scalar(Variance.None, 15000, 22000)),
-      AttributeConfig("Tenure", Categorical(List("Rent", "Homeowner", "Council housing")))
+      AttributeConfig(name = "Age", value = Scalar(Variance.None, 18, 85)),
+      AttributeConfig(name = "Income", value = Scalar(Variance.None, 15000, 22000)),
+      AttributeConfig(name = "Tenure", value = Categorical(List("Rent", "Homeowner", "Council housing")))
     )
     val optionConfigs = List[OptionConfig](
-      OptionConfig(id = "Rent", probability = 60),
-      OptionConfig(id = "Homeowner", probability = 30),
-      OptionConfig(id = "Council housing", probability = 10)
+      OptionConfig(name = "Rent", probability = 60),
+      OptionConfig(name = "Homeowner", probability = 30),
+      OptionConfig(name = "Council housing", probability = 10)
     )
 
-    val customer = Generator.default.generateCustomer(customerConfig, attributeConfig, optionConfigs)
+    val customer = ConfigurationGenerator.default.generateCustomer(customerConfig, attributeConfig, optionConfigs)
     customer.id shouldEqual customerConfig.id
     customer.arrears shouldEqual 275.0 +- 225.0
     customer.satisfaction shouldEqual 30 +- 20

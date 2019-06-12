@@ -4,19 +4,16 @@ import java.util.UUID
 
 import akka.actor.{ActorSystem, Props}
 import akka.event.{Logging, LoggingAdapter}
-import akka.http.scaladsl.model.HttpRequest
 import akka.pattern.ask
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.{DebuggingDirectives, LoggingMagnet}
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import simulator.Generator
+import simulator.{ConfigurationGenerator, TrainingGenerator}
 import simulator.model._
 
 import scala.concurrent.Await
-import scala.util.{Failure, Success}
 
 class HttpService(
   implicit val system: ActorSystem,
@@ -26,7 +23,8 @@ class HttpService(
 
   lazy val log: LoggingAdapter = Logging(system, classOf[HttpService])
 
-  lazy val gen: Generator = Generator.default
+  lazy val confGen: ConfigurationGenerator = ConfigurationGenerator.default
+  lazy val trainGen: TrainingGenerator = TrainingGenerator.default
 
   val interfaceA = "localhost"
   val portA = 8080
@@ -38,9 +36,10 @@ class HttpService(
       complete(OK)
     } ~
     encodeResponse {
-      play ~
+      configure ~
+      train ~
       test ~
-      train
+      play
     }
   }
 
@@ -56,14 +55,27 @@ class HttpService(
     }
   }
 
-  def train: Route = {
-    pathPrefix("train") {
+  def configure: Route = {
+    pathPrefix("configure") {
       put {
         entity(as[Configurations]) { configs =>
           {
-            val (customers, state) = gen.actualiseConfigs(configs)
+            val (trainingData, state) = confGen.actualise(configs)
 
-            complete(OK, customers)
+            complete(OK, trainingData)
+          }
+        }
+      }
+    }
+  }
+
+  def train: Route = {
+    pathPrefix("train") {
+      put {
+        entity(as[List[TrainingData]]) { data =>
+          {
+            trainGen.actualise(data)
+            complete(OK, ???)
           }
         }
       }

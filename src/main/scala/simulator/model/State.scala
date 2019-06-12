@@ -5,9 +5,7 @@ import java.util.UUID
 case class State(
   time: Int = 0,
   stats: Statistics = Statistics(),
-  systemActions: Map[String, List[SystemAction]] = Map(),
-  customerActions: Map[String, List[CustomerAction]] = Map(),
-  agentActions: Map[String, List[AgentAction]] = Map(),
+  systemActions: Map[String, List[Action]] = Map(),
   customers: List[Customer] = Nil,
   history: List[State] = Nil,
   featureMap: IndexedSeq[AttributeConfig] = IndexedSeq(),
@@ -31,14 +29,14 @@ case class State(
     customers.filterNot(customer => customer.id == customerId)
   }
 
-  def addSystemAction(time: Int, action: SystemAction) =
+  def addAction(time: Int, action: Action) =
     if (systemActions.keySet.contains(time.toString))
       this.copy(systemActions = systemActions + (time.toString -> (systemActions(time.toString) :+ action)))
     else this.copy(systemActions = systemActions + (time.toString -> List(action)))
 
-  def removeSystemAction(time: Int, actionId: UUID) = {
+  def removeAction(time: Int, actionId: UUID) = {
     val entryWithActionRemoved = time.toString -> systemActions(time.toString)
-      .filterNot(action => action.actionId == actionId)
+      .filterNot(action => action.id == actionId)
     if (entryWithActionRemoved._2.isEmpty) {
       this.copy(systemActions = systemActions - time.toString)
     } else {
@@ -56,53 +54,9 @@ case class State(
     systemActions.isEmpty
   }
 
-  def addAgentAction(time: Int, action: AgentAction) =
-    if (systemActions.keySet.contains(time.toString))
-      this.copy(agentActions = agentActions + (time.toString -> (agentActions(time.toString) :+ action)))
-    else this.copy(agentActions = agentActions + (time.toString -> List(action)))
-
-  def removeAgentAction(time: Int, actionId: UUID) = {
-    val entryWithActionRemoved = time.toString -> agentActions(time.toString)
-      .filterNot(action => action.actionId == actionId)
-    if (entryWithActionRemoved._2.isEmpty) {
-      this.copy(agentActions = agentActions - time.toString)
-    } else {
-      this.copy(agentActions = agentActions + entryWithActionRemoved)
-    }
-  }
-
-  def getTimeOfNextAgentAction: Int = Integer.parseInt(agentActions.keys.min)
-
-  def hasAgentAction(time: String) = {
-    agentActions.keySet.contains(time)
-  }
-
-  def agentActionsEmpty(): Boolean = {
-    agentActions.isEmpty
-  }
-
-  def addCustomerAction(time: Int, action: CustomerAction) =
-    if (customerActions.keySet.contains(time.toString))
-      this.copy(customerActions = customerActions + (time.toString -> (customerActions(time.toString) :+ action)))
-    else this.copy(customerActions = customerActions + (time.toString -> List(action)))
-
-  def removeCustomerAction(time: Int, actionId: UUID) = {
-    val entryWithActionRemoved = time.toString -> customerActions(time.toString)
-      .filterNot(action => action.actionId == actionId)
-    if (entryWithActionRemoved._2.isEmpty) {
-      this.copy(customerActions = customerActions - time.toString)
-    } else {
-      this.copy(customerActions = customerActions + entryWithActionRemoved)
-    }
-  }
-
-  def getTimeOfNextCustomerAction: Int = Integer.parseInt(customerActions.keys.min)
-
-  def hasCustomerAction(time: String) = {
-    customerActions.keySet.contains(time)
-  }
-
-  def customerActionsEmpty(): Boolean = {
-    customerActions.isEmpty
-  }
 }
+
+case class TrainingData(
+  customers: List[Customer],
+  actions: List[Action]
+)
