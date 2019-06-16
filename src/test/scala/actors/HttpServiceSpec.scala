@@ -43,7 +43,7 @@ class HttpServiceSpec
 //    }
 //  }
 
-  "POST to Train route with a valid configuration" should "return a status code 200 with testing examples" in {
+  "POST to Configure route with a valid configuration" should "return a status code 200 with testing examples" in {
 
     val configs =
       """{
@@ -266,7 +266,7 @@ class HttpServiceSpec
         |  "kind": "configuration"
         |}""".stripMargin.parseJson
 
-    Put("/train", configs) ~> callServiceConfigure ~> check {
+    Put("/configure", configs) ~> callServiceConfigure ~> check {
       status shouldEqual StatusCodes.OK
       entityAs[List[Customer]].map(customer => customer.arrears shouldEqual 525.0 +- 475.0)
     }

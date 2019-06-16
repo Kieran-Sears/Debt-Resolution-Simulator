@@ -9,7 +9,7 @@ case class State(
   customers: List[Customer] = Nil,
   history: List[State] = Nil,
   featureMap: IndexedSeq[AttributeConfig] = IndexedSeq(),
-  configs: Configurations = Configurations()) {
+  configs: Configurations = Configurations(simulationConfiguration = SimulationConfig(UUID.randomUUID(), 0, None, 0))) {
 
   /*
   cycles through all actions for the current time-frame updating the state

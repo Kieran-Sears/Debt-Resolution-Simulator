@@ -12,7 +12,6 @@ class ConfigurationGenerator(seed: Int) {
 
   def actualise(configurations: Configurations) = {
     println(s"Recieved configurations:\n$configurations")
-    val attMap = generateFeatureMap(configurations)
 
     val customerProportions = configurations.customerConfigurations
       .map(customerConf => {
@@ -23,52 +22,72 @@ class ConfigurationGenerator(seed: Int) {
 
     val customers = customerProportions.flatMap {
       case (customerConf: CustomerConfig, proportion: Int) => {
-        (1 to proportion).map(_ =>
-          generateCustomer(customerConf, configurations.attributeConfigurations, configurations.optionConfigurations))
+        (1 to proportion).map(
+          _ =>
+            generateCustomer(
+              customerConf,
+              configurations.attributeConfigurations,
+              configurations.optionConfigurations,
+              configurations.scalarConfigurations,
+              configurations.categoricalConfigurations
+          )
+        )
 
       }
     }
 
     val actions: List[Action] = generateAction(configurations.actionConfigurations, configurations.effectConfigurations)
 
-    val simConf = configurations.simulationConfiguration
+    TrainingData(customers, actions)
 
-    val state =
-      simConf.startState.getOrElse(State(time = simConf.startTime, configs = configurations)).copy(featureMap = attMap)
-
-    (TrainingData(customers, actions), state)
-
-  }
-
-  def generateFeatureMap(configurations: Configurations) = {
-    configurations.attributeConfigurations.toIndexedSeq
   }
 
   def generateCustomer(
     customerConf: CustomerConfig,
     attributeConfigs: List[AttributeConfig],
-    optionConfigs: List[OptionConfig]): Customer = {
-    val attributeConfs = attributeConfigs.filter(att => customerConf.attributeConfigurations.contains(att.name))
-    val normAtts = attributeConfs.map(attributeConfig =>
-      Attribute(attributeConfig.id, attributeConfig.name, actualiseFromConfig(attributeConfig, optionConfigs)))
-    val arr = normaliseScalar(customerConf.arrears)
-    val sat = normaliseScalar(customerConf.satisfaction)
+    optionConfigs: List[OptionConfig],
+    scalarConfigs: List[ScalarConfig],
+    categoricalConfigs: List[CategoricalConfig]): Customer = {
+    val attributeConfs = attributeConfigs.filter(att => customerConf.attributeConfigurations.contains(att.id))
+    val valueConfigs = scalarConfigs ++ categoricalConfigs
+    val normAtts = attributeConfs.map(
+      attributeConfig =>
+        Attribute(
+          attributeConfig.id,
+          attributeConfig.name,
+          actualiseFromConfig(attributeConfig, valueConfigs, optionConfigs)))
+    val arr = normaliseScalar(
+      valueConfigs
+        .find(x => x.id == customerConf.arrears)
+        .getOrElse(throw new Exception(s"Cant Find scalar ${customerConf.name} arrears"))
+        .asInstanceOf[ScalarConfig])
+    val sat = normaliseScalar(
+      valueConfigs
+        .find(x => x.id == customerConf.satisfaction)
+        .getOrElse(throw new Exception(s"Cant Find scalar ${customerConf.name} satisfaction"))
+        .asInstanceOf[ScalarConfig])
+
+    val normAttsIds = normAtts.map(x => x.id)
+
     Customer(
       id = customerConf.id,
       name = customerConf.name,
-      featureValues = normAtts,
+      featureValues = normAttsIds,
       arrears = arr,
       satisfaction = sat,
       assignedLabel = None)
   }
 
-  def actualiseFromConfig(attribute: AttributeConfig, options: List[OptionConfig]) =
-    attribute.value match {
-      case v: Categorical => normaliseCategorical(v, options)
-      case v: Scalar => normaliseScalar(v)
+  def actualiseFromConfig(attribute: AttributeConfig, values: List[Value], options: List[OptionConfig]) = {
+    val v =
+      values.find(x => x.id == attribute.value).getOrElse(throw new Exception(s"Cannot find value ${attribute.name}"))
+    v match {
+      case v: CategoricalConfig => normaliseCategorical(v, options)
+      case v: ScalarConfig => normaliseScalar(v)
     }
+  }
 
-  def normaliseCategorical(c: Categorical, options: List[OptionConfig]) = {
+  def normaliseCategorical(c: CategoricalConfig, options: List[OptionConfig]) = {
 
     import org.apache.commons.math3.distribution.EnumeratedDistribution
     import scala.collection.JavaConversions._
@@ -84,7 +103,7 @@ class ConfigurationGenerator(seed: Int) {
     catOptions.indexOf(distribution.sample()).toDouble
   }
 
-  def normaliseScalar(scalar: Scalar) = {
+  def normaliseScalar(scalar: ScalarConfig) = {
     val randInRange = scalar.min + (scalar.max - scalar.min) * random.nextDouble()
     BigDecimal(randInRange).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
@@ -92,7 +111,7 @@ class ConfigurationGenerator(seed: Int) {
   def generateAction(actionConfigs: List[ActionConfig], effectConfigs: List[EffectConfig]): List[Action] = {
     actionConfigs.map(actionConf => {
 
-      val effectConfs = effectConfigs.filter(effectConf => actionConf.effectConfigurations.contains(effectConf.name))
+      val effectConfs = effectConfigs.filter(effectConf => actionConf.effectConfigurations.contains(effectConf.id))
       val effects = effectConfs.map(effectConf => generateEffect(effectConf))
 
       Action(
@@ -107,6 +126,7 @@ class ConfigurationGenerator(seed: Int) {
 
   def generateEffect(effectConfig: EffectConfig): Effect =
     Effect(
+      id = UUID.randomUUID(),
       name = effectConfig.name,
       `type` = effectConfig.`type`,
       target = effectConfig.target

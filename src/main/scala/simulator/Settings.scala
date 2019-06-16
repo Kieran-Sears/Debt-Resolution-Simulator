@@ -6,13 +6,17 @@ import com.typesafe.config.{Config, ConfigFactory}
 class Settings(globalConfig: Config) extends Extension {
 
   val akka: Config = globalConfig.getConfig("akka")
-  val persistence: Config = akka.getConfig("persistence")
-  val readJournal: String = persistence.getString("journal")
-  val snapshotStore: String = persistence.getString("snapshot-store")
+
+  private val databaseConfig: Config = globalConfig.getConfig("db")
 
   object http {
     val interface: String = globalConfig.getString("http.interface")
     val port: Int = globalConfig.getInt("http.port")
+  }
+
+  object DatabaseSettings {
+    val databaseUrl: String = databaseConfig.getString("url")
+    val password: String = databaseConfig.getString("password")
   }
 }
 

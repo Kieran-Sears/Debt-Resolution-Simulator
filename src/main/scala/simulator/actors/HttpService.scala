@@ -10,6 +10,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
+import simulator.db.ConfigurationStorage
 import simulator.{ConfigurationGenerator, TrainingGenerator}
 import simulator.model._
 
@@ -60,8 +61,8 @@ class HttpService(
       put {
         entity(as[Configurations]) { configs =>
           {
-            val (trainingData, state) = confGen.actualise(configs)
-
+            val trainingData = confGen.actualise(configs)
+            ConfigurationStorage.storeConfiguration(configs)
             complete(OK, trainingData)
           }
         }
