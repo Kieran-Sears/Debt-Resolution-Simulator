@@ -1,23 +1,14 @@
 package simulator.db.configuration
 
 import java.util.UUID
-
 import cats.effect.IO
-import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
-import doobie.util.fragment.Fragment
-import simulator.model.{ActionConfig, CategoricalConfig}
+import simulator.model.CategoricalConfig
+import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
-import doobie.util.transactor.Transactor
 
-class CategoricalConfigurationStorage(dbUrl: String, tableName: String, xa: Transactor[IO])
-  extends MetaMapping
-  with LazyLogging {
-
-  val tableNameFragment = Fragment.const(s"${tableName}CategoricalConfig")
-
-  def indexName(name: String) = Fragment.const(s"${tableName}_$name")
+class CategoricalConfigurationStorage(override val tableName: String) extends Storage {
 
   def init(): IO[Int] = {
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")
@@ -25,7 +16,8 @@ class CategoricalConfigurationStorage(dbUrl: String, tableName: String, xa: Tran
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
+        attributeId  VARCHAR(36) NOT NUll,
         options VARCHAR[] NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
@@ -33,6 +25,12 @@ class CategoricalConfigurationStorage(dbUrl: String, tableName: String, xa: Tran
     """).update.run.transact(xa)
     } yield queryResult
   }
+
+  def readById(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+      .query[CategoricalConfig]
+      .to[List]
+      .transact(xa)
 
   def write(model: CategoricalConfig) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++

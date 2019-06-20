@@ -1,22 +1,13 @@
 package simulator.db.configuration
 
-import java.util.UUID
 import cats.effect.IO
-import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
-import doobie.util.fragment.Fragment
 import simulator.model.OptionConfig
+import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
-import doobie.util.transactor.Transactor
 
-class OptionConfigurationStorage(dbUrl: String, tableName: String, xa: Transactor[IO])
-  extends MetaMapping
-  with LazyLogging {
-
-  val tableNameFragment = Fragment.const(s"${tableName}OptionConfig")
-
-  def indexName(name: String) = Fragment.const(s"${tableName}_$name")
+class OptionConfigurationStorage(override val tableName: String) extends Storage {
 
   def init(): IO[Int] = {
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")
@@ -24,7 +15,8 @@ class OptionConfigurationStorage(dbUrl: String, tableName: String, xa: Transacto
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
+        categoricalId VARCHAR(36) NOT NUll,
         name text NOT NULL,
         probability float NOT NULL
       );

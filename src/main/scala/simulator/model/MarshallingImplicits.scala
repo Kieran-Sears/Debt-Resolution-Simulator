@@ -8,12 +8,39 @@ import spray.json._
 
 trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
 
+  implicit object OptionUUIDFormat extends JsonFormat[Option[UUID]] {
+    def write(uuid: Option[UUID]) = {
+      uuid match {
+        case Some(id) => JsString(id.toString)
+        case None => JsNull
+      }
+    }
+    def read(value: JsValue) = {
+      value match {
+        case JsString(uuid) => Some(UUID.fromString(uuid))
+        case x: JsObject => {
+          val id = x.fields("id").toString.replace(""""""", "")
+          Some(UUID.fromString(id))
+        }
+        case JsNull => None
+        case _ => throw DeserializationException(s"Expected Optional hexadecimal UUID string")
+      }
+    }
+  }
+
   implicit object UUIDFormat extends JsonFormat[UUID] {
-    def write(uuid: UUID) = JsString(uuid.toString)
+    def write(uuid: UUID) = {
+      JsString(uuid.toString)
+    }
     def read(value: JsValue) = {
       value match {
         case JsString(uuid) => UUID.fromString(uuid)
-        case _ => throw DeserializationException("Expected hexadecimal UUID string")
+        case x: JsObject => {
+          val id = x.fields("id").toString.replace(""""""", "")
+          println(id)
+          UUID.fromString(id)
+        }
+        case _ => throw DeserializationException(s"Expected hexadecimal UUID string")
       }
     }
   }
@@ -26,17 +53,18 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val categoricalConfigFormat: RootJsonFormat[CategoricalConfig] = jsonFormat3(CategoricalConfig)
   implicit val effectConfigFormat: RootJsonFormat[EffectConfig] = jsonFormat5(EffectConfig)
   implicit val FeatureValueFormat: RootJsonFormat[Attribute] = jsonFormat3(Attribute)
-  implicit val repeatFormat: RootJsonFormat[RepetitionConfig] = jsonFormat3(RepetitionConfig)
+  implicit val repeatConfigFormat: RootJsonFormat[RepetitionConfig] = jsonFormat3(RepetitionConfig)
+  implicit val repeatFormat: RootJsonFormat[Repeat] = jsonFormat4(Repeat)
   implicit val attributeConfigFormat: RootJsonFormat[AttributeConfig] = jsonFormat3(AttributeConfig)
-  implicit val customerConfigFormat: RootJsonFormat[CustomerConfig] = jsonFormat7(CustomerConfig)
-  implicit val actionConfigFormat: RootJsonFormat[ActionConfig] = jsonFormat6(ActionConfig)
+  implicit val customerConfigFormat: RootJsonFormat[CustomerConfig] = jsonFormat5(CustomerConfig)
+  implicit val actionConfigFormat: RootJsonFormat[ActionConfig] = jsonFormat5(ActionConfig)
   implicit val statisticsFormat: RootJsonFormat[Statistics] = jsonFormat2(Statistics)
-  implicit val customerFormat: RootJsonFormat[Customer] = jsonFormat7(Customer)
+  implicit val customerFormat: RootJsonFormat[Customer] = jsonFormat5(Customer)
   implicit val simulationConfigFormat: RootJsonFormat[SimulationConfig] = jsonFormat5(SimulationConfig)
   implicit val simulationResultsFormat: RootJsonFormat[SimulationResults] = jsonFormat3(SimulationResults)
   implicit val simulationErrorFormat: RootJsonFormat[SimulationError] = jsonFormat1(SimulationError)
-  implicit val configurationsFormat: RootJsonFormat[Configurations] = jsonFormat9(Configurations)
-  implicit val effectFormat: RootJsonFormat[Effect] = jsonFormat7(Effect)
+  implicit val configurationsFormat: RootJsonFormat[Configurations] = jsonFormat11(Configurations)
+  implicit val effectFormat: RootJsonFormat[Effect] = jsonFormat6(Effect)
   implicit val actionFormat: RootJsonFormat[Action] = jsonFormat5(Action)
   implicit val trainingDataFormat: RootJsonFormat[TrainingData] = jsonFormat2(TrainingData)
   implicit val statesFormat: RootJsonFormat[State] = jsonFormat7(State)
@@ -53,9 +81,10 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
     }
 
     def read(value: JsValue) = {
+      val id = value.asJsObject.fields("id")
       value.asJsObject.fields("kind") match {
-        case JsString("scalar") => value.convertTo[ScalarConfig]
-        case JsString("categorical") => value.convertTo[CategoricalConfig]
+        case JsString("scalar") => value.convertTo[ScalarConfig].copy(id = id.convertTo[UUID])
+        case JsString("categorical") => value.convertTo[CategoricalConfig].copy(id = id.convertTo[UUID])
         case _ => throw DeserializationException("Could not Unmarshal AttributeValue of Unknown Type")
       }
     }

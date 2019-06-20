@@ -1,23 +1,13 @@
 package simulator.db.configuration
 
-import java.util.UUID
-
 import cats.effect.IO
-import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
-import doobie.util.fragment.Fragment
+import simulator.model.RepetitionConfig
+import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
-import doobie.util.transactor.Transactor
-import simulator.model.RepetitionConfig
 
-class RepetitionConfigurationStorage(dbUrl: String, tableName: String, xa: Transactor[IO])
-  extends MetaMapping
-  with LazyLogging {
-
-  val tableNameFragment = Fragment.const(s"${tableName}RepetitionConfig")
-
-  def indexName(name: String) = Fragment.const(s"${tableName}_$name")
+class RepetitionConfigurationStorage(override val tableName: String) extends Storage {
 
   def init(): IO[Int] = {
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")
@@ -25,7 +15,8 @@ class RepetitionConfigurationStorage(dbUrl: String, tableName: String, xa: Trans
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
+        actionId  VARCHAR(36) NOT NUll,
         interval integer NOT NULL,
         repetitions integer NOT NULL
       );

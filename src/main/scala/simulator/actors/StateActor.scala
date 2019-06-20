@@ -9,7 +9,7 @@ import scala.util.{Failure, Success}
 
 class StateActor extends PersistentActor {
   def persistenceId = "StateActor"
-  var state = State()
+  var state: State = null
   var snapshotInterval = 10
 
   override def receiveCommand: Receive = {

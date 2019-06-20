@@ -37,9 +37,6 @@ val doobieDependencies = Seq(
 val otherDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.5",
   "com.intel.analytics.bigdl" % "bigdl-SPARK_2.3" % "0.7.0",
-  "org.iq80.leveldb"              % "leveldb"          % "0.7",
-  "org.fusesource.leveldbjni"     % "leveldbjni-all"   % "1.8",
-  "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.6",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.4.0"
  // "org.platanios" %% "tensorflow" % tensorflowVersion classifier "linux-cpu-x86_64"
 )
@@ -51,7 +48,6 @@ lazy val root = (project in file("."))
   .settings(
     Defaults.itSettings,
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "it,test"
-    // other settings here
   )
 
 fork := true

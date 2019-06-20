@@ -2,19 +2,13 @@ package simulator.db.configuration
 
 import java.util.UUID
 import cats.effect.IO
-import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
-import doobie.util.fragment.Fragment
 import simulator.model.SimulationConfig
+import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
-import doobie.util.transactor.Transactor
 
-class SimulationStorage(dbUrl: String, tableName: String, xa: Transactor[IO]) extends MetaMapping with LazyLogging {
-
-  val tableNameFragment = Fragment.const(s"${tableName}SimulationConfig")
-
-  def indexName(name: String) = Fragment.const(s"${tableName}_$name")
+class SimulationStorage(override val tableName: String) extends Storage {
 
   def init(): IO[Int] = {
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")

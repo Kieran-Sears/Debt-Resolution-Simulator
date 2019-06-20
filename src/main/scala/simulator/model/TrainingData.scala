@@ -1,24 +1,39 @@
 package simulator.model
 import java.util.UUID
 
-case class Action(id: UUID, name: String, effects: List[Effect], repeat: Option[UUID], kind: String) {
+import scala.util.Random
+
+case class Action(id: UUID, name: String, effects: List[Effect], repeat: Option[Repeat], target: Option[Customer]) {
 
   def perform(state: State): State = {
-    ???
-    //    val optCustomer = state.customers.find(customer => customer.id == customerId)
-    //    val customer = optCustomer.getOrElse(throw new Exception("Customer does not exist"))
-    //
-    //    val newTotalArrears = state.stats.totalArrears - customer.arrears
-    //
-    //    val newStats = state.stats.copy(totalArrears = newTotalArrears)
-    //
-    //    val customerListWithCustomerRemoved = state.removeCustomer(customerId.getOrElse(throw NotImplementedException))
-    //
-    //    val stateWithoutAction =
-    //      state.removeAction(state.time, id)
-    //
-    //    stateWithoutAction.copy(stats = newStats, customers = customerListWithCustomerRemoved)
+    val customer = getTarget
+
+    val x = effects.map(effect => {
+      val attributes = customer.featureValues
+      val attribute = attributes.filter(att => att.name == effect.target).head
+      val actionValue = effect.certainty.get * Random.nextGaussian() + effect.value.get
+      val important = (customer.name, attribute.name, attribute.value, actionValue)
+      important // todo
+    })
+
+    val newTotalArrears = state.stats.totalArrears - customer.getArrears.value
+
+    val newStats = state.stats.copy(totalArrears = newTotalArrears)
+
+    val customerListWithCustomerRemoved = state.removeCustomer(customer.id)
+
+    val stateWithoutAction = state.removeAction(state.time, id)
+
+    stateWithoutAction.copy(stats = newStats, customers = customerListWithCustomerRemoved)
   }
+
+  def processCustomer(customer: Customer): Customer = {
+    ???
+
+  }
+
+  def getTarget =
+    target.getOrElse(throw new NoSuchElementException(s"target for action $name could not be found"))
 
 }
 
@@ -26,20 +41,30 @@ case class Effect(
   id: UUID,
   name: String,
   `type`: EffectType.Value,
-  target: UUID,
+  target: String,
   value: Option[Double] = None,
-  certainty: Option[Int] = None,
-  kind: String = "effect"
+  certainty: Option[Int] = None
 )
 
 case class Customer(
   id: UUID,
   name: String,
-  arrears: Double,
-  satisfaction: Double,
-  featureValues: List[UUID] = Nil,
+  featureValues: List[Attribute] = Nil,
   difficulty: Option[Int] = None,
-  assignedLabel: Option[Int] = None)
+  assignedLabel: Option[Int] = None) {
+
+  def getArrears = {
+    featureValues
+      .find(_.name == "Arrears")
+      .getOrElse(throw new NoSuchElementException(s"Cannot find Arrears for customer $name"))
+  }
+
+  def getSatisfaction = {
+    featureValues
+      .find(_.name == "Satisfaction")
+      .getOrElse(throw new NoSuchElementException(s"Cannot find Satisfaction for customer $name"))
+  }
+}
 
 case class Attribute(
   id: UUID,
@@ -47,7 +72,9 @@ case class Attribute(
   value: Double
 )
 
-trait Value {
-  val id: UUID
-  val kind: String
-}
+case class Repeat(
+  id: UUID,
+  total: Int,
+  next: Int,
+  left: Int
+)

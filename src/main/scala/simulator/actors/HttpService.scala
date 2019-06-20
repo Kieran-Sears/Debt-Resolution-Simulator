@@ -8,10 +8,12 @@ import akka.pattern.ask
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.directives.Credentials
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import simulator.db.ConfigurationStorage
-import simulator.{ConfigurationGenerator, TrainingGenerator}
+import simulator.classifier.{DataLoader, KerasModel}
+import simulator.db.StorageImpl
+import simulator.{Generator, Settings}
 import simulator.model._
 
 import scala.concurrent.Await
@@ -23,46 +25,43 @@ class HttpService(
 ) extends MarshallingImplicits {
 
   lazy val log: LoggingAdapter = Logging(system, classOf[HttpService])
+  lazy val gen: Generator = Generator.default
 
-  lazy val confGen: ConfigurationGenerator = ConfigurationGenerator.default
-  lazy val trainGen: TrainingGenerator = TrainingGenerator.default
+//  val dl = new DataLoader()
+  val ann = new KerasModel()
 
   val interfaceA = "localhost"
   val portA = 8080
 
   println(s"Starting Collaborate http interface at: $interfaceA:$portA")
 
-  val route: Route = {
-    options {
-      complete(OK)
-    } ~
-    encodeResponse {
-      configure ~
-      train ~
-      test ~
-      play
+  def myUserPassAuthenticator(credentials: Credentials): Option[String] =
+    credentials match {
+      case p @ Credentials.Provided(username) if p.verify(Settings().SecretSettings.sessionSecret) => Some(username)
+      case _ => None
     }
-  }
 
-  def play: Route = {
-    pathPrefix("play") {
-      post {
-        entity(as[State]) { state =>
-          { // todo get list of actions player wants to do for this state
-            complete("") // todo return current state
-          }
-        }
+  val route: Route = {
+    authenticateBasic(realm = "Secure Site", myUserPassAuthenticator) { username =>
+      options {
+        complete(OK)
+      } ~
+      encodeResponse {
+        configure(username) ~
+        train(username) ~
+        test ~
+        play
       }
     }
   }
 
-  def configure: Route = {
+  def configure(username: String): Route = {
     pathPrefix("configure") {
       put {
         entity(as[Configurations]) { configs =>
           {
-            val trainingData = confGen.actualise(configs)
-            ConfigurationStorage.storeConfiguration(configs)
+            val trainingData = gen.trainingData(configs)
+            StorageImpl.storeConfiguration(username, configs)
             complete(OK, trainingData)
           }
         }
@@ -70,13 +69,36 @@ class HttpService(
     }
   }
 
-  def train: Route = {
+  def train(username: String): Route = {
     pathPrefix("train") {
       put {
-        entity(as[List[TrainingData]]) { data =>
+        entity(as[List[Action]]) { actions =>
           {
-            trainGen.actualise(data)
-            complete(OK, ???)
+            val conf: Configurations = StorageImpl.getConfiguration(username)
+
+            val customers = gen.playData(conf)
+
+            val allOutcomes: List[(Customer, List[(Action, Customer)])] = customers.map { c: Customer =>
+              (c, actions.foldLeft(List[(Action, Customer)]()) {
+                case (acc, a) => if (a.getTarget.name == c.name) acc :+ (a, a.processCustomer(c)) else acc
+              })
+            }
+
+            val idealMappings: List[(Customer, Action)] = allOutcomes.map {
+              case (customer, processedList) => {
+                val bestActionCustomer = processedList.foldLeft(processedList.head) {
+                  case ((x: Action, y: Customer), (a: Action, c: Customer)) => {
+                    if (Stats.compareCustomers(y, c) == c) (a, c) else (x, y)
+                  }
+                }
+                (customer, bestActionCustomer._1)
+              }
+            }
+
+            StorageImpl.storeTrainActions(actions)
+            StorageImpl.storeTrainingData(conf.attributeConfigurations, idealMappings)
+
+            complete(OK, TrainingData(customers, actions))
           }
         }
       }
@@ -102,6 +124,18 @@ class HttpService(
               case results: SimulationResults => complete(results)
               case error: SimulationError => complete(error.reason)
             }
+          }
+        }
+      }
+    }
+  }
+
+  def play: Route = {
+    pathPrefix("play") {
+      post {
+        entity(as[State]) { state =>
+          { // todo get list of actions player wants to do for this state
+            complete("") // todo return current state
           }
         }
       }

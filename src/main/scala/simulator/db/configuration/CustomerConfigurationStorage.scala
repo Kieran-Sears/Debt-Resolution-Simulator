@@ -2,21 +2,14 @@ package simulator.db.configuration
 
 import java.util.UUID
 import cats.effect.IO
-import com.typesafe.scalalogging.LazyLogging
 import doobie.implicits._
 import doobie.util.fragment.Fragment
 import simulator.model.CustomerConfig
+import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
-import doobie.util.transactor.Transactor
 
-class CustomerConfigurationStorage(dbUrl: String, tableName: String, xa: Transactor[IO])
-  extends MetaMapping
-  with LazyLogging {
-
-  val tableNameFragment = Fragment.const(s"${tableName}CustomerConfig")
-
-  def indexName(name: String) = Fragment.const(s"${tableName}_$name")
+class CustomerConfigurationStorage(override val tableName: String) extends Storage {
 
   def init(): IO[Int] = {
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")
@@ -24,10 +17,9 @@ class CustomerConfigurationStorage(dbUrl: String, tableName: String, xa: Transac
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
+        configurationId  VARCHAR(36) NOT NUll,
         name text NOT NULL,
-        arrears SERIAL NOT NULL,
-        satisfaction SERIAL NOT NULL,
         attributeConfigurations VARCHAR[],
         proportion float NOT NULL
       );
@@ -57,8 +49,8 @@ class CustomerConfigurationStorage(dbUrl: String, tableName: String, xa: Transac
 
   def write(model: CustomerConfig) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, arrears, satisfaction, attributeConfigurations, proportion)
-          VALUES (${model.id}, ${model.name}, ${model.arrears}, ${model.satisfaction}, ${model.attributeConfigurations}, ${model.proportion})
+      sql""" (id, name, attributeConfigurations, proportion)
+          VALUES (${model.id}, ${model.name}, ${model.attributeOverrides}, ${model.proportion})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

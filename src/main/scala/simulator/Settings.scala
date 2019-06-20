@@ -8,6 +8,7 @@ class Settings(globalConfig: Config) extends Extension {
   val akka: Config = globalConfig.getConfig("akka")
 
   private val databaseConfig: Config = globalConfig.getConfig("db")
+  private val secretsConfig: Config = globalConfig.getConfig("secrets")
 
   object http {
     val interface: String = globalConfig.getString("http.interface")
@@ -15,8 +16,15 @@ class Settings(globalConfig: Config) extends Extension {
   }
 
   object DatabaseSettings {
-    val databaseUrl: String = databaseConfig.getString("url")
-    val password: String = databaseConfig.getString("password")
+    val simulatorUrl: String = databaseConfig.getString("simulatorUrl")
+    val userUrl: String = databaseConfig.getString("userUrl")
+    val user: String = databaseConfig.getString("user")
+    val driver: String = databaseConfig.getString("driver")
+  }
+
+  object SecretSettings {
+    val dbSecret: String = secretsConfig.getString("dbSecret")
+    val sessionSecret: String = secretsConfig.getString("sessionSecret")
   }
 }
 

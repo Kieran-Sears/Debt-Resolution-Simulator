@@ -1,5 +1,6 @@
 package actors
 
+import java.util.UUID
 import akka.http.scaladsl.model._
 import org.scalatest._
 import akka.http.scaladsl.server.Route
@@ -10,8 +11,6 @@ import akka.util.Timeout
 import org.scalatest.concurrent.ScalaFutures
 import simulator.actors.HttpService
 import simulator.model._
-import spray.json._
-
 import scala.concurrent.duration._
 
 class HttpServiceSpec
@@ -28,247 +27,164 @@ class HttpServiceSpec
     implicit lazy val materializer: ActorMaterializer = ActorMaterializer()
     implicit lazy val timeout: Timeout = Timeout(5 seconds)
     val service = new HttpService
-    service.configure
+    service.configure("TestUsername")
   }
-//
-//  "POST to Train route with a valid configuration" should "return a status code 200 with testing examples" in {
-//    val arrears =
-//      AttributeConfig("arrears", Scalar(start = 0, variance = Variance.None, min = 10d, max = 100d))
-//    val customerConfig = CustomerConfig(id = "Peter Payer", attributeConfigurations = List("Arrears"))
-//    val configs = Configurations(List(customerConfig))
-//
-//    Post("/train", configs) ~> callServiceTrain ~> check {
-//      status shouldEqual StatusCodes.OK
-//      entityAs[List[Customer]].map(customer => customer.arrears shouldEqual 55.0 +- 45.0)
-//    }
-//  }
 
   "POST to Configure route with a valid configuration" should "return a status code 200 with testing examples" in {
 
-    val configs =
-      """{
-        |  "simulationConfiguration": {
-        |    "startTime": 1,
-        |    "endTime": 100,
-        |    "numberOfCustomers": 50,
-        |    "id": "Configuration1",
-        |    "kind": "simulation"
-        |  },
-        |  "customerConfigurations": [
-        |    {
-        |      "proportion": 20,
-        |      "arrears": {
-        |        "min": 50,
-        |        "max": 1000,
-        |        "variance": "None",
-        |        "id": "aff42387-1b7b-4cf6-ac52-8f59233f7c15",
-        |        "kind": "scalar"
-        |      },
-        |      "satisfaction": {
-        |        "min": 0,
-        |        "max": 100,
-        |        "variance": "None",
-        |        "id": "3d7b5293-989d-4aad-b821-f1957b4eaa3b",
-        |        "kind": "scalar"
-        |      },
-        |      "attributeConfigurations": [
-        |        "Age",
-        |        "Income",
-        |        "Tenure"
-        |      ],
-        |      "id": "Maggiepayer",
-        |      "kind": "customer"
-        |    },
-        |    {
-        |      "proportion": 20,
-        |      "arrears": {
-        |        "min": 50,
-        |        "max": 1000,
-        |        "variance": "None",
-        |        "id": "3eeaeb27-4056-4a53-a1b5-aafb363beeba",
-        |        "kind": "scalar"
-        |      },
-        |      "satisfaction": {
-        |        "min": 0,
-        |        "max": 100,
-        |        "variance": "None",
-        |        "id": "45be24bc-872b-4c0f-9a3c-e278d8a554e2",
-        |        "kind": "scalar"
-        |      },
-        |      "attributeConfigurations": [
-        |        "GrumpyAge",
-        |        "Hair Colour"
-        |      ],
-        |      "id": "Grumpyboris",
-        |      "kind": "customer"
-        |    }
-        |  ],
-        |  "actionConfigurations": [
-        |    {
-        |      "effectConfigurations": [
-        |        "ZeroArrears",
-        |        "MakeHappy",
-        |        "WantToPay",
-        |        "NotTooSkint",
-        |        "NotAngryAtCompany"
-        |      ],
-        |      "id": "Payinfull",
-        |      "kind": "action"
-        |    },
-        |    {
-        |      "effectConfigurations": [
-        |        "ZeroArrears",
-        |        "AnnoyHighly",
-        |        "HighArrears"
-        |      ],
-        |      "id": "Litigate",
-        |      "kind": "action"
-        |    }
-        |  ],
-        |  "effectConfigurations": [
-        |    {
-        |      "type": "Effect",
-        |      "target": "Arrears",
-        |      "id": "Zeroarrears",
-        |      "kind": "effects"
-        |    },
-        |    {
-        |      "type": "Effect",
-        |      "target": "Satisfaction",
-        |      "id": "Makehappy",
-        |      "kind": "effects"
-        |    },
-        |    {
-        |      "type": "Affect",
-        |      "target": "Satisfaction",
-        |      "id": "Wanttopay",
-        |      "kind": "effects"
-        |    },
-        |    {
-        |      "type": "Affect",
-        |      "target": "Income",
-        |      "id": "Nottooskint",
-        |      "kind": "effects"
-        |    },
-        |    {
-        |      "type": "Affect",
-        |      "target": "Satisfaction",
-        |      "id": "Notangryatcompany",
-        |      "kind": "effects"
-        |    },
-        |    {
-        |      "type": "Effect",
-        |      "target": "Satisfaction",
-        |      "id": "Annoyhighly",
-        |      "kind": "effects"
-        |    },
-        |    {
-        |      "type": "Affect",
-        |      "target": "Arrears",
-        |      "id": "Higharrears",
-        |      "kind": "effects"
-        |    }
-        |  ],
-        |  "attributeConfigurations": [
-        |    {
-        |      "value": {
-        |        "min": 50,
-        |        "max": 85,
-        |        "variance": "None",
-        |        "id": "7425df2d-da4f-445a-b436-db83cc76afee",
-        |        "kind": "scalar"
-        |      },
-        |      "id": "Age",
-        |      "kind": "attribute"
-        |    },
-        |    {
-        |      "value": {
-        |        "min": 12000,
-        |        "max": 18000,
-        |        "variance": "None",
-        |        "id": "2feaccb2-dfc7-4f70-a371-70adffc2f50d",
-        |        "kind": "scalar"
-        |      },
-        |      "id": "Income",
-        |      "kind": "attribute"
-        |    },
-        |    {
-        |      "value": {
-        |        "options": [
-        |          "Homeowner",
-        |          "Renting",
-        |          "Council Housing"
-        |        ],
-        |        "id": "958b2cb7-d876-417e-a466-c6218c6a384b",
-        |        "kind": "categorical"
-        |      },
-        |      "id": "Tenure",
-        |      "kind": "attribute"
-        |    },
-        |    {
-        |      "value": {
-        |        "min": 70,
-        |        "max": 85,
-        |        "variance": "None",
-        |        "id": "f6281d86-442e-4f71-9923-9f7549cdb995",
-        |        "kind": "scalar"
-        |      },
-        |      "id": "Grumpyage",
-        |      "kind": "attribute"
-        |    },
-        |    {
-        |      "value": {
-        |        "options": [
-        |          "Red",
-        |          "Blonde",
-        |          "Brown"
-        |        ],
-        |        "id": "dacca39b-9add-4702-847b-7003ff746046",
-        |        "kind": "categorical"
-        |      },
-        |      "id": "Hair colour",
-        |      "kind": "attribute"
-        |    }
-        |  ],
-        |  "optionConfigurations": [
-        |    {
-        |      "probability": 10,
-        |      "id": "Homeowner",
-        |      "kind": "categoricalOption"
-        |    },
-        |    {
-        |      "probability": 80,
-        |      "id": "Renting",
-        |      "kind": "categoricalOption"
-        |    },
-        |    {
-        |      "probability": 10,
-        |      "id": "Council housing",
-        |      "kind": "categoricalOption"
-        |    },
-        |    {
-        |      "probability": 10,
-        |      "id": "Red",
-        |      "kind": "categoricalOption"
-        |    },
-        |    {
-        |      "probability": 40,
-        |      "id": "Blonde",
-        |      "kind": "categoricalOption"
-        |    },
-        |    {
-        |      "probability": 50,
-        |      "id": "Brown",
-        |      "kind": "categoricalOption"
-        |    }
-        |  ],
-        |  "id": "559670e2-96ae-49f5-9a1a-ef8afe0abb3c",
-        |  "kind": "configuration"
-        |}""".stripMargin.parseJson
+    val arrears1 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 50, 500)
+    val satisfaction1 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 10, 50)
+    val age1 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 18, 25)
+    val income1 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 15000, 22000)
 
-    Put("/configure", configs) ~> callServiceConfigure ~> check {
+    val arrears2 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 500, 2000)
+    val satisfaction2 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 30, 80)
+    val age2 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 25, 40)
+    val income2 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 21000, 40000)
+
+    val arrears3 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 10, 5000)
+    val satisfaction3 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 0, 100)
+    val age3 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 35, 55)
+    val income3 = ScalarConfig(id = UUID.randomUUID(), Variance.None, 30000, 50000)
+
+    val rent = OptionConfig(id = UUID.randomUUID(), "Rent", 50)
+    val homeowner = OptionConfig(id = UUID.randomUUID(), "Homeowner", 20)
+    val councilHousing = OptionConfig(id = UUID.randomUUID(), "Council housing", 30)
+    val tenure = CategoricalConfig(id = UUID.randomUUID(), List(rent.id, homeowner.id, councilHousing.id))
+
+    val arrearsG = ScalarConfig(id = UUID.randomUUID(), Variance.None, 10, 50000)
+    val satisfactionG = ScalarConfig(id = UUID.randomUUID(), Variance.None, 0, 100)
+    val ageG = ScalarConfig(id = UUID.randomUUID(), Variance.None, 18, 85)
+    val incomeG = ScalarConfig(id = UUID.randomUUID(), Variance.None, 15000, 22000)
+
+    val rentG = OptionConfig(id = UUID.randomUUID(), "Rent", 50)
+    val homeownerG = OptionConfig(id = UUID.randomUUID(), "Homeowner", 20)
+    val councilHousingG = OptionConfig(id = UUID.randomUUID(), "Council housing", 30)
+    val emergencyG = OptionConfig(id = UUID.randomUUID(), "Emergency", 30)
+    val tenureG =
+      CategoricalConfig(id = UUID.randomUUID(), List(rentG.id, homeownerG.id, councilHousingG.id, emergencyG.id))
+
+    val arrearsAttG = AttributeConfig(id = UUID.randomUUID(), name = "Arrears", value = arrearsG.id)
+    val satisfactionAttG = AttributeConfig(id = UUID.randomUUID(), name = "Satisfaction", value = satisfactionG.id)
+    val ageAttG = AttributeConfig(id = UUID.randomUUID(), name = "Age", value = ageG.id)
+    val incomeAttG = AttributeConfig(id = UUID.randomUUID(), name = "Income", value = incomeG.id)
+    val tenureAttG = AttributeConfig(id = UUID.randomUUID(), name = "Tenure", value = tenureG.id)
+
+    val arrearsAtt1 = AttributeConfig(id = UUID.randomUUID(), name = "Arrears", value = arrears1.id)
+    val satisfactionAtt1 = AttributeConfig(id = UUID.randomUUID(), name = "Satisfaction", value = satisfaction1.id)
+    val ageAtt1 = AttributeConfig(id = UUID.randomUUID(), name = "Age", value = age1.id)
+    val incomeAtt1 = AttributeConfig(id = UUID.randomUUID(), name = "Income", value = income1.id)
+    val tenureAtt1 = AttributeConfig(id = UUID.randomUUID(), name = "Tenure", value = tenure.id)
+
+    val arrearsAtt2 = AttributeConfig(id = UUID.randomUUID(), name = "Arrears", value = arrears2.id)
+    val satisfactionAtt2 = AttributeConfig(id = UUID.randomUUID(), name = "Satisfaction", value = satisfaction2.id)
+    val ageAtt2 = AttributeConfig(id = UUID.randomUUID(), name = "Age", value = age2.id)
+    val incomeAtt2 = AttributeConfig(id = UUID.randomUUID(), name = "Income", value = income2.id)
+
+    val arrearsAtt3 = AttributeConfig(id = UUID.randomUUID(), name = "Arrears", value = arrears3.id)
+    val satisfactionAtt3 = AttributeConfig(id = UUID.randomUUID(), name = "Satisfaction", value = satisfaction3.id)
+    val ageAtt3 = AttributeConfig(id = UUID.randomUUID(), name = "Age", value = age3.id)
+    val incomeAtt3 = AttributeConfig(id = UUID.randomUUID(), name = "Income", value = income3.id)
+
+    val customerConfig1 = CustomerConfig(
+      id = UUID.randomUUID(),
+      name = "LowRoller",
+      attributeOverrides = List(arrearsAtt1.id, ageAtt1.id, satisfactionAtt1.id, incomeAtt1.id, tenureAtt1.id),
+      proportion = 20
+    )
+
+    val customerConfig2 = CustomerConfig(
+      id = UUID.randomUUID(),
+      name = "MidRoller",
+      attributeOverrides = List(arrearsAtt2.id, ageAtt2.id, satisfactionAtt2.id, incomeAtt2.id),
+      proportion = 20
+    )
+
+    val customerConfig3 = CustomerConfig(
+      id = UUID.randomUUID(),
+      name = "HighRoller",
+      attributeOverrides = List(arrearsAtt3.id, ageAtt3.id, satisfactionAtt3.id, incomeAtt3.id),
+      proportion = 20
+    )
+    val overrideConfigs = List(
+      ageAtt1,
+      incomeAtt1,
+      tenureAtt1,
+      arrearsAtt1,
+      satisfactionAtt1,
+      ageAtt2,
+      incomeAtt2,
+      arrearsAtt2,
+      satisfactionAtt2,
+      ageAtt3,
+      incomeAtt3,
+      arrearsAtt3,
+      satisfactionAtt3
+    )
+
+    val scalarConfigs = List(
+      arrears1,
+      satisfaction1,
+      age1,
+      income1,
+      arrears2,
+      satisfaction2,
+      age2,
+      income2,
+      arrears3,
+      satisfaction3,
+      age3,
+      income3)
+
+    val effect1 = EffectConfig(UUID.randomUUID(), "ZeroArrears", EffectType.Effect, "Arrears")
+    val effect2 = EffectConfig(UUID.randomUUID(), "Satisfy", EffectType.Effect, "Satisfaction")
+    val effect3 = EffectConfig(UUID.randomUUID(), "Cooperative", EffectType.Affect, "Arrears")
+    val effect4 = EffectConfig(UUID.randomUUID(), "Dissatisfy", EffectType.Effect, "Satisfaction")
+
+    val action1 =
+      ActionConfig(UUID.randomUUID(), "PayInFull", ActionType.Customer, List(effect1.id, effect2.id, effect3.id))
+    val action2 = ActionConfig(UUID.randomUUID(), "Litigate", ActionType.Agent, List(effect1.id, effect4.id))
+
+    val effectConfigs = List(effect1, effect2, effect3, effect4)
+    val actionConfigs = List(action1, action2)
+    val categoricalConfigs = List(tenure)
+    val optionConfigs = List[OptionConfig](rent, homeowner, councilHousing)
+    val customerConfigs = List(customerConfig1, customerConfig2, customerConfig3)
+    val simulationConfig = SimulationConfig(UUID.randomUUID(), 0, Some(100), 120)
+
+    val attributeConfigs = List(
+      ageAttG,
+      incomeAttG,
+      tenureAttG,
+      arrearsAttG,
+      satisfactionAttG
+    )
+
+    val configurations = Configurations(
+      UUID.randomUUID(),
+      customerConfigs,
+      actionConfigs,
+      effectConfigs,
+      attributeConfigs,
+      overrideConfigs,
+      scalarConfigs,
+      categoricalConfigs,
+      optionConfigs,
+      Nil,
+      simulationConfig
+    )
+
+    Put("/configure", configurations) ~> callServiceConfigure ~> check {
       status shouldEqual StatusCodes.OK
-      entityAs[List[Customer]].map(customer => customer.arrears shouldEqual 525.0 +- 475.0)
+      val data = entityAs[TrainingData]
+      data.customers.map(customer => {
+        if (customer.name == "LowRoller")
+          customer.getArrears.value shouldEqual 275.0 +- 225.0
+        if (customer.name == "MidRoller")
+          customer.getArrears.value shouldEqual 1250.0 +- 750.0
+        if (customer.name == "HighRoller")
+          customer.getArrears.value shouldEqual 2495.0 +- 2505.0
+      })
     }
   }
 
