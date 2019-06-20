@@ -15,13 +15,14 @@ class ActionConfigurationStorage(override val tableName: String) extends Storage
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")
     for {
       queryResult <- (sql"""
+
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        configurationId  VARCHAR(36) NOT NUll,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id  UUID NOT NUll,
         name text NOT NULL,
-        type text NOT NULL,
-        effectConfigurations VARCHAR[]
+        action_enum text NOT NULL,
+        effect_configurations UUID[] NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -35,8 +36,8 @@ class ActionConfigurationStorage(override val tableName: String) extends Storage
         .transact(xa)
     } yield queryResult
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT (id, name, action_enum, effect_configurations) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[ActionConfig]
       .to[List]
       .transact(xa)
@@ -47,11 +48,12 @@ class ActionConfigurationStorage(override val tableName: String) extends Storage
       .to[List]
       .transact(xa)
 
-  def write(model: ActionConfig) =
+  def write(model: ActionConfig, configurationId: UUID) = {
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, type, effectConfigurations)
-          VALUES (${model.id}, ${model.name}, ${model.`type`}, ${model.effectConfigurations})
+      sql""" (id, configuration_id, name, action_enum, effect_configurations)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.actionType}, ${model.effectConfigurations})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)
+  }
 }

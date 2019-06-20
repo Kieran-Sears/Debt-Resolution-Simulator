@@ -17,10 +17,10 @@ class EffectConfigurationStorage(override val tableName: String) extends Storage
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        actionId  VARCHAR(36) NOT NUll,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
         name text NOT NULL,
-        type text NOT NULL,
+        effect_type text NOT NULL,
         target text NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
@@ -35,8 +35,8 @@ class EffectConfigurationStorage(override val tableName: String) extends Storage
         .transact(xa)
     } yield queryResult
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[EffectConfig]
       .to[List]
       .transact(xa)
@@ -47,10 +47,10 @@ class EffectConfigurationStorage(override val tableName: String) extends Storage
       .to[List]
       .transact(xa)
 
-  def write(model: EffectConfig) =
+  def write(model: EffectConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, type, target)
-          VALUES (${model.id}, ${model.name}, ${model.`type`}, ${model.target})
+      sql""" (id, configuration_id, name, effect_type, target)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.effectType}, ${model.target})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

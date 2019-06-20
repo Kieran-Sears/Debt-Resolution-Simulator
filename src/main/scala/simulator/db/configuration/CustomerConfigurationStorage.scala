@@ -3,7 +3,6 @@ package simulator.db.configuration
 import java.util.UUID
 import cats.effect.IO
 import doobie.implicits._
-import doobie.util.fragment.Fragment
 import simulator.model.CustomerConfig
 import simulator.db.Storage
 import doobie.postgres._
@@ -17,10 +16,10 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        configurationId  VARCHAR(36) NOT NUll,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id  UUID NOT NUll,
         name text NOT NULL,
-        attributeConfigurations VARCHAR[],
+        attribute_configurations UUID[],
         proportion float NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
@@ -35,8 +34,8 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
         .transact(xa)
     } yield queryResult
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CustomerConfig]
       .to[List]
       .transact(xa)
@@ -47,10 +46,10 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
       .to[List]
       .transact(xa)
 
-  def write(model: CustomerConfig) =
+  def write(model: CustomerConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, attributeConfigurations, proportion)
-          VALUES (${model.id}, ${model.name}, ${model.attributeOverrides}, ${model.proportion})
+      sql""" (id, configuration_id, name, attribute_configurations, proportion)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.attributeOverrides}, ${model.proportion})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

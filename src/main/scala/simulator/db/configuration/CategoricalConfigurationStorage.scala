@@ -16,9 +16,9 @@ class CategoricalConfigurationStorage(override val tableName: String) extends St
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        attributeId  VARCHAR(36) NOT NUll,
-        options VARCHAR[] NOT NULL
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
+        options UUID[] NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -26,16 +26,16 @@ class CategoricalConfigurationStorage(override val tableName: String) extends St
     } yield queryResult
   }
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CategoricalConfig]
       .to[List]
       .transact(xa)
 
-  def write(model: CategoricalConfig) =
+  def write(model: CategoricalConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, type, repeat, effectConfigurations)
-          VALUES (${model.id}, ${model.options})
+      sql""" (id, configuration_id, options)
+          VALUES (${model.id}, $configurationId, ${model.options})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

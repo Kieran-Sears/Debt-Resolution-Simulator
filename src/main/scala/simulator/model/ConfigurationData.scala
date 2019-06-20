@@ -7,7 +7,6 @@ case class Configurations(
   actionConfigurations: List[ActionConfig] = Nil,
   effectConfigurations: List[EffectConfig] = Nil,
   attributeConfigurations: List[AttributeConfig] = Nil,
-  attributeOverrides: List[AttributeConfig] = Nil,
   scalarConfigurations: List[ScalarConfig] = Nil,
   categoricalConfigurations: List[CategoricalConfig] = Nil,
   optionConfigurations: List[OptionConfig] = Nil,
@@ -32,7 +31,8 @@ case class CustomerConfig(
 case class AttributeConfig(
   id: UUID,
   name: String,
-  value: UUID
+  value: UUID,
+  attributeType: AttributeEnum
 )
 
 trait Value {
@@ -42,7 +42,7 @@ trait Value {
 
 case class ScalarConfig(
   override val id: UUID,
-  variance: Variance.Value,
+  variance: VarianceEnum,
   min: Double,
   max: Double,
   override val kind: String = "scalar"
@@ -64,7 +64,7 @@ case class OptionConfig(
 case class ActionConfig(
   id: UUID,
   name: String,
-  `type`: ActionType.Value,
+  actionType: ActionEnum,
   // repeat: Option[UUID],
   effectConfigurations: List[UUID],
   kind: String = "action"
@@ -73,7 +73,7 @@ case class ActionConfig(
 case class EffectConfig(
   id: UUID,
   name: String,
-  `type`: EffectType.Value,
+  effectType: EffectEnum,
   target: String,
   kind: String = "effect"
 )

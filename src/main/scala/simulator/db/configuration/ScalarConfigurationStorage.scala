@@ -1,7 +1,6 @@
 package simulator.db.configuration
 
 import java.util.UUID
-
 import cats.effect.IO
 import doobie.implicits._
 import simulator.model.ScalarConfig
@@ -17,9 +16,9 @@ class ScalarConfigurationStorage(override val tableName: String) extends Storage
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        attributeId  VARCHAR(36) NOT NUll,
-        variance text NOT NULL,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
+        variance_type text NOT NULL,
         min INTEGER NOT NULL,
         max INTEGER NOT NULL
       );
@@ -29,16 +28,16 @@ class ScalarConfigurationStorage(override val tableName: String) extends Storage
     } yield queryResult
   }
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[ScalarConfig]
       .to[List]
       .transact(xa)
 
-  def write(model: ScalarConfig) =
+  def write(model: ScalarConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, variance, min, max)
-          VALUES (${model.id}, ${model.variance}, ${model.min}, ${model.max})
+      sql""" (id, configuration_id, variance_type, min, max)
+          VALUES (${model.id}, $configurationId, ${model.variance}, ${model.min}, ${model.max})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

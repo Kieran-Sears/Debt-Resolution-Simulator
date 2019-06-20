@@ -16,8 +16,8 @@ class AttributeStorage(override val tableName: String) extends Storage {
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        customerId VARCHAR(36) NOT NULL,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
         name text NOT NULL,
         value float NOT NULL
       );
@@ -33,8 +33,8 @@ class AttributeStorage(override val tableName: String) extends Storage {
         .transact(xa)
     } yield queryResult
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[Attribute]
       .to[List]
       .transact(xa)
@@ -45,10 +45,10 @@ class AttributeStorage(override val tableName: String) extends Storage {
       .to[List]
       .transact(xa)
 
-  def write(model: Attribute, customerId: UUID) =
+  def write(model: Attribute, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, customerId, name, value)
-          VALUES (${model.id}, ${customerId.toString} ${model.name}, ${model.value})
+      sql""" (id, configuration_id, name, value)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.value})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

@@ -16,10 +16,11 @@ class SimulationStorage(override val tableName: String) extends Storage {
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-        startTime int NOT NULL,
-        endTime int NOT NULL,
-        numberOfCustomers int NOT NULL
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
+        start_time int NOT NULL,
+        end_time int NOT NULL,
+        number_of_customers int NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -33,8 +34,8 @@ class SimulationStorage(override val tableName: String) extends Storage {
         .transact(xa)
     } yield queryResult
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[SimulationConfig]
       .to[List]
       .transact(xa)
@@ -45,10 +46,10 @@ class SimulationStorage(override val tableName: String) extends Storage {
       .to[List]
       .transact(xa)
 
-  def write(model: SimulationConfig) =
+  def write(model: SimulationConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, startTime, endTime, numberOfCustomers)
-          VALUES (${model.id.toString}, ${model.startTime}, ${model.endTime}, ${model.numberOfCustomers})
+      sql""" (id, configuration_id, start_time, end_time, number_of_customers)
+          VALUES (${model.id.toString}, ${configurationId.toString}, ${model.startTime}, ${model.endTime}, ${model.numberOfCustomers})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

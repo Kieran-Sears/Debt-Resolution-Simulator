@@ -17,7 +17,6 @@ class Generator(seed: Int) {
         idealCustomer(
           customerConf,
           configurations.attributeConfigurations,
-          configurations.attributeOverrides,
           configurations.optionConfigurations,
           configurations.scalarConfigurations,
           configurations.categoricalConfigurations
@@ -26,7 +25,7 @@ class Generator(seed: Int) {
     val actions: List[Action] =
       generateActions(configurations.actionConfigurations, configurations.effectConfigurations)
 
-    TrainingData(customers, actions)
+    TrainingData(configurations.id, customers, actions)
   }
 
   def playData(configurations: Configurations): List[Customer] = {
@@ -44,7 +43,6 @@ class Generator(seed: Int) {
             generateCustomer(
               customerConf,
               configurations.attributeConfigurations,
-              configurations.attributeOverrides,
               configurations.optionConfigurations,
               configurations.scalarConfigurations,
               configurations.categoricalConfigurations
@@ -84,12 +82,11 @@ class Generator(seed: Int) {
   def idealCustomer(
     customerConf: CustomerConfig,
     attributeConfigs: List[AttributeConfig],
-    attributeOverrides: List[AttributeConfig],
     optionConfigs: List[OptionConfig],
     scalarConfigs: List[ScalarConfig],
     categoricalConfigs: List[CategoricalConfig]) = {
 
-    val customAttributes = attributeOverrides.filter(att => customerConf.attributeOverrides.contains(att.id))
+    val customAttributes = attributeConfigs.filter(att => customerConf.attributeOverrides.contains(att.id))
 
     val normAtts = attributeConfigs.map(att =>
       customAttributes.find(x => x.name == att.name) match {
@@ -97,7 +94,7 @@ class Generator(seed: Int) {
         case None => idealAttribute(att, scalarConfigs ++ categoricalConfigs, optionConfigs)
     })
 
-    Customer(id = customerConf.id, name = customerConf.name, featureValues = normAtts, assignedLabel = None)
+    Customer(id = customerConf.id, name = customerConf.name, attributes = normAtts, assignedLabel = None)
   }
 
   def idealAttribute(attribute: AttributeConfig, values: List[Value], options: List[OptionConfig]) = {
@@ -121,7 +118,6 @@ class Generator(seed: Int) {
   def generateCustomer(
     customerConf: CustomerConfig,
     attributeConfigs: List[AttributeConfig],
-    attributeOverrides: List[AttributeConfig],
     optionConfigs: List[OptionConfig],
     scalarConfigs: List[ScalarConfig],
     categoricalConfigs: List[CategoricalConfig]): Customer = {
@@ -134,7 +130,7 @@ class Generator(seed: Int) {
         case None => idealAttribute(att, scalarConfigs ++ categoricalConfigs, optionConfigs)
     })
 
-    Customer(id = customerConf.id, name = customerConf.name, featureValues = normAtts, assignedLabel = None)
+    Customer(id = customerConf.id, name = customerConf.name, attributes = normAtts, assignedLabel = None)
   }
 
   def normaliseAttribute(attribute: AttributeConfig, values: List[Value], options: List[OptionConfig]) = {
@@ -182,7 +178,7 @@ class Generator(seed: Int) {
     Effect(
       id = UUID.randomUUID(),
       name = effectConfig.name,
-      `type` = effectConfig.`type`,
+      effectType = effectConfig.effectType,
       target = effectConfig.target
     )
 

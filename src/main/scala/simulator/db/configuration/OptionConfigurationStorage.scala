@@ -1,5 +1,6 @@
 package simulator.db.configuration
 
+import java.util.UUID
 import cats.effect.IO
 import doobie.implicits._
 import simulator.model.OptionConfig
@@ -15,8 +16,8 @@ class OptionConfigurationStorage(override val tableName: String) extends Storage
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        categoricalId VARCHAR(36) NOT NUll,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
         name text NOT NULL,
         probability float NOT NULL
       );
@@ -26,10 +27,16 @@ class OptionConfigurationStorage(override val tableName: String) extends Storage
     } yield queryResult
   }
 
-  def write(model: OptionConfig) =
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+      .query[OptionConfig]
+      .to[List]
+      .transact(xa)
+
+  def write(model: OptionConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, type, repeat, effectConfigurations)
-          VALUES (${model.id}, ${model.name}, ${model.probability})
+      sql""" (id, configuration_id, name, probability)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.probability})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

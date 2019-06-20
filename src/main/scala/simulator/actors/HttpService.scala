@@ -72,14 +72,14 @@ class HttpService(
   def train(username: String): Route = {
     pathPrefix("train") {
       put {
-        entity(as[List[Action]]) { actions =>
+        entity(as[TrainingData]) { trainingData =>
           {
-            val conf: Configurations = StorageImpl.getConfiguration(username)
+            val conf: Configurations = StorageImpl.getConfiguration(trainingData.configurationId)
 
             val customers = gen.playData(conf)
 
             val allOutcomes: List[(Customer, List[(Action, Customer)])] = customers.map { c: Customer =>
-              (c, actions.foldLeft(List[(Action, Customer)]()) {
+              (c, trainingData.actions.foldLeft(List[(Action, Customer)]()) {
                 case (acc, a) => if (a.getTarget.name == c.name) acc :+ (a, a.processCustomer(c)) else acc
               })
             }
@@ -95,10 +95,11 @@ class HttpService(
               }
             }
 
-            StorageImpl.storeTrainActions(actions)
-            StorageImpl.storeTrainingData(conf.attributeConfigurations, idealMappings)
+            StorageImpl.storeTrainingData(trainingData)
+            StorageImpl
+              .storePlayingData(conf.attributeConfigurations, idealMappings, trainingData.configurationId)
 
-            complete(OK, TrainingData(customers, actions))
+            complete(OK, TrainingData(conf.id, customers, trainingData.actions))
           }
         }
       }

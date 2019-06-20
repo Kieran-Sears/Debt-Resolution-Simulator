@@ -36,7 +36,8 @@ object Main extends App {
   implicit val materializer = ActorMaterializer()
   implicit val timeout: Timeout = Timeout(10 seconds)
 
-  StorageImpl.initialiseTables()
+  StorageImpl.initialiseStorageTables()
+  StorageImpl.initialiseTrainingTables()
 
   val simulation = new Main()
 }

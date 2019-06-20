@@ -1,5 +1,6 @@
 package simulator.db.configuration
 
+import java.util.UUID
 import cats.effect.IO
 import doobie.implicits._
 import simulator.model.RepetitionConfig
@@ -15,8 +16,8 @@ class RepetitionConfigurationStorage(override val tableName: String) extends Sto
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        actionId  VARCHAR(36) NOT NUll,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
         interval integer NOT NULL,
         repetitions integer NOT NULL
       );
@@ -26,10 +27,16 @@ class RepetitionConfigurationStorage(override val tableName: String) extends Sto
     } yield queryResult
   }
 
-  def write(model: RepetitionConfig) =
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+      .query[RepetitionConfig]
+      .to[List]
+      .transact(xa)
+
+  def write(model: RepetitionConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, type, repeat, effectConfigurations)
-          VALUES (${model.id}, ${model.interval}, ${model.repetitions})
+      sql""" (id, configuration_id, interval, repetitions)
+          VALUES (${model.id}, $configurationId, ${model.interval}, ${model.repetitions})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

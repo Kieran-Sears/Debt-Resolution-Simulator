@@ -1,5 +1,6 @@
 package simulator.db.ml
 
+import java.util.UUID
 import cats.effect.IO
 import doobie.implicits._
 import doobie.util.fragment.Fragment
@@ -19,12 +20,13 @@ class TrainStorage(override val tableName: String) extends Storage {
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        customerId VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NUll UNIQUE,
+        customer_id UUID NOT NULL,
         """ ++ fields ++ sql"""
-        actionName
+        action_name text NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
-        sql""" (customerId);
+        sql""" (customer_id);
     """).update.run.transact(xa)
     } yield queryResult
   }
@@ -34,14 +36,14 @@ class TrainStorage(override val tableName: String) extends Storage {
       queryResult <- (sql"DROP TABLE IF EXISTS " ++ tableNameFragment ++ sql";").update.run.transact(xa)
     } yield queryResult
 
-  def write(customer: Customer, actionName: String) = {
+  def write(customer: Customer, actionName: String, configurationId: UUID) = {
     val names =
       Fragment.const(
-        customer.featureValues.foldLeft(" (customerId, ") { case (acc, a) => acc + s"${a.name}, " } + " actionName)")
+        customer.attributes.foldLeft(" (customer_id, ") { case (acc, a) => acc + s"${a.name}, " } + " action_name)")
     val values =
-      Fragment.const(s"${customer.id.toString}, ${customer.featureValues.map(a => a.value + ", ")} $actionName")
-    (sql"""INSERT INTO """ ++ tableNameFragment ++ names ++
-      sql""" VALUES (""" ++ values ++ sql""")
+      Fragment.const(s"${customer.id.toString}, ${customer.attributes.map(a => a.value + ", ")} $actionName")
+    (sql"""INSERT INTO """ ++ tableNameFragment ++ sql""" (customer_id, configuration_id, """ ++ names ++ sql""" action_name)""" ++
+      sql""" VALUES ( ${customer.id}, $configurationId, """ ++ values ++ sql""" $actionName)
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

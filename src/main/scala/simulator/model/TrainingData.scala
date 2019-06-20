@@ -9,7 +9,7 @@ case class Action(id: UUID, name: String, effects: List[Effect], repeat: Option[
     val customer = getTarget
 
     val x = effects.map(effect => {
-      val attributes = customer.featureValues
+      val attributes = customer.attributes
       val attribute = attributes.filter(att => att.name == effect.target).head
       val actionValue = effect.certainty.get * Random.nextGaussian() + effect.value.get
       val important = (customer.name, attribute.name, attribute.value, actionValue)
@@ -40,7 +40,7 @@ case class Action(id: UUID, name: String, effects: List[Effect], repeat: Option[
 case class Effect(
   id: UUID,
   name: String,
-  `type`: EffectType.Value,
+  effectType: EffectEnum,
   target: String,
   value: Option[Double] = None,
   certainty: Option[Int] = None
@@ -49,18 +49,18 @@ case class Effect(
 case class Customer(
   id: UUID,
   name: String,
-  featureValues: List[Attribute] = Nil,
+  attributes: List[Attribute] = Nil,
   difficulty: Option[Int] = None,
   assignedLabel: Option[Int] = None) {
 
   def getArrears = {
-    featureValues
+    attributes
       .find(_.name == "Arrears")
       .getOrElse(throw new NoSuchElementException(s"Cannot find Arrears for customer $name"))
   }
 
   def getSatisfaction = {
-    featureValues
+    attributes
       .find(_.name == "Satisfaction")
       .getOrElse(throw new NoSuchElementException(s"Cannot find Satisfaction for customer $name"))
   }

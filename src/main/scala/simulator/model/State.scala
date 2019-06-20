@@ -57,6 +57,7 @@ case class State(
 }
 
 case class TrainingData(
+  configurationId: UUID,
   customers: List[Customer],
   actions: List[Action]
 )

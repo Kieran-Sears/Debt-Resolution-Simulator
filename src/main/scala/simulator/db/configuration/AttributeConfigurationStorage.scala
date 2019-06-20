@@ -1,6 +1,7 @@
 package simulator.db.configuration
 
 import java.util.UUID
+
 import cats.effect.IO
 import doobie.implicits._
 import simulator.model.AttributeConfig
@@ -16,10 +17,11 @@ class AttributeConfigurationStorage(override val tableName: String) extends Stor
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
-        configurationId  VARCHAR(36) NOT NUll,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id  UUID NOT NUll,
         name text NOT NULL,
-        value text NOT NULL
+        value UUID NOT NULL,
+        attribute_type text NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -27,16 +29,16 @@ class AttributeConfigurationStorage(override val tableName: String) extends Stor
     } yield queryResult
   }
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[AttributeConfig]
       .to[List]
       .transact(xa)
 
-  def write(model: AttributeConfig) =
+  def write(model: AttributeConfig, configurationId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, type, repeat, effectConfigurations)
-          VALUES (${model.id}, ${model.name}, ${model.value})
+      sql""" (id, configuration_id, name, value, attribute_type)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.value}, ${model.attributeType})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

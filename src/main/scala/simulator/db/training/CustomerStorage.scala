@@ -4,7 +4,6 @@ import java.util.UUID
 import cats.effect.IO
 import doobie.implicits._
 import simulator.db.model.CustomerData
-import simulator.db.StorageImpl
 import simulator.db.Storage
 import simulator.model.Customer
 import doobie.postgres._
@@ -18,10 +17,11 @@ class CustomerStorage(override val tableName: String) extends Storage {
       queryResult <- (sql"""
       CREATE TABLE IF NOT EXISTS """ ++ tableNameFragment ++
         sql""" (
-        id VARCHAR(36) PRIMARY KEY NOT NULL UNIQUE,
+        id UUID PRIMARY KEY NOT NULL UNIQUE,
+        configuration_id UUID NOT NULL,
         name text NOT NULL,
         difficulty FLOAT,
-        assignedLabel text
+        assigned_label text
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -35,8 +35,8 @@ class CustomerStorage(override val tableName: String) extends Storage {
         .transact(xa)
     } yield queryResult
 
-  def readById(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE id = ${id.toString}")
+  def readByConfigurationId(id: UUID) =
+    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CustomerData]
       .to[List]
       .transact(xa)
@@ -47,11 +47,10 @@ class CustomerStorage(override val tableName: String) extends Storage {
       .to[List]
       .transact(xa)
 
-  def write(model: Customer) = {
-    model.featureValues.foreach(StorageImpl.attributeStorage.write(_, model.id))
+  def write(model: Customer, configurationId: UUID) = {
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, name, value)
-          VALUES (${model.id}, ${model.name}, ${model.difficulty}, ${model.assignedLabel},)
+      sql""" (id, configuration_id, name, difficulty, assigned_label)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.difficulty}, ${model.assignedLabel},)
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)
