@@ -36,13 +36,7 @@ class EffectConfigurationStorage(override val tableName: String) extends Storage
     } yield queryResult
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
-      .query[EffectConfig]
-      .to[List]
-      .transact(xa)
-
-  def readAll() =
-    (sql"SELECT * FROM " ++ tableNameFragment)
+    (sql"SELECT (id, name, effect_type, target) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[EffectConfig]
       .to[List]
       .transact(xa)

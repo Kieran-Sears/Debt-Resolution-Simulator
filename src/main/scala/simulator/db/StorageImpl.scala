@@ -101,6 +101,7 @@ object StorageImpl {
   }
 
   def storePlayingData(attributes: List[AttributeConfig], data: List[(Customer, Action)], configurationId: UUID) = {
+    initialisePlayTables(attributes.filter(att => att.attributeType == AttributeEnum.Global))
     data.foreach { case (customer, action) => train.write(customer, action.name, configurationId) }
   }
 

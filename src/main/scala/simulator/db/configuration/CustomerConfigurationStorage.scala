@@ -19,7 +19,7 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id  UUID NOT NUll,
         name text NOT NULL,
-        attribute_configurations UUID[],
+        attribute_configurations VARCHAR[],
         proportion float NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
@@ -35,13 +35,7 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
     } yield queryResult
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
-      .query[CustomerConfig]
-      .to[List]
-      .transact(xa)
-
-  def readAll() =
-    (sql"SELECT * FROM " ++ tableNameFragment)
+    (sql"SELECT (id, name, attribute_configurations, proportion) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CustomerConfig]
       .to[List]
       .transact(xa)

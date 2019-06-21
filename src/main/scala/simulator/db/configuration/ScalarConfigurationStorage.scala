@@ -29,7 +29,7 @@ class ScalarConfigurationStorage(override val tableName: String) extends Storage
   }
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT (id, variance_type, min, max) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[ScalarConfig]
       .to[List]
       .transact(xa)

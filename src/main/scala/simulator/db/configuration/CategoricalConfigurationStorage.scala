@@ -18,7 +18,7 @@ class CategoricalConfigurationStorage(override val tableName: String) extends St
         sql""" (
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id UUID NOT NULL,
-        options UUID[] NOT NULL
+        options VARCHAR[] NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -27,7 +27,7 @@ class CategoricalConfigurationStorage(override val tableName: String) extends St
   }
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT (id, options) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CategoricalConfig]
       .to[List]
       .transact(xa)

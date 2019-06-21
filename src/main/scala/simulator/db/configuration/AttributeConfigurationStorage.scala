@@ -30,7 +30,7 @@ class AttributeConfigurationStorage(override val tableName: String) extends Stor
   }
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT (id, name, value, attribute_type) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[AttributeConfig]
       .to[List]
       .transact(xa)

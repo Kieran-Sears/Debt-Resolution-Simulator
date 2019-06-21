@@ -28,7 +28,7 @@ class OptionConfigurationStorage(override val tableName: String) extends Storage
   }
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT (id, name, probability) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[OptionConfig]
       .to[List]
       .transact(xa)

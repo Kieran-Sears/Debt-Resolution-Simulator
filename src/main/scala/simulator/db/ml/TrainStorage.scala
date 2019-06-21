@@ -14,7 +14,9 @@ class TrainStorage(override val tableName: String) extends Storage {
   def init(attributes: List[AttributeConfig]): IO[Int] = {
     logger.info(s"Initiliasing Database Table $tableName at $dbUrl")
 
-    val fields = Fragment.const(attributes.foldLeft("") { case (acc, a) => acc + s"${a.name} DOUBLE NOT NULL, " })
+    val fields = Fragment.const(attributes.foldLeft("") { case (acc, a) => acc + s"${a.name} FLOAT NOT NULL, " })
+
+    println(fields)
 
     for {
       queryResult <- (sql"""
@@ -37,13 +39,21 @@ class TrainStorage(override val tableName: String) extends Storage {
     } yield queryResult
 
   def write(customer: Customer, actionName: String, configurationId: UUID) = {
+
     val names =
-      Fragment.const(
-        customer.attributes.foldLeft(" (customer_id, ") { case (acc, a) => acc + s"${a.name}, " } + " action_name)")
-    val values =
-      Fragment.const(s"${customer.id.toString}, ${customer.attributes.map(a => a.value + ", ")} $actionName")
-    (sql"""INSERT INTO """ ++ tableNameFragment ++ sql""" (customer_id, configuration_id, """ ++ names ++ sql""" action_name)""" ++
-      sql""" VALUES ( ${customer.id}, $configurationId, """ ++ values ++ sql""" $actionName)
+      Fragment.const(customer.attributes.foldLeft(" (configuration_id, customer_id, ") {
+        case (acc, a) => acc + s"${a.name}, "
+      } + " action_name)")
+
+    val featureValues = customer.attributes.foldLeft("")((acc, a) => acc ++ s"${a.value}, ")
+    val values = Fragment.const(s"$configurationId, ${customer.id}, $featureValues $actionName")
+
+    println(names)
+    println(featureValues)
+    println(values)
+
+    (sql"""INSERT INTO """ ++ tableNameFragment ++ sql""" (""" ++ names ++ sql""")""" ++
+      sql""" VALUES (""" ++ values ++ sql""")
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

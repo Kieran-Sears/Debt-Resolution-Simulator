@@ -22,7 +22,7 @@ class ActionConfigurationStorage(override val tableName: String) extends Storage
         configuration_id  UUID NOT NUll,
         name text NOT NULL,
         action_enum text NOT NULL,
-        effect_configurations UUID[] NOT NULL
+        effect_configurations VARCHAR[] NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);

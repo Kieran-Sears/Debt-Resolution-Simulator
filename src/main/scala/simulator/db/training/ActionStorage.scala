@@ -20,6 +20,7 @@ class ActionStorage(override val tableName: String) extends Storage {
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id UUID NOT NULL,
         name text NOT NULL,
+        effects json NOT NULL,
         repeat UUID,
         target UUID
       );
@@ -35,7 +36,7 @@ class ActionStorage(override val tableName: String) extends Storage {
     } yield queryResult
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT (id, name, effects, repeat, target) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[ActionData]
       .to[List]
       .transact(xa)
@@ -48,8 +49,8 @@ class ActionStorage(override val tableName: String) extends Storage {
 
   def write(model: Action, configurationId: UUID) = {
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, name, repeat, target)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.repeat.map(_.id)}, ${model.target
+      sql""" (id, configuration_id, name, effects, repeat, target)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.effects.map(_.id)} ${model.repeat.map(_.id)}, ${model.target
         .map(_.id)})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run

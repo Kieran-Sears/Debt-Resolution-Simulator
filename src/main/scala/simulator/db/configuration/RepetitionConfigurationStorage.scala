@@ -28,7 +28,7 @@ class RepetitionConfigurationStorage(override val tableName: String) extends Sto
   }
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT (id, interval, repetitions) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[RepetitionConfig]
       .to[List]
       .transact(xa)
