@@ -8,6 +8,7 @@ import simulator.model.AttributeConfig
 import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
+import simulator.db.model.AttributeConfigData
 
 class AttributeConfigurationStorage(override val tableName: String) extends Storage {
 
@@ -19,6 +20,7 @@ class AttributeConfigurationStorage(override val tableName: String) extends Stor
         sql""" (
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id  UUID NOT NUll,
+        customer_configuration_id UUID NOT NULL,
         name text NOT NULL,
         value UUID NOT NULL,
         attribute_type text NOT NULL
@@ -29,16 +31,18 @@ class AttributeConfigurationStorage(override val tableName: String) extends Stor
     } yield queryResult
   }
 
-  def readByConfigurationId(id: UUID) =
-    (sql"SELECT (id, name, value, attribute_type) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
-      .query[AttributeConfig]
+  def readByCustomerId(id: UUID) = {
+    println("attC store read")
+    (sql"SELECT id, name, value, attribute_type FROM " ++ tableNameFragment ++ sql" WHERE customer_configuration_id = $id")
+      .query[AttributeConfigData]
       .to[List]
       .transact(xa)
+  }
 
-  def write(model: AttributeConfig, configurationId: UUID) =
+  def write(model: AttributeConfig, configurationId: UUID, customerId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, name, value, attribute_type)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.value}, ${model.attributeType})
+      sql""" (id, configuration_id, customer_configuration_id, name, value, attribute_type)
+          VALUES (${model.id}, $configurationId, $customerId, ${model.name}, ${model.value}, ${model.attributeType})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

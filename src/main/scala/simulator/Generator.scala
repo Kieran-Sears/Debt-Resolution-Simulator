@@ -87,11 +87,12 @@ class Generator(seed: Int) {
     categoricalConfigs: List[CategoricalConfig]) = {
 
     val customAttributes = attributeConfigs.filter(att => customerConf.attributeOverrides.contains(att.id))
+    val values = scalarConfigs ++ categoricalConfigs
 
     val normAtts = attributeConfigs.map(att =>
       customAttributes.find(x => x.name == att.name) match {
-        case Some(attribute) => idealAttribute(attribute, scalarConfigs ++ categoricalConfigs, optionConfigs)
-        case None => idealAttribute(att, scalarConfigs ++ categoricalConfigs, optionConfigs)
+        case Some(attribute) => idealAttribute(attribute, values, optionConfigs)
+        case None => idealAttribute(att, values, optionConfigs)
     })
 
     Customer(id = customerConf.id, name = customerConf.name, attributes = normAtts, assignedLabel = None)
@@ -100,7 +101,8 @@ class Generator(seed: Int) {
   def idealAttribute(attribute: AttributeConfig, values: List[Value], options: List[OptionConfig]) = {
     values
       .find(x => x.id == attribute.value)
-      .getOrElse(throw new NoSuchElementException(s"Cannot find value ${attribute.name}")) match {
+      .getOrElse(throw new NoSuchElementException(
+        s"Cannot find value ${attribute.name}: ${attribute.id} in: \n ${values.map(v => s"${v.id},\n")}")) match {
       case v: CategoricalConfig => Attribute(UUID.randomUUID(), attribute.name, idealCategorical(v, options))
       case v: ScalarConfig => Attribute(UUID.randomUUID(), attribute.name, idealScalar(v))
     }
@@ -123,11 +125,12 @@ class Generator(seed: Int) {
     categoricalConfigs: List[CategoricalConfig]): Customer = {
 
     val customAttributes = attributeConfigs.filter(att => customerConf.attributeOverrides.contains(att.id))
+    val values = scalarConfigs ++ categoricalConfigs
 
     val normAtts = attributeConfigs.map(att =>
       customAttributes.find(x => x.name == att.name) match {
-        case Some(attribute) => idealAttribute(attribute, scalarConfigs ++ categoricalConfigs, optionConfigs)
-        case None => idealAttribute(att, scalarConfigs ++ categoricalConfigs, optionConfigs)
+        case Some(attribute) => normaliseAttribute(attribute, values, optionConfigs)
+        case None => normaliseAttribute(att, values, optionConfigs)
     })
 
     Customer(id = customerConf.id, name = customerConf.name, attributes = normAtts, assignedLabel = None)
@@ -169,7 +172,7 @@ class Generator(seed: Int) {
       val effectConfs = effectConfigs.filter(effectConf => actionConf.effectConfigurations.contains(effectConf.id))
       val effects = effectConfs.map(effectConf => generateEffect(effectConf))
 
-      Action(id = UUID.randomUUID(), name = actionConf.name, effects = effects, repeat = None, target = None)
+      Action(id = UUID.randomUUID(), name = actionConf.name, effects = effects, target = None)
     })
 
   }

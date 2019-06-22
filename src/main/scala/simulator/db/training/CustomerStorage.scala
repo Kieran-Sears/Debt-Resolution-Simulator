@@ -20,7 +20,6 @@ class CustomerStorage(override val tableName: String) extends Storage {
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id UUID NOT NULL,
         name text NOT NULL,
-        attributes VARCHAR[] NOT NULL,
         difficulty FLOAT,
         assigned_label text
       );
@@ -37,21 +36,15 @@ class CustomerStorage(override val tableName: String) extends Storage {
     } yield queryResult
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT (id, name, attributes, difficulty, assigned_label) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
-      .query[CustomerData]
-      .to[List]
-      .transact(xa)
-
-  def readAll() =
-    (sql"SELECT * FROM " ++ tableNameFragment)
+    (sql"SELECT id, name, difficulty, assigned_label FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CustomerData]
       .to[List]
       .transact(xa)
 
   def write(model: Customer, configurationId: UUID) = {
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, name, attributes, difficulty, assigned_label)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.attributes.map(_.id)} ${model.difficulty}, ${model.assignedLabel},)
+      sql""" (id, configuration_id, name, difficulty, assigned_label)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.difficulty}, ${model.assignedLabel},)
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

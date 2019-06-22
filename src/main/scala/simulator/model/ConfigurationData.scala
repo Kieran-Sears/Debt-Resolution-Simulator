@@ -10,23 +10,13 @@ case class Configurations(
   scalarConfigurations: List[ScalarConfig] = Nil,
   categoricalConfigurations: List[CategoricalConfig] = Nil,
   optionConfigurations: List[OptionConfig] = Nil,
-  repeatConfigurations: List[RepetitionConfig] = Nil,
+  // repeatConfigurations: List[RepetitionConfig] = Nil,
   simulationConfiguration: SimulationConfig
 )
 
-case class SimulationConfig(
-  id: UUID,
-  startTime: Int = 0,
-  endTime: Option[Int] = None,
-  numberOfCustomers: Int = 10,
-  kind: String = "simulation")
+case class SimulationConfig(id: UUID, startTime: Int = 0, endTime: Option[Int] = None, numberOfCustomers: Int = 10)
 
-case class CustomerConfig(
-  id: UUID,
-  name: String,
-  attributeOverrides: List[UUID] = Nil,
-  proportion: Int = 100,
-  kind: String = "customer")
+case class CustomerConfig(id: UUID, name: String, attributeOverrides: List[UUID] = Nil, proportion: Int = 100)
 
 case class AttributeConfig(
   id: UUID,
@@ -57,8 +47,7 @@ case class CategoricalConfig(
 case class OptionConfig(
   id: UUID,
   name: String,
-  probability: Int,
-  kind: String = "option"
+  probability: Int
 )
 
 case class ActionConfig(
@@ -66,20 +55,18 @@ case class ActionConfig(
   name: String,
   actionType: ActionEnum,
   // repeat: Option[UUID],
-  effectConfigurations: List[UUID],
-  kind: String = "action"
+  effectConfigurations: List[UUID]
 )
 
 case class EffectConfig(
   id: UUID,
   name: String,
   effectType: EffectEnum,
-  target: String,
-  kind: String = "effect"
+  target: String
 )
 
-case class RepetitionConfig(
-  id: UUID,
-  interval: Int,
-  repetitions: Int
-)
+//case class RepetitionConfig(
+//  id: UUID,
+//  interval: Int,
+//  repetitions: Int
+//)

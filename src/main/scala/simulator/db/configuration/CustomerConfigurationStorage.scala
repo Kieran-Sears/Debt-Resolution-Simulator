@@ -1,12 +1,14 @@
 package simulator.db.configuration
 
 import java.util.UUID
+
 import cats.effect.IO
 import doobie.implicits._
 import simulator.model.CustomerConfig
 import simulator.db.Storage
 import doobie.postgres._
 import doobie.postgres.implicits._
+import simulator.db.model.CustomerConfigData
 
 class CustomerConfigurationStorage(override val tableName: String) extends Storage {
 
@@ -19,8 +21,7 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id  UUID NOT NUll,
         name text NOT NULL,
-        attribute_configurations VARCHAR[],
-        proportion float NOT NULL
+        proportion INTEGER NOT NULL
       );
       CREATE INDEX IF NOT EXISTS """ ++ indexName("to") ++ sql" ON " ++ tableNameFragment ++
         sql""" (id);
@@ -34,17 +35,21 @@ class CustomerConfigurationStorage(override val tableName: String) extends Stora
         .transact(xa)
     } yield queryResult
 
-  def readByConfigurationId(id: UUID) =
-    (sql"SELECT (id, name, attribute_configurations, proportion) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
-      .query[CustomerConfig]
+  def readByConfigurationId(id: UUID) = {
+    println(s"customer store read ${id.toString}")
+    (sql"SELECT id, name, proportion FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+      .query[CustomerConfigData]
       .to[List]
       .transact(xa)
+  }
 
-  def write(model: CustomerConfig, configurationId: UUID) =
+  def write(model: CustomerConfig, configurationId: UUID) = {
+    println(s"Attempting to store CustomerConfig(${model.id}, $configurationId, ${model.name}, ${model.proportion})")
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, name, attribute_configurations, proportion)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.attributeOverrides}, ${model.proportion})
+      sql""" (id, configuration_id, name, proportion)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.proportion})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)
+  }
 }

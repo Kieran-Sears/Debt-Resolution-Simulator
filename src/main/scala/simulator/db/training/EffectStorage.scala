@@ -18,6 +18,7 @@ class EffectStorage(override val tableName: String) extends Storage {
         sql""" (
         id UUID PRIMARY KEY NOT NULL UNIQUE,
         configuration_id UUID NOT NULL,
+        action_id UUID NOT NULL,
         name text NOT NULL,
         effect_type text NOT NULL,
         target text NOT NULL,
@@ -37,21 +38,15 @@ class EffectStorage(override val tableName: String) extends Storage {
     } yield queryResult
 
   def readByConfigurationId(id: UUID) =
-    (sql"SELECT * FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+    (sql"SELECT id, name, effect_type, target, value, certainty FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[Effect]
       .to[List]
       .transact(xa)
 
-  def readAll() =
-    (sql"SELECT * FROM " ++ tableNameFragment)
-      .query[Effect]
-      .to[List]
-      .transact(xa)
-
-  def write(model: Effect, configurationId: UUID) =
+  def write(model: Effect, configurationId: UUID, actionId: UUID) =
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, name, effect_type, target, value, certainty)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.effectType}, ${model.target}, ${model.value}, ${model.certainty})
+      sql""" (id, configuration_id, action_id, name, effect_type, target, value, certainty)
+          VALUES (${model.id}, $configurationId, $actionId, ${model.name}, ${model.effectType}, ${model.target}, ${model.value}, ${model.certainty})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

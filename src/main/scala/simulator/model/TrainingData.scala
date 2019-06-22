@@ -1,9 +1,11 @@
 package simulator.model
 import java.util.UUID
 
+import org.apache.commons.math3.distribution.NormalDistribution
+
 import scala.util.Random
 
-case class Action(id: UUID, name: String, effects: List[Effect], repeat: Option[Repeat], target: Option[Customer]) {
+case class Action(id: UUID, name: String, effects: List[Effect], /*repeat: Option[Repeat],*/ target: Option[Customer]) {
 
   def perform(state: State): State = {
     val customer = getTarget
@@ -28,8 +30,32 @@ case class Action(id: UUID, name: String, effects: List[Effect], repeat: Option[
   }
 
   def processCustomer(customer: Customer): Customer = {
-    ???
+    val affs = effects.filter(_.effectType == EffectEnum.Affect)
+    val effs = effects.filter(_.effectType == EffectEnum.Effect)
 
+    val affectTargets = affs.map(_.target)
+
+    val affectedEffects = effs.filter(p => affectTargets.contains(p.name))
+
+    val influences = affectedEffects.map(e => {
+
+      val influence = affs.foldLeft(e.getValue)((acc, a) => {
+        if (a.target == e.name) {
+          acc + a.calculateInfluence
+        } else {
+          acc
+        }
+      })
+      (e.target, influence)
+    })
+
+    val newAttributes = customer.attributes.map(att => {
+      influences.find(x => x._1 == att.name) match {
+        case Some((_, influ)) => att.copy(value = att.value + influ)
+        case None => att
+      }
+    })
+    customer.copy(attributes = newAttributes)
   }
 
   def getTarget =
@@ -44,7 +70,21 @@ case class Effect(
   target: String,
   value: Option[Double] = None,
   certainty: Option[Int] = None
-)
+) {
+  def calculateInfluence = {
+    val mean =
+      value.getOrElse(throw new NoSuchElementException(s"Could not find value for effect $name : $id for $target"))
+    val standardDistribution =
+      certainty.getOrElse(
+        throw new NoSuchElementException(s"Could not find certainty for effect $name : $id for $target"))
+    val dist = new NormalDistribution(mean, standardDistribution)
+    dist.sample()
+  }
+
+  def getValue = {
+    value.getOrElse(throw new Exception(s"Cannot get value for effect $name : $id, must not have been configured!"))
+  }
+}
 
 case class Customer(
   id: UUID,
@@ -72,9 +112,9 @@ case class Attribute(
   value: Double
 )
 
-case class Repeat(
-  id: UUID,
-  total: Int,
-  next: Int,
-  left: Int
-)
+//case class Repeat(
+//  id: UUID,
+//  total: Int,
+//  next: Int,
+//  left: Int
+//)

@@ -20,50 +20,54 @@ trait MetaMapping extends MarshallingImplicits {
   implicit val EffectEnumMeta: Meta[EffectEnum] = Meta[String].imap(EffectEnum.fromEnum)(EffectEnum.toEnum)
   implicit val AttributeEnumMeta: Meta[AttributeEnum] = Meta[String].imap(AttributeEnum.fromEnum)(AttributeEnum.toEnum)
 
-//  implicit val customerRead: Read[CustomerData] =
-//    Read[(UUID, String, List[UUID], Option[Int], Option[Int])].map {
-//      case (a, b, c, d, e) => CustomerData(a, b, c, d, e)
+//  implicit val listUuidRead: Read[List[UUID]] =
+//    Read[List[String]].map { a =>
+//      a.map(UUID.fromString)
 //    }
 //
-//  implicit val customerWrite: Write[CustomerData] =
-//    Write[(UUID, String, List[UUID], Option[Int], Option[Int])].contramap(p =>
-//      (p.id, p.name, p.attributes, p.difficulty, p.assignedLabel))
-//
-//  implicit val actionRead: Read[ActionData] =
-//    Read[(UUID, String, List[UUID], Option[UUID], Option[UUID])].map {
-//      case (a, b, c, d, e) => ActionData(a, b, c, d, e)
+//  implicit val listUuidPut: Put[List[UUID]] =
+//    Put[List[String]].contramap { a =>
+//      a.map(x => x.toString)
 //    }
 //
-//  implicit val actionWrite: Write[ActionData] =
-//    Write[(UUID, String, List[UUID], Option[UUID], Option[UUID])].contramap(p =>
-//      (p.id, p.name, p.effects, p.repeat, p.target))
-
-  implicit val uuidListMeta: Meta[List[UUID]] =
-    Meta.Advanced
-      .other[PGobject]("json")
-      .timap[List[UUID]](a => a.getValue.toJson.convertTo[List[UUID]])(
-        a => {
-          val o = new PGobject
-          o.setType("json")
-          o.setValue(a.map(_.toString).toJson.toString)
-          o
-        }
-      )
-
-  implicit val optionalUuidMeta: Meta[Option[UUID]] =
-    Meta.Advanced
-      .other[PGobject]("UUID")
-      .timap[Option[UUID]](a =>
-        a.getValue match {
-          case null => None
-          case s => Some(UUID.fromString(s))
-      })(
-        a => {
-          val o = new PGobject
-          o.setType("UUID")
-          o.setValue(a.orNull.toString)
-          o
-        }
-      )
+//  implicit val optionUuidRead: Read[Option[UUID]] =
+//    Read[String].map {
+//      case s: String => Some(UUID.fromString(s))
+//      case _ => None
+//    }
+//
+//  implicit val optionUuidPut: Put[Option[UUID]] =
+//    Put[String].contramap {
+//      case Some(uuid) => uuid.toString
+//      case None => ""
+//    }
+//
+//  implicit val uuidListMeta: Meta[List[UUID]] =
+//    Meta.Advanced
+//      .other[PGobject]("VARCHAR[]")
+//      .timap[List[UUID]](a => a.getValue.toJson.convertTo[List[UUID]])(
+//        a => {
+//          val o = new PGobject
+//          o.setType("VARCHAR[]")
+//          o.setValue(a.map(_.toString).toJson.toString)
+//          o
+//        }
+//      )
+//
+//  implicit val optionalUuidMeta: Meta[Option[UUID]] =
+//    Meta.Advanced
+//      .other[PGobject]("UUID")
+//      .timap[Option[UUID]](a =>
+//        a.getValue match {
+//          case null => None
+//          case s => Some(UUID.fromString(s))
+//      })(
+//        a => {
+//          val o = new PGobject
+//          o.setType("UUID")
+//          o.setValue(a.orNull.toString)
+//          o
+//        }
+//      )
 
 }

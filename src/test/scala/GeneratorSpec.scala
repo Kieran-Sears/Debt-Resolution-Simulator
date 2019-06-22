@@ -14,7 +14,7 @@ class GeneratorSpec extends FlatSpec with Matchers {
     value shouldEqual 40
   }
 
-  def getValidCustomerConfigurationData = {
+  def getValidCustomerConfigurationData() = {
     val arrears = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 50, 500)
     val satisfaction = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 10, 50)
 
@@ -41,10 +41,6 @@ class GeneratorSpec extends FlatSpec with Matchers {
       proportion = 20
     )
 
-    val scalarConfigs = List(arrears, satisfaction, age, income)
-    val categoricalConfigs = List(tenure)
-    val optionConfigs = List[OptionConfig](rent, homeowner, councilHousing)
-
     val arrearsG = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 10, 50000)
     val satisfactionG = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 0, 100)
 
@@ -64,6 +60,10 @@ class GeneratorSpec extends FlatSpec with Matchers {
     val incomeAttG = AttributeConfig(id = UUID.randomUUID(), name = "Income", value = incomeG.id, AttributeEnum.Global)
     val tenureAttG = AttributeConfig(id = UUID.randomUUID(), name = "Tenure", value = tenureG.id, AttributeEnum.Global)
 
+    val scalarConfigs = List(arrears, satisfaction, age, income, arrearsG, satisfactionG, ageG, incomeG)
+    val categoricalConfigs = List(tenure, tenureG)
+    val optionConfigs = List[OptionConfig](rent, homeowner, councilHousing)
+
     val attributeConfigs = List(
       arrearsAttG,
       satisfactionAttG,
@@ -81,7 +81,7 @@ class GeneratorSpec extends FlatSpec with Matchers {
 
   it should "when given a valid customer configuration return a customer with normalised values" in {
 
-    val d = getValidCustomerConfigurationData
+    val d = getValidCustomerConfigurationData()
 
     val customer = (gen.generateCustomer _).tupled(d)
 
@@ -93,7 +93,7 @@ class GeneratorSpec extends FlatSpec with Matchers {
   }
 
   it should "when given valid configurations return average customers to train on" in {
-    val d = getValidCustomerConfigurationData
+    val d = getValidCustomerConfigurationData()
     val customer = (gen.idealCustomer _).tupled(d)
 
     customer.id shouldEqual d._1.id

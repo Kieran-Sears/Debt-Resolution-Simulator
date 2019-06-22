@@ -47,20 +47,20 @@ class HttpServiceSpec
     val age3 = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 35, 55)
     val income3 = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 30000, 50000)
 
-    val rent = OptionConfig(id = UUID.randomUUID(), "Rent", 50)
-    val homeowner = OptionConfig(id = UUID.randomUUID(), "Homeowner", 20)
-    val councilHousing = OptionConfig(id = UUID.randomUUID(), "Council housing", 30)
-    val tenure = CategoricalConfig(id = UUID.randomUUID(), List(rent.id, homeowner.id, councilHousing.id))
+    val rent = OptionConfig(UUID.randomUUID(), "Rent", 50)
+    val homeowner = OptionConfig(UUID.randomUUID(), "Homeowner", 20)
+    val councilHousing = OptionConfig(UUID.randomUUID(), "Council housing", 30)
+    val tenure = CategoricalConfig(UUID.randomUUID(), List(rent.id, homeowner.id, councilHousing.id))
 
     val arrearsG = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 10, 50000)
     val satisfactionG = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 0, 100)
     val ageG = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 18, 85)
     val incomeG = ScalarConfig(id = UUID.randomUUID(), VarianceEnum.None, 15000, 22000)
 
-    val rentG = OptionConfig(id = UUID.randomUUID(), "Rent", 50)
-    val homeownerG = OptionConfig(id = UUID.randomUUID(), "Homeowner", 20)
-    val councilHousingG = OptionConfig(id = UUID.randomUUID(), "Council housing", 30)
-    val emergencyG = OptionConfig(id = UUID.randomUUID(), "Emergency", 30)
+    val rentG = OptionConfig(UUID.randomUUID(), "Rent", 50)
+    val homeownerG = OptionConfig(UUID.randomUUID(), "Homeowner", 20)
+    val councilHousingG = OptionConfig(UUID.randomUUID(), "Council housing", 30)
+    val emergencyG = OptionConfig(UUID.randomUUID(), "Emergency", 30)
     val tenureG =
       CategoricalConfig(id = UUID.randomUUID(), List(rentG.id, homeownerG.id, councilHousingG.id, emergencyG.id))
 
@@ -119,6 +119,10 @@ class HttpServiceSpec
     )
 
     val scalarConfigs = List(
+      arrearsG,
+      satisfactionG,
+      ageG,
+      incomeG,
       arrears1,
       satisfaction1,
       age1,
@@ -143,7 +147,7 @@ class HttpServiceSpec
 
     val effectConfigs = List(effect1, effect2, effect3, effect4)
     val actionConfigs = List(action1, action2)
-    val categoricalConfigs = List(tenure)
+    val categoricalConfigs = List(tenure, tenureG)
     val optionConfigs = List[OptionConfig](rent, homeowner, councilHousing)
     val customerConfigs = List(customerConfig1, customerConfig2, customerConfig3)
     val simulationConfig = SimulationConfig(UUID.randomUUID(), 0, Some(100), 120)
@@ -178,7 +182,6 @@ class HttpServiceSpec
       scalarConfigs,
       categoricalConfigs,
       optionConfigs,
-      Nil,
       simulationConfig
     )
 

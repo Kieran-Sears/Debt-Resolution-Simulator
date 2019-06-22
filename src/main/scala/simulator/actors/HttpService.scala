@@ -61,6 +61,7 @@ class HttpService(
         entity(as[Configurations]) { configs =>
           {
             val trainingData = gen.trainingData(configs)
+            println(s"CONFIGURE:\n $trainingData")
             StorageImpl.storeConfiguration(username, configs)
             complete(OK, trainingData)
           }

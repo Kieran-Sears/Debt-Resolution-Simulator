@@ -34,24 +34,22 @@ class SimulationStorage(override val tableName: String) extends Storage {
         .transact(xa)
     } yield queryResult
 
-  def readByConfigurationId(id: UUID) =
-    (sql"SELECT (id, start_time, end_time, number_of_customers) FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
+  def readByConfigurationId(id: UUID) = {
+    println(s"sim store read ${id.toString}")
+    (sql"SELECT id, start_time, end_time, number_of_customers FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[SimulationConfig]
-      .to[List]
+      .unique
       .transact(xa)
+  }
 
-  def readAll() =
-    (sql"SELECT * FROM " ++ tableNameFragment)
-      .query[SimulationConfig]
-      .to[List]
-      .transact(xa)
-
-  def write(model: SimulationConfig, configurationId: UUID) =
+  def write(model: SimulationConfig, configurationId: UUID) = {
+    println(
+      s"Attempting to store simulationConf(${model.id}, $configurationId, ${model.startTime}, ${model.endTime}, ${model.numberOfCustomers})")
     (sql"""INSERT INTO """ ++ tableNameFragment ++
       sql""" (id, configuration_id, start_time, end_time, number_of_customers)
-          VALUES (${model.id}, ${configurationId}, ${model.startTime}, ${model.endTime}, ${model.numberOfCustomers})
+          VALUES (${model.id}, $configurationId, ${model.startTime}, ${model.endTime}, ${model.numberOfCustomers})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)
-
+  }
 }
