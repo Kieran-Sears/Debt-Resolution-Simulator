@@ -9,15 +9,16 @@ import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
 import simulator.actors.HttpService
-import simulator.db.StorageImpl
+import simulator.db.{StorageController, StorageImpl}
+
 import scala.concurrent.duration._
 
 class Main(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
-  implicit val timeout: Timeout
+  implicit val timeout: Timeout,
+  implicit val store: StorageController
 ) {
-
   val httpService: HttpService = new HttpService()
 
   val clientRouteLogged = DebuggingDirectives.logRequestResult("Client ReST", Logging.InfoLevel)(httpService.route)
@@ -35,9 +36,7 @@ object Main extends App {
   implicit val system: ActorSystem = ActorSystem("Simulation")
   implicit val materializer = ActorMaterializer()
   implicit val timeout: Timeout = Timeout(10 seconds)
-
-  StorageImpl.initialiseStorageTables()
-  StorageImpl.initialiseTrainingTables()
+  implicit val store = new StorageImpl()
 
   val simulation = new Main()
 }

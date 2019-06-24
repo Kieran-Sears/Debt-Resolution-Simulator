@@ -106,8 +106,6 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val categoricalConfigFormat: RootJsonFormat[CategoricalConfig] = jsonFormat3(CategoricalConfig)
   implicit val effectConfigFormat: RootJsonFormat[EffectConfig] = jsonFormat4(EffectConfig)
   implicit val FeatureValueFormat: RootJsonFormat[Attribute] = jsonFormat3(Attribute)
-  //implicit val repeatConfigFormat: RootJsonFormat[RepetitionConfig] = jsonFormat3(RepetitionConfig)
-  //implicit val repeatFormat: RootJsonFormat[Repeat] = jsonFormat4(Repeat)
   implicit val attributeConfigFormat: RootJsonFormat[AttributeConfig] = jsonFormat4(AttributeConfig)
   implicit val customerConfigFormat: RootJsonFormat[CustomerConfig] = jsonFormat4(CustomerConfig)
   implicit val actionConfigFormat: RootJsonFormat[ActionConfig] = jsonFormat4(ActionConfig)
@@ -123,24 +121,24 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val statesFormat: RootJsonFormat[State] = jsonFormat7(State)
   implicit val stateFormat: JsonFormat[State] = lazyFormat(jsonFormat7(State))
 
-  implicit object ValueJsonFormat extends RootJsonFormat[Value] {
-
-    def write(a: Value) = {
-      a match {
-        case v: ScalarConfig => v.toJson
-        case v: CategoricalConfig => v.toJson
-        case _ => throw DeserializationException("Not yet implemented marshalling for System Action")
-      }
-    }
-
-    def read(value: JsValue) = {
-      val id = value.asJsObject.fields("id")
-      value.asJsObject.fields("kind") match {
-        case JsString("scalar") => value.convertTo[ScalarConfig].copy(id = id.convertTo[UUID])
-        case JsString("categorical") => value.convertTo[CategoricalConfig].copy(id = id.convertTo[UUID])
-        case _ => throw DeserializationException("Could not Unmarshal AttributeValue of Unknown Type")
-      }
-    }
-  }
+//  implicit object ValueJsonFormat extends RootJsonFormat[Value] {
+//
+//    def write(a: Value) = {
+//      a match {
+//        case v: ScalarConfig => v.toJson
+//        case v: CategoricalConfig => v.toJson
+//        case _ => throw DeserializationException("Not yet implemented marshalling for System Action")
+//      }
+//    }
+//
+//    def read(value: JsValue) = {
+//      val id = value.asJsObject.fields("id")
+//      value.asJsObject.fields("kind") match {
+//        case JsString("scalar") => value.convertTo[ScalarConfig].copy(id = id.convertTo[UUID])
+//        case JsString("categorical") => value.convertTo[CategoricalConfig].copy(id = id.convertTo[UUID])
+//        case _ => throw DeserializationException("Could not Unmarshal AttributeValue of Unknown Type")
+//      }
+//    }
+//  }
 
 }

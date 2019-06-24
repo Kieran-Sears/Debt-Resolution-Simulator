@@ -1,6 +1,7 @@
 package actors
 
 import java.util.UUID
+
 import akka.http.scaladsl.model._
 import org.scalatest._
 import akka.http.scaladsl.server.Route
@@ -8,9 +9,12 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.stream.ActorMaterializer
 import akka.testkit.{ImplicitSender, TestKitBase}
 import akka.util.Timeout
+import cats.effect.IO
 import org.scalatest.concurrent.ScalaFutures
 import simulator.actors.HttpService
+import simulator.db.{StorageController, StorageError, StorageImpl}
 import simulator.model._
+
 import scala.concurrent.duration._
 
 class HttpServiceSpec
@@ -23,12 +27,43 @@ class HttpServiceSpec
   with TryValues
   with ScalaFutures {
 
-  def callServiceConfigure: Route = {
+  def FakeStorage(results: Either[StorageError, Configurations]) = new StorageImpl() {
+
+    override def initialiseStorageTables(): IO[Either[StorageError, Unit]] = IO.pure(Right(Unit))
+    override def initialiseTrainingTables(): IO[Either[StorageError, Unit]] = IO.pure(Right(Unit))
+    override def initialisePlayTables(attributes: List[AttributeConfig]): IO[Either[StorageError, Unit]] =
+      IO.pure(Right(Unit))
+    override def storeConfiguration(username: String, config: Configurations): IO[Either[StorageError, Unit]] =
+      IO.pure(Right(Unit))
+    override def getConfiguration(configId: UUID): IO[Either[StorageError, Configurations]] = IO.pure(results)
+    override def storeTrainingData(data: TrainingData): IO[Either[StorageError, Unit]] = IO.pure(Right(Unit))
+    override def storePlayingData(
+      attributes: List[AttributeConfig],
+      data: List[(simulator.model.Customer, simulator.model.Action)],
+      configurationId: UUID): IO[Either[StorageError, Unit]] = IO.pure(Right(Unit))
+  }
+
+  def callServiceConfigure(implicit store: StorageController): Route = {
     implicit lazy val materializer: ActorMaterializer = ActorMaterializer()
     implicit lazy val timeout: Timeout = Timeout(5 seconds)
     val service = new HttpService
     service.configure("TestUsername")
   }
+
+//  it should "reply with a 403 when it receives a PUT request with an invalid payload" in {
+//    implicit val ws: WriteService[IO] = FakeWriteService(Left(Unauthorised))
+//    val putRoute = new PutMessageRoute[IO]
+//
+//    val toId = UUID.randomUUID()
+//    val fromId = UUID.randomUUID()
+//    val req = Request[IO](
+//      method = Method.PUT,
+//      headers = pu.headerBuilder(Permissions(Some(fromId.toString))),
+//      uri = Uri.fromString("/messages/" + UUID.randomUUID()).right.get
+//    ).withEntity(Map("to" -> s"$toId", "from" -> s"$fromId").asJson.toString()) // text field missing
+//    val resp = putRoute.route(req).unsafeRunSync()
+//    resp.status.code should be(403)
+//  }
 
   "POST to Configure route with a valid configuration" should "return a status code 200 with testing examples" in {
 
@@ -185,7 +220,10 @@ class HttpServiceSpec
       simulationConfig
     )
 
-    Put("/configure", configurations) ~> callServiceConfigure ~> check {
+    val dbRet = Right(configurations)
+    val fakeStore = FakeStorage(dbRet)
+
+    Put("/configure", configurations) ~> callServiceConfigure(fakeStore) ~> check {
       status shouldEqual StatusCodes.OK
       val data = entityAs[TrainingData]
       data.customers.map(customer => {

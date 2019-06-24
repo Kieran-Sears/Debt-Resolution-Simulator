@@ -5,7 +5,10 @@ import org.apache.commons.math3.distribution.NormalDistribution
 
 import scala.util.Random
 
-case class Action(id: UUID, name: String, effects: List[Effect], /*repeat: Option[Repeat],*/ target: Option[Customer]) {
+trait Train
+
+case class Action(id: UUID, name: String, effects: List[Effect], /*repeat: Option[Repeat],*/ target: Option[Customer])
+  extends Train {
 
   def perform(state: State): State = {
     val customer = getTarget
@@ -70,7 +73,7 @@ case class Effect(
   target: String,
   value: Option[Double] = None,
   certainty: Option[Int] = None
-) {
+) extends Train {
   def calculateInfluence = {
     val mean =
       value.getOrElse(throw new NoSuchElementException(s"Could not find value for effect $name : $id for $target"))
@@ -91,7 +94,8 @@ case class Customer(
   name: String,
   attributes: List[Attribute] = Nil,
   difficulty: Option[Int] = None,
-  assignedLabel: Option[Int] = None) {
+  assignedLabel: Option[Int] = None)
+  extends Train {
 
   def getArrears = {
     attributes
@@ -110,11 +114,4 @@ case class Attribute(
   id: UUID,
   name: String,
   value: Double
-)
-
-//case class Repeat(
-//  id: UUID,
-//  total: Int,
-//  next: Int,
-//  left: Int
-//)
+) extends Train

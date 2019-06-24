@@ -4,6 +4,7 @@ import java.util.UUID
 
 import akka.actor.{ActorSystem, Props}
 import akka.event.{Logging, LoggingAdapter}
+import akka.http.scaladsl.model.StatusCodes
 import akka.pattern.ask
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
@@ -12,7 +13,7 @@ import akka.http.scaladsl.server.directives.Credentials
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import simulator.classifier.{DataLoader, KerasModel}
-import simulator.db.StorageImpl
+import simulator.db.{StorageController, StorageImpl}
 import simulator.{Generator, Settings}
 import simulator.model._
 
@@ -21,7 +22,8 @@ import scala.concurrent.Await
 class HttpService(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
-  implicit val timeout: Timeout
+  implicit val timeout: Timeout,
+  implicit val storage: StorageController
 ) extends MarshallingImplicits {
 
   lazy val log: LoggingAdapter = Logging(system, classOf[HttpService])
@@ -62,7 +64,7 @@ class HttpService(
           {
             val trainingData = gen.trainingData(configs)
             println(s"CONFIGURE:\n $trainingData")
-            StorageImpl.storeConfiguration(username, configs)
+            storage.storeConfiguration(username, configs).unsafeRunSync()
             complete(OK, trainingData)
           }
         }
@@ -75,32 +77,37 @@ class HttpService(
       put {
         entity(as[TrainingData]) { trainingData =>
           {
-            val conf: Configurations = StorageImpl.getConfiguration(trainingData.configurationId)
+            storage.getConfiguration(trainingData.configurationId).unsafeRunSync() match {
+              case Right(conf) => {
+                val customers = gen.playData(conf)
 
-            val customers = gen.playData(conf)
+                val allOutcomes: List[(Customer, List[(Action, Customer)])] = customers.map { c: Customer =>
+                  (c, trainingData.actions.foldLeft(List[(Action, Customer)]()) {
+                    case (acc, a) => if (a.getTarget.name == c.name) acc :+ (a, a.processCustomer(c)) else acc
+                  })
+                }
 
-            val allOutcomes: List[(Customer, List[(Action, Customer)])] = customers.map { c: Customer =>
-              (c, trainingData.actions.foldLeft(List[(Action, Customer)]()) {
-                case (acc, a) => if (a.getTarget.name == c.name) acc :+ (a, a.processCustomer(c)) else acc
-              })
-            }
-
-            val idealMappings: List[(Customer, Action)] = allOutcomes.map {
-              case (customer, processedList) => {
-                val bestActionCustomer = processedList.foldLeft(processedList.head) {
-                  case ((x: Action, y: Customer), (a: Action, c: Customer)) => {
-                    if (Stats.compareCustomers(y, c) == c) (a, c) else (x, y)
+                val idealMappings: List[(Customer, Action)] = allOutcomes.map {
+                  case (customer, processedList) => {
+                    val bestActionCustomer = processedList.foldLeft(processedList.head) {
+                      case ((x: Action, y: Customer), (a: Action, c: Customer)) => {
+                        if (Stats.compareCustomers(y, c) == c) (a, c) else (x, y)
+                      }
+                    }
+                    (customer, bestActionCustomer._1)
                   }
                 }
-                (customer, bestActionCustomer._1)
+
+                storage.storeTrainingData(trainingData).unsafeRunSync()
+                storage
+                  .storePlayingData(conf.attributeConfigurations, idealMappings, trainingData.configurationId)
+                  .unsafeRunSync()
+
+                complete(OK, TrainingData(conf.id, customers, trainingData.actions))
+
               }
+              case Left(_) => complete(StatusCodes.BadRequest)
             }
-
-            StorageImpl.storeTrainingData(trainingData)
-            StorageImpl
-              .storePlayingData(conf.attributeConfigurations, idealMappings, trainingData.configurationId)
-
-            complete(OK, TrainingData(conf.id, customers, trainingData.actions))
           }
         }
       }

@@ -1,6 +1,7 @@
 package simulator.db.ml
 
 import java.util.UUID
+
 import cats.effect.IO
 import doobie.implicits._
 import doobie.util.fragment.Fragment
@@ -32,11 +33,6 @@ class TrainStorage(override val tableName: String) extends Storage {
     """).update.run.transact(xa)
     } yield queryResult
   }
-
-  def drop(): IO[Int] =
-    for {
-      queryResult <- (sql"DROP TABLE IF EXISTS " ++ tableNameFragment ++ sql";").update.run.transact(xa)
-    } yield queryResult
 
   def write(customer: Customer, actionName: String, configurationId: UUID) = {
 

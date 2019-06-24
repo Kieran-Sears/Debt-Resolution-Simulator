@@ -5,15 +5,28 @@ class NoOpStorageImpl {}
 import java.util.UUID
 
 import cats.Monad
-import cats.effect.{Async, ContextShift, IO}
-import cats.implicits._
+import cats.effect.IO
+import simulator.db._
+import simulator.model.{Config, Train}
 
-class NoOpStorageImpl extends {
+class NoOpConfigurationStorageImpl
+  extends PrimaryConfigurationStorage
+  with SecondaryConfigurationStorage
+  with PrimaryTrainingStorage
+  with SecondaryTrainingStorage {
   val IO = Monad[IO]
 
-  override def readAll(): IO[List[Message]] = IO.pure(Nil)
-  override def readMessages(convId: UUID, userId: String): IO[List[Message]] =
-    IO.pure(Nil)
+  val tableName = "testTableName"
 
-  override def readNumberOfUnreadMessages(userId: String): IO[Int] = IO.pure(0)
+  def init(): IO[Int] = IO.pure(0)
+
+  def readByOwnerId(id: UUID): IO[Any] = IO.pure(Nil)
+
+  def write(model: Config, configurationId: UUID): IO[Int] = IO.pure(0)
+
+  def write(config: Config, configurationId: UUID, owner: UUID): IO[Int] = IO.pure(0)
+
+  def write(train: Train, configurationId: UUID): IO[Int] = IO.pure(0)
+
+  def write(train: Train, configurationId: UUID, owner: UUID): IO[Int] = IO.pure(0)
 }

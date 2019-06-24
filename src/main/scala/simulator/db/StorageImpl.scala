@@ -3,185 +3,229 @@ package simulator.db
 import java.util.UUID
 
 import cats.effect.IO
-import simulator.db.configuration._
-import simulator.db.ml.{TestStorage, TrainStorage}
-import simulator.db.model.CategoricalConfigData
-import simulator.db.training._
+import simulator.db.ml._
 import simulator.model._
+import cats.implicits._
+import simulator.db.model.{AttributeConfigData, CategoricalConfigData, OptionConfigData}
 
-object StorageImpl {
+trait StorageError
 
-  val simStorage: SimulationStorage = new SimulationStorage("configuration_simulation")
-  val cusStorage: CustomerConfigurationStorage = new CustomerConfigurationStorage("configuration_customer")
-  val actStorage: ActionConfigurationStorage = new ActionConfigurationStorage("configuration_action")
-  val effStorage: EffectConfigurationStorage = new EffectConfigurationStorage("configuration_effect")
-  val attStorage: AttributeConfigurationStorage = new AttributeConfigurationStorage("configuration_attribute")
-  val scaStorage: ScalarConfigurationStorage = new ScalarConfigurationStorage("configuration_scalar")
-  val catStorage: CategoricalConfigurationStorage = new CategoricalConfigurationStorage("configuration_categorical")
-  val optStorage: OptionConfigurationStorage = new OptionConfigurationStorage("configuration_option")
+trait StorageController {
+  def initialiseStorageTables(): IO[Either[StorageError, Unit]]
+  def initialiseTrainingTables(): IO[Either[StorageError, Unit]]
+  def initialisePlayTables(attributes: List[AttributeConfig]): IO[Either[StorageError, Unit]]
+  def storeConfiguration(username: String, config: Configurations): IO[Either[StorageError, Unit]]
+  def getConfiguration(configId: UUID): IO[Either[StorageError, Configurations]]
+  def storeTrainingData(data: TrainingData): IO[Either[StorageError, Unit]]
+  def storePlayingData(
+    attributes: List[AttributeConfig],
+    data: List[(simulator.model.Customer, simulator.model.Action)],
+    configurationId: UUID): IO[Either[StorageError, Unit]]
+}
 
-  val attributeStorage: AttributeStorage = new AttributeStorage("training_attribute")
-  val customerStorage: CustomerStorage = new CustomerStorage("training_customer")
-  val actionStorage: ActionStorage = new ActionStorage("training_action")
-  val effectStorage: EffectStorage = new EffectStorage("training_effect")
+class StorageImpl extends StorageController {
+
+  val simStorage: configuration.Simulation = new configuration.Simulation("configuration_simulation")
+  val cusStorage: configuration.Customer = new configuration.Customer("configuration_customer")
+  val actStorage: configuration.Action = new configuration.Action("configuration_action")
+  val effStorage: configuration.Effect = new configuration.Effect("configuration_effect")
+  val attStorage: configuration.Attribute = new configuration.Attribute("configuration_attribute")
+  val scaStorage: configuration.Scalar = new configuration.Scalar("configuration_scalar")
+  val catStorage: configuration.Categorical = new configuration.Categorical("configuration_categorical")
+  val optStorage: configuration.Option = new configuration.Option("configuration_option")
+
+  val attributeStorage: training.Attribute = new training.Attribute("training_attribute")
+  val customerStorage: training.Customer = new training.Customer("training_customer")
+  val actionStorage: training.Action = new training.Action("training_action")
+  val effectStorage: training.Effect = new training.Effect("training_effect")
 
   val train: TrainStorage = new TrainStorage("playing_train")
-  val test: TestStorage = new TestStorage("playing_test")
+  // val test: TestStorage = new TestStorage("playing_test")
 
-  def initialiseStorageTables(): Unit = {
+  override def initialiseStorageTables(): IO[Either[StorageError, Unit]] = {
     println("initialiseStorageTables")
-    simStorage.init().unsafeRunSync()
-    cusStorage.init().unsafeRunSync()
-    actStorage.init().unsafeRunSync()
-    effStorage.init().unsafeRunSync()
-    attStorage.init().unsafeRunSync()
-    scaStorage.init().unsafeRunSync()
-    catStorage.init().unsafeRunSync()
-    optStorage.init().unsafeRunSync()
+
+    for {
+      _ <- simStorage.init()
+      _ <- cusStorage.init()
+      _ <- actStorage.init()
+      _ <- effStorage.init()
+      _ <- attStorage.init()
+      _ <- scaStorage.init()
+      _ <- catStorage.init()
+      _ <- optStorage.init()
+    } yield Right(Unit)
+
+//      simStorage.init().unsafeRunSync()
+//    cusStorage.init().unsafeRunSync()
+//    actStorage.init().unsafeRunSync()
+//    effStorage.init().unsafeRunSync()
+//    attStorage.init().unsafeRunSync()
+//    scaStorage.init().unsafeRunSync()
+//    catStorage.init().unsafeRunSync()
+//    optStorage.init().unsafeRunSync()
   }
 
-  def initialiseTrainingTables(): Unit = {
-    println("initialiseTrainingTables")
-    attributeStorage.init().unsafeRunSync()
-    customerStorage.init().unsafeRunSync()
-    actionStorage.init().unsafeRunSync()
-    effectStorage.init().unsafeRunSync()
+  override def initialiseTrainingTables(): IO[Either[StorageError, Unit]] = {
+
+    for {
+      _ <- attributeStorage.init()
+      _ <- customerStorage.init()
+      _ <- actionStorage.init()
+      _ <- effectStorage.init()
+      send <- IO.apply(Unit)
+    } yield Right(Unit)
+
+//    println("initialiseTrainingTables")
+//    attributeStorage.init().unsafeRunSync()
+//    customerStorage.init().unsafeRunSync()
+//    actionStorage.init().unsafeRunSync()
+//    effectStorage.init().unsafeRunSync()
   }
 
-  def initialisePlayTables(attributes: List[AttributeConfig]): Unit = {
+  override def initialisePlayTables(attributes: List[AttributeConfig]): IO[Either[StorageError, Unit]] = {
     println("initialisePlayTables")
-    train.init(attributes)
+    for {
+      _ <- train.init(attributes)
+    } yield Right(Unit)
   }
 
-  def storeConfiguration(username: String, config: Configurations): Unit = {
-    println("storeConfiguration")
-
-    val id = config.id
+  def storeAttributesByCustomer(customerId: UUID, attributes: List[UUID], config: Configurations): IO[List[Int]] = {
     val valueList = config.scalarConfigurations ++ config.categoricalConfigurations
-    simStorage.write(config.simulationConfiguration, config.id).unsafeRunSync()
-
-    config.customerConfigurations.foreach(customer => {
-      customer.attributeOverrides.foreach(y => {
-        val attributes = config.attributeConfigurations.filter(z => z.id == y)
-        attributes.foreach(attribute => {
-          val value = valueList.filter(_.id == attribute.value)
-          value.foreach {
-            case scalar: ScalarConfig => scaStorage.write(scalar, id, attribute.id)
-            case categorical: CategoricalConfig => {
-              categorical.options.foreach(y => {
-                val options = config.optionConfigurations.filter(_.id == y)
-                options.foreach(option => optStorage.write(option, id, categorical.id))
-              })
-            }
+    attributes
+      .flatMap(a => config.attributeConfigurations.find(_.id == a))
+      .map(attribute => {
+        val value = valueList.filter(_.id == attribute.value)
+        value.foreach {
+          case scalar: ScalarConfig => scaStorage.write(scalar, config.id, attribute.id)
+          case categorical: CategoricalConfig => {
+            categorical.options.foreach(y => {
+              val options = config.optionConfigurations.filter(_.id == y)
+              options.foreach(option => optStorage.write(option, config.id, categorical.id))
+            })
           }
-          attStorage.write(attribute, id, customer.id)
+        }
+        attStorage.write(attribute, config.id, customerId)
+      })
+      .sequence
+  }
+
+  def storeEffectsByAction(config: Configurations): IO[List[Int]] = {
+    config.actionConfigurations
+      .map(action => {
+        action.effectConfigurations.map(y => {
+          val effects = config.effectConfigurations.filter(z => z.id == y)
+          effects.map(effect => effStorage.write(effect, config.id, action.id))
         })
+        actStorage.write(action, config.id)
       })
-      cusStorage.write(customer, id).unsafeRunSync()
-    })
-
-    config.actionConfigurations.foreach(action => {
-      action.effectConfigurations.foreach(y => {
-        val effects = config.effectConfigurations.filter(z => z.id == y)
-        effects.foreach(effect => effStorage.write(effect, id, action.id).unsafeRunSync())
-      })
-      actStorage.write(action, id).unsafeRunSync()
-    })
+      .sequence
   }
 
-  def getConfiguration(configId: UUID): Configurations = {
+  override def storeConfiguration(username: String, config: Configurations): IO[Either[StorageError, Unit]] = {
+    for {
+      _ <- simStorage.write(config.simulationConfiguration, config.id)
+      customers <- IO(config.customerConfigurations)
+      _ <- customers.map(c => storeAttributesByCustomer(c.id, c.attributeOverrides, config)).sequence
+      _ <- storeEffectsByAction(config)
+    } yield Right(Unit)
+  }
 
-    println("getConfiguration")
-
-    val x: IO[(SimulationConfig, List[ActionConfig], List[CustomerConfig])] = for {
-      simulation <- simStorage.readByConfigurationId(configId)
-      _ = println(simulation)
-      cd <- cusStorage.readByConfigurationId(configId)
+  def getPrimaryConfigurations(configId: UUID): IO[(SimulationConfig, List[ActionConfig], List[CustomerConfig])] = {
+    for {
+      simulation <- simStorage.readByOwnerId(configId)
+      cd <- cusStorage.readByOwnerId(configId)
       customers <- IO(cd.map(x => CustomerConfig(x.id, x.name, Nil, x.proportion)))
-      _ = println(customers)
-      ad <- actStorage.readByConfigurationId(configId)
+      ad <- actStorage.readByOwnerId(configId)
       actions <- IO(ad.map(x => ActionConfig(x.id, x.name, x.actionType, Nil)))
-      _ = println(actions)
     } yield (simulation, actions, customers)
-
-    val (simulation, acts, custs) = x.unsafeRunSync()
-
-    val effsAndActs = acts.map(action => {
-      val es = effStorage.readByActionId(action.id).unsafeRunSync()
-      println(es)
-      val a = action.copy(effectConfigurations = es.map(_.id))
-      (es, a)
-    })
-
-    val actions = effsAndActs.map(_._2)
-    val effects = effsAndActs.flatMap(_._1)
-
-    val attsAndCusts = custs.map(customer => {
-      val as = attStorage.readByCustomerId(customer.id).unsafeRunSync()
-      println(as)
-      val c = customer.copy(attributeOverrides = as.map(_.id))
-      (as, c)
-    })
-
-    val customers = attsAndCusts.map(_._2)
-    val attributes = attsAndCusts.flatMap(_._1)
-
-    val scalsAndAtts = attributes.map(attribute => {
-      val scs = scaStorage.readByAttributeId(attribute.id).unsafeRunSync()
-      val a = attribute.copy(value = scs.id)
-      (scs, a)
-    })
-
-    val scalars = scalsAndAtts.map(x => {
-      val b = x._1
-      ScalarConfig(b.id, b.variance_type, b.min, b.max)
-    })
-
-    val catsAndAtts = attributes.map(attribute => {
-      val cat = catStorage.readByAttributeId(attribute.id).unsafeRunSync()
-      val a = attribute.copy(value = cat.id)
-      (cat, a)
-    })
-
-    val catStore: List[CategoricalConfigData] = catsAndAtts.map(_._1)
-
-    val optsAndCats: List[(List[OptionConfig], CategoricalConfig)] =
-      catStore.map(categorical => {
-        val opts = optStorage.readByCategoricalId(categorical.id).unsafeRunSync()
-        val optio = opts.map(x => OptionConfig(x.id, x.name, x.probability))
-        val o = CategoricalConfig(id = categorical.id, options = opts.map(_.id))
-        (optio, o)
-      })
-
-    val ggg = (scalsAndAtts ++ catsAndAtts).map(x => {
-      val b = x._2
-      AttributeConfig(b.id, b.name, b.value, b.attributeType)
-    })
-
-    val categoricals = optsAndCats.map(_._2)
-    val options: List[OptionConfig] = optsAndCats.flatMap(_._1)
-
-    Configurations(configId, customers, actions, effects, ggg, scalars, categoricals, options, simulation)
   }
 
-  def storeTrainingData(data: TrainingData) = {
+  def loadEffectIdsIntoAction(
+    actions: List[ActionConfig],
+    effects: List[List[EffectConfig]]): IO[List[ActionConfig]] = {
+    IO(actions.zip(effects).map {
+      case (action: ActionConfig, effects: List[EffectConfig]) => action.copy(effectConfigurations = effects.map(_.id))
+    })
+  }
+
+  def loadAttributesIntoCustomer(
+    customers: List[CustomerConfig],
+    attributes: List[List[AttributeConfigData]]): IO[List[CustomerConfig]] = {
+    IO(customers.zip(attributes).map {
+      case (customer: CustomerConfig, attributes: List[AttributeConfigData]) =>
+        customer.copy(attributeOverrides = attributes.map(_.id))
+    })
+  }
+
+  def loadOptionsIntoCategorical(
+    categoricals: List[CategoricalConfigData],
+    options: List[List[OptionConfigData]]): IO[List[CategoricalConfig]] = {
+    IO(categoricals.zip(options).map {
+      case (categorical: CategoricalConfigData, optionList: List[OptionConfigData]) => {
+        CategoricalConfig(categorical.id, optionList.map(_.id))
+      }
+    })
+  }
+
+  override def getConfiguration(configId: UUID): IO[Either[StorageError, Configurations]] = {
+    val (simulation, rawActions, rawCustomers) = getPrimaryConfigurations(configId).unsafeRunSync()
+    for {
+      // (simulation, rawActions, rawCustomers) <- IO(primaryConfigs)
+      effects <- rawActions.map(action => effStorage.readByOwnerId(action.id)).sequence
+      actions <- loadEffectIdsIntoAction(rawActions, effects)
+      rawAttributes <- rawCustomers
+        .map(customer => attStorage.readByOwnerId(customer.id))
+        .sequence
+      customers <- loadAttributesIntoCustomer(rawCustomers, rawAttributes)
+      rawScalars <- rawAttributes.flatten.map(attribute => scaStorage.readByOwnerId(attribute.id)).sequence
+      scalars <- IO(rawScalars.map(s => ScalarConfig(s.id, s.variance_type, s.min, s.max)))
+      rawCategoricals <- rawAttributes.flatten
+        .map(attribute => catStorage.readByOwnerId(attribute.id))
+        .sequence
+      rawOptions <- rawCategoricals.map(categorical => optStorage.readByOwnerId(categorical.id)).sequence
+      options <- IO(rawOptions.flatten.map(o => OptionConfig(o.id, o.name, o.probability)))
+      categoricals <- loadOptionsIntoCategorical(rawCategoricals, rawOptions)
+      attributes <- IO(rawAttributes.flatten.map(attribute =>
+        AttributeConfig(attribute.id, attribute.name, attribute.value, attribute.attributeType)))
+    } yield
+      Right(
+        Configurations(
+          configId,
+          customers,
+          actions,
+          effects.flatten,
+          attributes,
+          scalars,
+          categoricals,
+          options,
+          simulation))
+  }
+
+  override def storeTrainingData(data: TrainingData): IO[Either[StorageError, Unit]] = {
     println("storeTrainingData")
-    data.actions.foreach(action =>
-      action.effects.foreach(effect => StorageImpl.effectStorage.write(effect, data.configurationId, action.id)))
-
-    data.customers.foreach(customer =>
-      customer.attributes.foreach(attribute =>
-        StorageImpl.attributeStorage.write(attribute, data.configurationId, customer.id)))
-
-    data.actions.foreach(x => actionStorage.write(x, data.configurationId))
-
-    data.customers.foreach(x => customerStorage.write(x, data.configurationId))
+    for {
+      _ <- data.actions
+        .flatMap(action => action.effects.map(effect => effectStorage.write(effect, data.configurationId, action.id)))
+        .sequence
+      _ <- data.customers
+        .flatMap(customer =>
+          customer.attributes.map(attribute => attributeStorage.write(attribute, data.configurationId, customer.id)))
+        .sequence
+      _ <- data.actions.map(x => actionStorage.write(x, data.configurationId)).sequence
+      _ <- data.customers.map(x => customerStorage.write(x, data.configurationId)).sequence
+    } yield Right(Unit)
   }
 
-  def storePlayingData(attributes: List[AttributeConfig], data: List[(Customer, Action)], configurationId: UUID) = {
+  override def storePlayingData(
+    attributes: List[AttributeConfig],
+    data: List[(simulator.model.Customer, simulator.model.Action)],
+    configurationId: UUID): IO[Either[StorageError, Unit]] = {
     println("storePlayingData")
-    initialisePlayTables(attributes.filter(att => att.attributeType == AttributeEnum.Global))
-    data.foreach { case (customer, action) => train.write(customer, action.name, configurationId) }
+    for {
+      _ <- initialisePlayTables(attributes.filter(att => att.attributeType == AttributeEnum.Global))
+      _ <- data.map { case (customer, action) => train.write(customer, action.name, configurationId) }.sequence
+    } yield Right(Unit)
   }
 
 }
