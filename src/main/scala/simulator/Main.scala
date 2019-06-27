@@ -38,5 +38,8 @@ object Main extends App {
   implicit val timeout: Timeout = Timeout(10 seconds)
   implicit val store = new StorageImpl()
 
+  store.initialiseStorageTables().unsafeRunSync()
+  store.initialiseTrainingTables().unsafeRunSync()
+
   val simulation = new Main()
 }

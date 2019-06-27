@@ -38,7 +38,7 @@ class Action(override val tableName: String) extends PrimaryTrainingStorage {
   override def write(train: Train, configurationId: UUID) = {
     val model = train.asInstanceOf[simulator.model.Action]
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, name, repeat, target)
+      sql""" (id, configuration_id, name, target)
           VALUES (${model.id}, $configurationId, ${model.name}, ${model.target
         .map(_.id)})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++

@@ -40,7 +40,7 @@ class Customer(override val tableName: String) extends PrimaryTrainingStorage {
     val model = train.asInstanceOf[simulator.model.Customer]
     (sql"""INSERT INTO """ ++ tableNameFragment ++
       sql""" (id, configuration_id, name, difficulty, assigned_label)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.difficulty}, ${model.assignedLabel},)
+          VALUES (${model.id}, $configurationId, ${model.name}, ${model.difficulty}, ${model.assignedLabel})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

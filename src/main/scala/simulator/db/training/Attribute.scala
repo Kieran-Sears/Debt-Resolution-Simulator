@@ -39,7 +39,7 @@ class Attribute(override val tableName: String) extends SecondaryTrainingStorage
     val model = train.asInstanceOf[simulator.model.Attribute]
     (sql"""INSERT INTO """ ++ tableNameFragment ++
       sql""" (id, configuration_id, customer_id, name, value)
-          VALUES (${model.id}, $configurationId, ${model.name}, ${model.value})
+          VALUES (${model.id}, $configurationId, $customerId, ${model.name}, ${model.value})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

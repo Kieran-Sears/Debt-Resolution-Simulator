@@ -40,7 +40,7 @@ class Scalar(override val tableName: String) extends SecondaryConfigurationStora
   override def write(config: Config, configurationId: UUID, attributeId: UUID) = {
     val model = config.asInstanceOf[ScalarConfig]
     (sql"""INSERT INTO """ ++ tableNameFragment ++
-      sql""" (id, configuration_id, variance_type, min, max)
+      sql""" (id, configuration_id, attribute_configuration_id, variance_type, min, max)
           VALUES (${model.id}, $configurationId, $attributeId, ${model.variance}, ${model.min}, ${model.max})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run

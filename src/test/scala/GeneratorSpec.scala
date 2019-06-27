@@ -3,10 +3,12 @@ import java.util.UUID
 import org.scalatest.{FlatSpec, Matchers}
 import simulator.Generator
 import simulator.model._
+import util.MockData
 
 class GeneratorSpec extends FlatSpec with Matchers {
 
   val gen = Generator.default
+  val mockData = new MockData
 
   "Generator" should "transform a scalar configuration to a value within range" in {
     val config = ScalarConfig(UUID.randomUUID(), VarianceEnum.None, 30, 50)
@@ -85,21 +87,41 @@ class GeneratorSpec extends FlatSpec with Matchers {
 
     val customer = (gen.generateCustomer _).tupled(d)
 
-    customer.id shouldEqual d._1.id
     customer.getArrears.value shouldEqual 275.0 +- 225.0
     customer.getSatisfaction.value shouldEqual 30.0 +- 20.0
     customer.difficulty shouldEqual None
+
+    customer.attributes foreach println
+
+    customer.attributes.length shouldEqual 5
 
   }
 
-  it should "when given valid configurations return average customers to train on" in {
+  it should "return average customers when given valid configurations" in {
     val d = getValidCustomerConfigurationData()
     val customer = (gen.idealCustomer _).tupled(d)
 
-    customer.id shouldEqual d._1.id
     customer.getArrears.value shouldEqual 275.0 +- 225.0
     customer.getSatisfaction.value shouldEqual 30.0 +- 20.0
     customer.difficulty shouldEqual None
+  }
+
+  it should "roulette select an option when given a categorical configuration with options " in {
+
+    val selections = mockData.categoricalConfigs.map(cat => {
+      val options = mockData.optionConfigs.filter(x => cat.options.contains(x.id))
+      gen.normaliseCategorical(cat, options) shouldBe 5.0 +- 5.0
+    })
+    selections.length shouldEqual mockData.categoricalConfigs.length
+  }
+
+  it should "return an error when roulette select does not have any options provided to it" in {
+    mockData.categoricalConfigs.map(cat => {
+      assertThrows[NoSuchElementException] {
+        gen.normaliseCategorical(cat, Nil)
+      }
+    })
+
   }
 
 }

@@ -42,7 +42,7 @@ class Effect(override val tableName: String) extends SecondaryTrainingStorage {
     val model = train.asInstanceOf[simulator.model.Effect]
     (sql"""INSERT INTO """ ++ tableNameFragment ++
       sql""" (id, configuration_id, action_id, name, effect_type, target, value, certainty)
-          VALUES (${model.id}, $configurationId, $actionId, ${model.name}, ${model.effectType}, ${model.target}, ${model.value}, ${model.certainty})
+          VALUES (${model.id}, $configurationId, $actionId, ${model.name}, ${model.effectType}, ${model.target}, ${model.value}, ${model.deviation})
           ON CONFLICT ON CONSTRAINT """ ++ indexName("pkey") ++
       sql""" DO NOTHING""").update.run
       .transact(xa)

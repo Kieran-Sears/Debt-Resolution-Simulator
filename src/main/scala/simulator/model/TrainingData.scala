@@ -16,7 +16,7 @@ case class Action(id: UUID, name: String, effects: List[Effect], /*repeat: Optio
     val x = effects.map(effect => {
       val attributes = customer.attributes
       val attribute = attributes.filter(att => att.name == effect.target).head
-      val actionValue = effect.certainty.get * Random.nextGaussian() + effect.value.get
+      val actionValue = effect.deviation.get * Random.nextGaussian() + effect.value.get
       val important = (customer.name, attribute.name, attribute.value, actionValue)
       important // todo
     })
@@ -35,26 +35,30 @@ case class Action(id: UUID, name: String, effects: List[Effect], /*repeat: Optio
   def processCustomer(customer: Customer): Customer = {
     val affs = effects.filter(_.effectType == EffectEnum.Affect)
     val effs = effects.filter(_.effectType == EffectEnum.Effect)
-
     val affectTargets = affs.map(_.target)
-
     val affectedEffects = effs.filter(p => affectTargets.contains(p.name))
 
-    val influences = affectedEffects.map(e => {
+    if (affectedEffects.isEmpty & affs.nonEmpty) {
+      throw new NoSuchElementException(
+        s"Affects should be directed " +
+          s"toward effect names ($affectTargets) in $name")
+    }
 
+    val influences = affectedEffects.map(e => {
       val influence = affs.foldLeft(e.getValue)((acc, a) => {
         if (a.target == e.name) {
-          acc + a.calculateInfluence
+          val inf = a.calculateInfluence
+          acc + inf
         } else {
           acc
         }
       })
       (e.target, influence)
-    })
+    }) ++ effs.filter(p => !affectTargets.contains(p.name)).map(e => (e.target, e.calculateInfluence))
 
     val newAttributes = customer.attributes.map(att => {
       influences.find(x => x._1 == att.name) match {
-        case Some((_, influ)) => att.copy(value = att.value + influ)
+        case Some((_, influ)) => att.copy(value = att.value + ((att.value / 100) * influ))
         case None => att
       }
     })
@@ -72,20 +76,24 @@ case class Effect(
   effectType: EffectEnum,
   target: String,
   value: Option[Double] = None,
-  certainty: Option[Int] = None
+  deviation: Option[Int] = None
 ) extends Train {
   def calculateInfluence = {
     val mean =
       value.getOrElse(throw new NoSuchElementException(s"Could not find value for effect $name : $id for $target"))
     val standardDistribution =
-      certainty.getOrElse(
+      deviation.getOrElse(
         throw new NoSuchElementException(s"Could not find certainty for effect $name : $id for $target"))
-    val dist = new NormalDistribution(mean, standardDistribution)
-    dist.sample()
+    if (standardDistribution == 0) {
+      mean
+    } else {
+      new NormalDistribution(mean, standardDistribution / 10).sample()
+    }
   }
 
   def getValue = {
-    value.getOrElse(throw new Exception(s"Cannot get value for effect $name : $id, must not have been configured!"))
+    value.getOrElse(
+      throw new NoSuchElementException(s"Cannot get value for effect $name : $id, must not have been configured!"))
   }
 }
 

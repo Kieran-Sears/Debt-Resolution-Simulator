@@ -24,20 +24,22 @@ trait StorageController {
 }
 
 class StorageImpl extends StorageController {
+  val c = "configuration_"
+  val simStorage: configuration.Simulation = new configuration.Simulation(c + "simulation")
+  val cusStorage: configuration.Customer = new configuration.Customer(c + "customer")
+  val actStorage: configuration.Action = new configuration.Action(c + "action")
+  val effStorage: configuration.Effect = new configuration.Effect(c + "effect")
+  val oveStorage: configuration.AttributeOverride = new configuration.AttributeOverride(c + "attribute_override")
+  val gloStorage: configuration.AttributeGlobal = new configuration.AttributeGlobal(c + "attribute_global")
+  val scaStorage: configuration.Scalar = new configuration.Scalar(c + "scalar")
+  val catStorage: configuration.Categorical = new configuration.Categorical(c + "categorical")
+  val optStorage: configuration.Option = new configuration.Option(c + "option")
 
-  val simStorage: configuration.Simulation = new configuration.Simulation("configuration_simulation")
-  val cusStorage: configuration.Customer = new configuration.Customer("configuration_customer")
-  val actStorage: configuration.Action = new configuration.Action("configuration_action")
-  val effStorage: configuration.Effect = new configuration.Effect("configuration_effect")
-  val attStorage: configuration.Attribute = new configuration.Attribute("configuration_attribute")
-  val scaStorage: configuration.Scalar = new configuration.Scalar("configuration_scalar")
-  val catStorage: configuration.Categorical = new configuration.Categorical("configuration_categorical")
-  val optStorage: configuration.Option = new configuration.Option("configuration_option")
-
-  val attributeStorage: training.Attribute = new training.Attribute("training_attribute")
-  val customerStorage: training.Customer = new training.Customer("training_customer")
-  val actionStorage: training.Action = new training.Action("training_action")
-  val effectStorage: training.Effect = new training.Effect("training_effect")
+  val t = "training_"
+  val attributeStorage: training.Attribute = new training.Attribute(t + "attribute")
+  val customerStorage: training.Customer = new training.Customer(t + "customer")
+  val actionStorage: training.Action = new training.Action(t + "action")
+  val effectStorage: training.Effect = new training.Effect(t + "effect")
 
   val train: TrainStorage = new TrainStorage("playing_train")
   // val test: TestStorage = new TestStorage("playing_test")
@@ -50,37 +52,21 @@ class StorageImpl extends StorageController {
       _ <- cusStorage.init()
       _ <- actStorage.init()
       _ <- effStorage.init()
-      _ <- attStorage.init()
+      _ <- oveStorage.init()
+      _ <- gloStorage.init()
       _ <- scaStorage.init()
       _ <- catStorage.init()
       _ <- optStorage.init()
     } yield Right(Unit)
-
-//      simStorage.init().unsafeRunSync()
-//    cusStorage.init().unsafeRunSync()
-//    actStorage.init().unsafeRunSync()
-//    effStorage.init().unsafeRunSync()
-//    attStorage.init().unsafeRunSync()
-//    scaStorage.init().unsafeRunSync()
-//    catStorage.init().unsafeRunSync()
-//    optStorage.init().unsafeRunSync()
   }
 
   override def initialiseTrainingTables(): IO[Either[StorageError, Unit]] = {
-
     for {
       _ <- attributeStorage.init()
       _ <- customerStorage.init()
       _ <- actionStorage.init()
       _ <- effectStorage.init()
-      send <- IO.apply(Unit)
     } yield Right(Unit)
-
-//    println("initialiseTrainingTables")
-//    attributeStorage.init().unsafeRunSync()
-//    customerStorage.init().unsafeRunSync()
-//    actionStorage.init().unsafeRunSync()
-//    effectStorage.init().unsafeRunSync()
   }
 
   override def initialisePlayTables(attributes: List[AttributeConfig]): IO[Either[StorageError, Unit]] = {
@@ -90,24 +76,38 @@ class StorageImpl extends StorageController {
     } yield Right(Unit)
   }
 
-  def storeAttributesByCustomer(customerId: UUID, attributes: List[UUID], config: Configurations): IO[List[Int]] = {
+  def storeAttributeValues(attribute: AttributeConfig, config: Configurations): IO[List[Int]] = {
     val valueList = config.scalarConfigurations ++ config.categoricalConfigurations
-    attributes
-      .flatMap(a => config.attributeConfigurations.find(_.id == a))
-      .map(attribute => {
-        val value = valueList.filter(_.id == attribute.value)
-        value.foreach {
-          case scalar: ScalarConfig => scaStorage.write(scalar, config.id, attribute.id)
-          case categorical: CategoricalConfig => {
-            categorical.options.foreach(y => {
-              val options = config.optionConfigurations.filter(_.id == y)
-              options.foreach(option => optStorage.write(option, config.id, categorical.id))
-            })
-          }
-        }
-        attStorage.write(attribute, config.id, customerId)
-      })
-      .sequence
+    val values = valueList.filter(_.id == attribute.value)
+
+    for {
+      a <- values.map {
+        case scalar: ScalarConfig =>
+          scaStorage.write(scalar, config.id, attribute.id)
+        case categorical: CategoricalConfig =>
+          catStorage.write(categorical, config.id, attribute.id)
+      }.sequence
+      b <- values.collect {
+        case categorical: CategoricalConfig => storeCategoricalOptions(categorical, config, attribute)
+      }.flatten.sequence
+    } yield List(1)
+
+  }
+
+  def storeCategoricalOptions(categorical: CategoricalConfig, config: Configurations, attribute: AttributeConfig) = {
+    categorical.options.flatMap(y => {
+      config.optionConfigurations
+        .filter(_.id == y)
+        .map(option => optStorage.write(option, config.id, categorical.id))
+    })
+  }
+
+  def storeAttributesByCustomer(customerId: UUID, attributes: List[UUID], config: Configurations): IO[List[Int]] = {
+    val atts = attributes.flatMap(a => config.attributeConfigurations.find(_.id == a))
+    for {
+      _ <- atts.map(attribute => oveStorage.write(attribute, config.id, customerId)).sequence
+      _ <- atts.map(attribute => storeAttributeValues(attribute, config)).sequence
+    } yield List(1)
   }
 
   def storeEffectsByAction(config: Configurations): IO[List[Int]] = {
@@ -122,11 +122,24 @@ class StorageImpl extends StorageController {
       .sequence
   }
 
+  def storeGlobalAttributes(config: Configurations) = {
+    val attributes = config.attributeConfigurations
+      .filter(_.attributeType == AttributeEnum.Global)
+    for {
+      _ <- attributes.map(attribute => gloStorage.write(attribute, config.id)).sequence
+      _ <- attributes.map(attribute => storeAttributeValues(attribute, config)).sequence
+    } yield List(1)
+
+  }
+
   override def storeConfiguration(username: String, config: Configurations): IO[Either[StorageError, Unit]] = {
     for {
       _ <- simStorage.write(config.simulationConfiguration, config.id)
-      customers <- IO(config.customerConfigurations)
-      _ <- customers.map(c => storeAttributesByCustomer(c.id, c.attributeOverrides, config)).sequence
+      _ <- config.customerConfigurations.map(c => cusStorage.write(c, config.id)).sequence
+      _ <- config.customerConfigurations
+        .map(c => storeAttributesByCustomer(c.id, c.attributeOverrides, config))
+        .sequence
+      _ <- storeGlobalAttributes(config)
       _ <- storeEffectsByAction(config)
     } yield Right(Unit)
   }
@@ -171,23 +184,39 @@ class StorageImpl extends StorageController {
   override def getConfiguration(configId: UUID): IO[Either[StorageError, Configurations]] = {
     val (simulation, rawActions, rawCustomers) = getPrimaryConfigurations(configId).unsafeRunSync()
     for {
-      // (simulation, rawActions, rawCustomers) <- IO(primaryConfigs)
       effects <- rawActions.map(action => effStorage.readByOwnerId(action.id)).sequence
+      _ = println(s"z $effects")
       actions <- loadEffectIdsIntoAction(rawActions, effects)
-      rawAttributes <- rawCustomers
-        .map(customer => attStorage.readByOwnerId(customer.id))
+      _ = println(s"y $actions")
+      overrideAtts <- rawCustomers
+        .map(customer => oveStorage.readByOwnerId(customer.id))
         .sequence
-      customers <- loadAttributesIntoCustomer(rawCustomers, rawAttributes)
-      rawScalars <- rawAttributes.flatten.map(attribute => scaStorage.readByOwnerId(attribute.id)).sequence
+      _ = println(s"x $overrideAtts")
+      customers <- loadAttributesIntoCustomer(rawCustomers, overrideAtts)
+      _ = println(s"w $customers")
+      // #######################
+      rawScalars <- overrideAtts.flatten.map(attribute => scaStorage.readByOwnerId(attribute.id)).sequence
+      _ = println(s"v $rawScalars")
       scalars <- IO(rawScalars.map(s => ScalarConfig(s.id, s.variance_type, s.min, s.max)))
-      rawCategoricals <- rawAttributes.flatten
+      _ = println(s"u $scalars")
+
+      rawCategoricals <- overrideAtts.flatten
         .map(attribute => catStorage.readByOwnerId(attribute.id))
         .sequence
-      rawOptions <- rawCategoricals.map(categorical => optStorage.readByOwnerId(categorical.id)).sequence
+      _ = println(s"t $rawCategoricals")
+      rawOptions <- rawCategoricals.flatten.map(categorical => optStorage.readByOwnerId(categorical.id)).sequence
+      _ = println(s"s $rawOptions")
       options <- IO(rawOptions.flatten.map(o => OptionConfig(o.id, o.name, o.probability)))
-      categoricals <- loadOptionsIntoCategorical(rawCategoricals, rawOptions)
-      attributes <- IO(rawAttributes.flatten.map(attribute =>
-        AttributeConfig(attribute.id, attribute.name, attribute.value, attribute.attributeType)))
+      _ = println(s"r $options")
+      categoricals <- loadOptionsIntoCategorical(rawCategoricals.flatten, rawOptions)
+      _ = println(s"q $categoricals")
+      // #######################
+      globalAtts <- gloStorage.readByOwnerId(configId)
+      _ = println(s"p $globalAtts")
+      attributes <- IO((overrideAtts.flatten ++ globalAtts).map(attribute => {
+        AttributeConfig(attribute.id, attribute.name, attribute.value, attribute.attributeType)
+      }))
+      _ = println(s"o $attributes")
     } yield
       Right(
         Configurations(
@@ -221,9 +250,10 @@ class StorageImpl extends StorageController {
     attributes: List[AttributeConfig],
     data: List[(simulator.model.Customer, simulator.model.Action)],
     configurationId: UUID): IO[Either[StorageError, Unit]] = {
-    println("storePlayingData")
+    val globalAttributes = attributes.filter(att => att.attributeType == AttributeEnum.Global)
+    println(s"globalAttributes:\n$globalAttributes")
     for {
-      _ <- initialisePlayTables(attributes.filter(att => att.attributeType == AttributeEnum.Global))
+      _ <- initialisePlayTables(globalAttributes)
       _ <- data.map { case (customer, action) => train.write(customer, action.name, configurationId) }.sequence
     } yield Right(Unit)
   }

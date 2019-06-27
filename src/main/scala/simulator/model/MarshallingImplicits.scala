@@ -29,9 +29,7 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   }
 
   implicit object UUIDFormat extends JsonFormat[UUID] {
-    def write(uuid: UUID) = {
-      JsString(uuid.toString)
-    }
+    def write(uuid: UUID) = JsString(uuid.toString)
     def read(value: JsValue) = {
       value match {
         case JsString(uuid) => UUID.fromString(uuid)
@@ -120,25 +118,5 @@ trait MarshallingImplicits extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val trainingDataFormat: RootJsonFormat[TrainingData] = jsonFormat3(TrainingData)
   implicit val statesFormat: RootJsonFormat[State] = jsonFormat7(State)
   implicit val stateFormat: JsonFormat[State] = lazyFormat(jsonFormat7(State))
-
-//  implicit object ValueJsonFormat extends RootJsonFormat[Value] {
-//
-//    def write(a: Value) = {
-//      a match {
-//        case v: ScalarConfig => v.toJson
-//        case v: CategoricalConfig => v.toJson
-//        case _ => throw DeserializationException("Not yet implemented marshalling for System Action")
-//      }
-//    }
-//
-//    def read(value: JsValue) = {
-//      val id = value.asJsObject.fields("id")
-//      value.asJsObject.fields("kind") match {
-//        case JsString("scalar") => value.convertTo[ScalarConfig].copy(id = id.convertTo[UUID])
-//        case JsString("categorical") => value.convertTo[CategoricalConfig].copy(id = id.convertTo[UUID])
-//        case _ => throw DeserializationException("Could not Unmarshal AttributeValue of Unknown Type")
-//      }
-//    }
-//  }
 
 }

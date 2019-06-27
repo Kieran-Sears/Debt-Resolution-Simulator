@@ -4,11 +4,11 @@ import java.util.UUID
 
 import akka.actor.{ActorSystem, Props}
 import akka.event.{Logging, LoggingAdapter}
-import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.{HttpResponse, StatusCodes}
 import akka.pattern.ask
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.directives.Credentials
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
@@ -35,7 +35,7 @@ class HttpService(
   val interfaceA = "localhost"
   val portA = 8080
 
-  println(s"Starting Collaborate http interface at: $interfaceA:$portA")
+  // println(s"Starting Collaborate http interface at: $interfaceA:$portA")
 
   def myUserPassAuthenticator(credentials: Credentials): Option[String] =
     credentials match {
@@ -62,8 +62,7 @@ class HttpService(
       put {
         entity(as[Configurations]) { configs =>
           {
-            val trainingData = gen.trainingData(configs)
-            println(s"CONFIGURE:\n $trainingData")
+            val trainingData = gen.idealTrainingExamples(configs)
             storage.storeConfiguration(username, configs).unsafeRunSync()
             complete(OK, trainingData)
           }
@@ -75,36 +74,34 @@ class HttpService(
   def train(username: String): Route = {
     pathPrefix("train") {
       put {
-        entity(as[TrainingData]) { trainingData =>
+        entity(as[TrainingData]) { labelledData =>
           {
-            storage.getConfiguration(trainingData.configurationId).unsafeRunSync() match {
+            storage.getConfiguration(labelledData.configurationId).unsafeRunSync() match {
               case Right(conf) => {
-                val customers = gen.playData(conf)
+                println(s"ConfigurationAfterStorage:\n$conf")
 
-                val allOutcomes: List[(Customer, List[(Action, Customer)])] = customers.map { c: Customer =>
-                  (c, trainingData.actions.foldLeft(List[(Action, Customer)]()) {
-                    case (acc, a) => if (a.getTarget.name == c.name) acc :+ (a, a.processCustomer(c)) else acc
-                  })
-                }
+                val customers = gen.variedTrainingExamples(conf)
 
-                val idealMappings: List[(Customer, Action)] = allOutcomes.map {
-                  case (customer, processedList) => {
-                    val bestActionCustomer = processedList.foldLeft(processedList.head) {
-                      case ((x: Action, y: Customer), (a: Action, c: Customer)) => {
-                        if (Stats.compareCustomers(y, c) == c) (a, c) else (x, y)
-                      }
-                    }
-                    (customer, bestActionCustomer._1)
-                  }
-                }
+                println("customers:")
+                customers foreach println
 
-                storage.storeTrainingData(trainingData).unsafeRunSync()
+                println(s"labelledData:\n $labelledData")
+
+                val allOutcomes = Stats.getAllOutcomes(customers, labelledData)
+                println("allOutcomes:")
+                allOutcomes foreach println
+
+                val idealMappings = Stats.getIdealMappings(allOutcomes)
+
+                println("idealMappings:")
+                idealMappings foreach println
+
+                storage.storeTrainingData(labelledData).unsafeRunSync()
                 storage
-                  .storePlayingData(conf.attributeConfigurations, idealMappings, trainingData.configurationId)
+                  .storePlayingData(conf.attributeConfigurations, idealMappings, labelledData.configurationId)
                   .unsafeRunSync()
 
-                complete(OK, TrainingData(conf.id, customers, trainingData.actions))
-
+                complete(OK, TrainingData(conf.id, customers, labelledData.actions))
               }
               case Left(_) => complete(StatusCodes.BadRequest)
             }
@@ -150,4 +147,26 @@ class HttpService(
       }
     }
   }
+
+  implicit def myRejectionHandler =
+    RejectionHandler
+      .newBuilder()
+      .handle {
+        case MissingCookieRejection(cookieName) =>
+          complete(HttpResponse(BadRequest, entity = "No cookies, no service!!!"))
+      }
+      .handle {
+        case AuthorizationFailedRejection =>
+          complete((Forbidden, "You're out of your depth!"))
+      }
+      .handle {
+        case ValidationRejection(msg, _) =>
+          complete((InternalServerError, "That wasn't valid! " + msg))
+      }
+      .handleAll[MethodRejection] { methodRejections =>
+        val names = methodRejections.map(_.supported.name)
+        complete((MethodNotAllowed, s"Can't do that! Supported: ${names mkString " or "}!"))
+      }
+      .handleNotFound { complete((NotFound, "Not here!")) }
+      .result()
 }

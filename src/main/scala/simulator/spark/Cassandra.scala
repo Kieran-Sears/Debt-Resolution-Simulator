@@ -32,11 +32,10 @@ class Cassandra {
 
   // val requests: DStream[(String, String, Int, String)] = lines.map(x => { (x._1, x._2, x._3) }) // TODO get state to be analysed and normalise it ready for processing
 
-  requests.foreachRDD((rdd, time) => {
-    rdd.cache()
-    println("writing " + rdd.count() + " rows to cassandra")
-    // rdd.saveToCassandra("frank", "LogTest", SomeColumns("IP", "URL", "STATUS", "USER_AGENT"))
-  })
+//  requests.foreachRDD((rdd, time) => {
+//    rdd.cache()
+//    // rdd.saveToCassandra("frank", "LogTest", SomeColumns("IP", "URL", "STATUS", "USER_AGENT"))
+//  })
 
   streamingServiceContext.checkpoint(System.getProperty("user.dir") + "checkpoints/CassandraExample/")
   streamingServiceContext.start()

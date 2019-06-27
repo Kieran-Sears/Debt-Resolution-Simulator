@@ -2,6 +2,27 @@ package simulator.model
 
 object Stats {
 
+  def getAllOutcomes(
+    customers: List[Customer],
+    labelledData: TrainingData): List[(Customer, List[(Action, Customer)])] =
+    customers.map { c: Customer =>
+      (c, labelledData.actions.foldLeft(List[(Action, Customer)]()) {
+        case (acc, a) => if (a.getTarget.name == c.name) acc :+ (a, a.processCustomer(c)) else acc
+      })
+    }
+
+  def getIdealMappings(allOutcomes: List[(Customer, List[(Action, Customer)])]): List[(Customer, Action)] =
+    allOutcomes.map {
+      case (customer, processedList) => {
+        val bestActionCustomer = processedList.foldLeft(processedList.head) {
+          case ((x: Action, y: Customer), (a: Action, c: Customer)) => {
+            if (Stats.compareCustomers(y, c) == c) (a, c) else (x, y)
+          }
+        }
+        (customer, bestActionCustomer._1)
+      }
+    }
+
   def compareCustomers(cus1: Customer, cus2: Customer): Customer = {
     // arrears is generally more important as decided by a ratio.
     // find out what percent each value is:

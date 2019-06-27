@@ -29,10 +29,9 @@ class Categorical(override val tableName: String) extends SecondaryConfiguration
   }
 
   override def readByOwnerId(id: UUID) = {
-    println("catC store read")
-    (sql"SELECT id FROM " ++ tableNameFragment ++ sql" WHERE attribute_configuration_id = $id")
+    (sql"SELECT id, configuration_id, attribute_configuration_id FROM " ++ tableNameFragment ++ sql" WHERE attribute_configuration_id = $id")
       .query[CategoricalConfigData]
-      .unique
+      .to[List]
       .transact(xa)
   }
 

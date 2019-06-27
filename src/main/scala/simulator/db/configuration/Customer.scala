@@ -30,7 +30,6 @@ class Customer(override val tableName: String) extends PrimaryConfigurationStora
   }
 
   override def readByOwnerId(id: UUID) = {
-    println(s"customer store read ${id.toString}")
     (sql"SELECT id, name, proportion FROM " ++ tableNameFragment ++ sql" WHERE configuration_id = $id")
       .query[CustomerConfigData]
       .to[List]
@@ -39,7 +38,6 @@ class Customer(override val tableName: String) extends PrimaryConfigurationStora
 
   override def write(config: Config, configurationId: UUID) = {
     val model = config.asInstanceOf[CustomerConfig]
-    println(s"Attempting to store CustomerConfig(${model.id}, $configurationId, ${model.name}, ${model.proportion})")
     (sql"""INSERT INTO """ ++ tableNameFragment ++
       sql""" (id, configuration_id, name, proportion)
           VALUES (${model.id}, $configurationId, ${model.name}, ${model.proportion})

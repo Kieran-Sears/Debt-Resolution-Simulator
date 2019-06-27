@@ -10,7 +10,7 @@ class Generator(seed: Int) {
 
   val random = new Random(seed)
 
-  def trainingData(configurations: Configurations) = {
+  def idealTrainingExamples(configurations: Configurations) = {
 
     val customers = configurations.customerConfigurations.map(
       customerConf =>
@@ -23,20 +23,13 @@ class Generator(seed: Int) {
       ))
 
     val actions: List[Action] =
-      generateActions(configurations.actionConfigurations, configurations.effectConfigurations)
+      generateUnlabelledActions(configurations.actionConfigurations, configurations.effectConfigurations)
 
     TrainingData(configurations.id, customers, actions)
   }
 
-  def playData(configurations: Configurations): List[Customer] = {
-    val customerProportions = configurations.customerConfigurations
-      .map(customerConf => {
-        val proportion = configurations.simulationConfiguration.numberOfCustomers / customerConf.proportion
-        println(s"${configurations.simulationConfiguration.numberOfCustomers} ${customerConf.proportion} $proportion")
-        (customerConf, proportion)
-      })
-
-    customerProportions.flatMap {
+  def variedTrainingExamples(configurations: Configurations): List[Customer] = {
+    customerProportions(configurations).flatMap {
       case (customerConf: CustomerConfig, proportion: Int) => {
         (1 to proportion).map(
           _ =>
@@ -64,7 +57,7 @@ class Generator(seed: Int) {
   def actualiseInfluence(effect: Effect) = {
     val mean = effect.value.getOrElse(
       throw new NoSuchElementException(s"Could not find value for effect ${effect.name} for ${effect.target}"))
-    val standardDistribution = effect.certainty.getOrElse(
+    val standardDistribution = effect.deviation.getOrElse(
       throw new NoSuchElementException(s"Could not find certainty for effect ${effect.name} for ${effect.target}"))
     val dist = new NormalDistribution(mean, standardDistribution)
     dist.sample()
@@ -74,7 +67,6 @@ class Generator(seed: Int) {
     configurations.customerConfigurations
       .map(customerConf => {
         val proportion = configurations.simulationConfiguration.numberOfCustomers / customerConf.proportion
-        println(s"${configurations.simulationConfiguration.numberOfCustomers} ${customerConf.proportion} $proportion")
         (customerConf, proportion)
       })
   }
@@ -124,16 +116,13 @@ class Generator(seed: Int) {
     scalarConfigs: List[ScalarConfig],
     categoricalConfigs: List[CategoricalConfig]): Customer = {
 
-    val customAttributes = attributeConfigs.filter(att => customerConf.attributeOverrides.contains(att.id))
+    val groups = attributeConfigs.groupBy(_.attributeType)
+    val oveAtts = groups(AttributeEnum.Override)
+    val gloAtts = groups(AttributeEnum.Global).map(x => oveAtts.find(y => y.name == x.name).getOrElse(x))
     val values = scalarConfigs ++ categoricalConfigs
+    val normAtts = gloAtts.map(att => normaliseAttribute(att, values, optionConfigs))
 
-    val normAtts = attributeConfigs.map(att =>
-      customAttributes.find(x => x.name == att.name) match {
-        case Some(attribute) => normaliseAttribute(attribute, values, optionConfigs)
-        case None => normaliseAttribute(att, values, optionConfigs)
-    })
-
-    Customer(id = customerConf.id, name = customerConf.name, attributes = normAtts, assignedLabel = None)
+    Customer(id = UUID.randomUUID(), name = customerConf.name, attributes = normAtts, assignedLabel = None)
   }
 
   def normaliseAttribute(attribute: AttributeConfig, values: List[Value], options: List[OptionConfig]) = {
@@ -156,7 +145,9 @@ class Generator(seed: Int) {
       new org.apache.commons.math3.util.Pair[OptionConfig, java.lang.Double](option, option.probability.toDouble))
     val mapping: java.util.List[org.apache.commons.math3.util.Pair[OptionConfig, java.lang.Double]] = ListBuffer(
       probabilities: _*)
-
+    if (probabilities.isEmpty | mapping.isEmpty) {
+      throw new NoSuchElementException(s"Not all option configurations have been included for ${c.id}")
+    }
     val distribution = new EnumeratedDistribution[OptionConfig](mapping)
     catOptions.indexOf(distribution.sample()).toDouble
   }
@@ -166,7 +157,7 @@ class Generator(seed: Int) {
     BigDecimal(randInRange).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
   }
 
-  def generateActions(actionConfigs: List[ActionConfig], effectConfigs: List[EffectConfig]): List[Action] = {
+  def generateUnlabelledActions(actionConfigs: List[ActionConfig], effectConfigs: List[EffectConfig]): List[Action] = {
     actionConfigs.map(actionConf => {
 
       val effectConfs = effectConfigs.filter(effectConf => actionConf.effectConfigurations.contains(effectConf.id))
@@ -176,6 +167,14 @@ class Generator(seed: Int) {
     })
 
   }
+
+//  def generateActions(newCustomer: Customer, labelledActions: List[Action]) = {
+//    labelledActions.map(action => {
+//      val attributes = newCustomer.attributes
+//      action.effects.map(effect => effect.)
+//    })
+//
+//  }
 
   def generateEffect(effectConfig: EffectConfig): Effect =
     Effect(
