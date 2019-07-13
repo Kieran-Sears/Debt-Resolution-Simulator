@@ -12,8 +12,10 @@ import akka.http.scaladsl.server._
 import akka.http.scaladsl.server.directives.Credentials
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import simulator.classifier.{DataLoader, KerasModel}
-import simulator.db.{StorageController, StorageImpl}
+import com.intel.analytics.bigdl.dlframes.{DLEstimator, DLModel}
+import org.apache.spark.sql.DataFrame
+import simulator.classifier.{ArtificialNeuralNetwork, SparkDataLoader}
+import simulator.db.StorageController
 import simulator.{Generator, Settings}
 import simulator.model._
 
@@ -23,19 +25,18 @@ class HttpService(
   implicit val system: ActorSystem,
   implicit val materializer: ActorMaterializer,
   implicit val timeout: Timeout,
-  implicit val storage: StorageController
+  implicit val storage: StorageController,
+  implicit val ann: ArtificialNeuralNetwork,
+  implicit val dl: SparkDataLoader
 ) extends MarshallingImplicits {
 
   lazy val log: LoggingAdapter = Logging(system, classOf[HttpService])
   lazy val gen: Generator = Generator.default
 
-//  val dl = new DataLoader()
-  val ann = new KerasModel()
-
   val interfaceA = "localhost"
   val portA = 8080
 
-  // println(s"Starting Collaborate http interface at: $interfaceA:$portA")
+  println(s"Starting Collaborate http interface at: $interfaceA:$portA")
 
   def myUserPassAuthenticator(credentials: Credentials): Option[String] =
     credentials match {
@@ -78,28 +79,70 @@ class HttpService(
           {
             storage.getConfiguration(labelledData.configurationId).unsafeRunSync() match {
               case Right(conf) => {
-                println(s"ConfigurationAfterStorage:\n$conf")
 
                 val customers = gen.variedTrainingExamples(conf)
 
-                println("customers:")
-                customers foreach println
-
-                println(s"labelledData:\n $labelledData")
-
                 val allOutcomes = Stats.getAllOutcomes(customers, labelledData)
-                println("allOutcomes:")
-                allOutcomes foreach println
 
                 val idealMappings = Stats.getIdealMappings(allOutcomes)
 
-                println("idealMappings:")
-                idealMappings foreach println
-
                 storage.storeTrainingData(labelledData).unsafeRunSync()
+
+                val labels = dl.getLabelIndexMap(conf.actionConfigurations)
+
                 storage
-                  .storePlayingData(conf.attributeConfigurations, idealMappings, labelledData.configurationId)
+                  .storePlayingData(
+                    username,
+                    conf.attributeConfigurations,
+                    idealMappings,
+                    labelledData.configurationId,
+                    labels)
                   .unsafeRunSync()
+
+                val headers =
+                  conf.attributeConfigurations.filter(_.attributeType == AttributeEnum.Global).map(_.name).toArray
+
+                val inputs = headers.length
+                val outputs = conf.actionConfigurations.length
+                val hidden = Array(18, 36)
+
+                println(s"inputs: $inputs, outputs: $outputs, hidden: ${hidden.toString}")
+
+                val model = ann.createGraph(inputs, hidden, outputs)
+
+                var workflow: (DLEstimator[Float], DataFrame, DataFrame, Int) => Unit = null
+
+                workflow = (evaluator, train, test, _) => {
+                  val modelDL: DLModel[Float] = ann.train(evaluator, train)
+                  ann.test(modelDL, test)
+                }
+
+                val allHeaders = Array("id", "configuration_id", "customer_id") ++ headers.map(_.toLowerCase) ++ Array(
+                  "action_label")
+
+                val opts = Map(
+                  "url" -> Settings().DatabaseSettings.simulatorUrl,
+                  "dbtable" -> username,
+                  "user" -> Settings().DatabaseSettings.user,
+                  "password" -> Settings().SecretSettings.dbSecret
+                )
+
+                val Array(train, test) =
+                  dl.assembleData(headers, dl.getData(opts, allHeaders)).randomSplit(Array(0.8, 0.2))
+
+                val evaluator = ann.createEstimator(
+                  model = model,
+                  train = train,
+                  epochs = 10,
+                  learningRate = 0.001,
+                  decayRate = 0.05,
+                  batchSize = 92,
+                  input = inputs,
+                  output = outputs)
+
+                workflow(evaluator, train, test, inputs)
+
+                dl.stop
 
                 complete(OK, TrainingData(conf.id, customers, labelledData.actions))
               }
@@ -162,6 +205,17 @@ class HttpService(
       .handle {
         case ValidationRejection(msg, _) =>
           complete((InternalServerError, "That wasn't valid! " + msg))
+      }
+      .handle {
+        case e: Exception => {
+          println("---------------- exception log start")
+          println(e.getMessage, e)
+          println("cause", e.getCause)
+          println("cause", e.getStackTraceString)
+          println(e)
+          println("---------------- exception log end")
+          Directives.complete("server made a boo boo")
+        }
       }
       .handleAll[MethodRejection] { methodRejections =>
         val names = methodRejections.map(_.supported.name)

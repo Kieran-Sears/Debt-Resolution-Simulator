@@ -1,7 +1,7 @@
 package simulator.classifier
 
 import com.intel.analytics.bigdl._
-import com.intel.analytics.bigdl.nn.MSECriterion
+import com.intel.analytics.bigdl.nn.{Contiguous, MSECriterion}
 import com.intel.analytics.bigdl.numeric.NumericFloat
 import com.intel.analytics.bigdl.dlframes.{DLEstimator, DLModel}
 import com.intel.analytics.bigdl.tensor.Tensor
@@ -20,13 +20,15 @@ DLEstimator is a provided class that allows use of spark Dataframes / Datasets a
 https://bigdl-project.github.io/0.7.0/#ScalaUserGuide/examples/#image-classification-working-with-spark-dataframe-and-ml-pipeline
  */
 
-class KerasModel {
+class KerasModel(spark: SparkSession) extends ArtificialNeuralNetwork {
 
-  def kerasGraph(
+  override def createGraph(
     input: Int,
     hidden: Array[Int],
     output: Int,
     weightsAndBiases: Option[Array[Tensor[Float]]] = None): Model[Float] = {
+
+    println(s"Input: $input, Output: $output, Hidden: ${hidden.toString}")
 
     def printWeightsAndBiasShapes(edges: Array[Tensor[Float]]) = {
       edges foreach (x => x.size foreach print)
@@ -56,8 +58,8 @@ class KerasModel {
     model
   }
 
-  def createEstimator(
-    spark: SparkSession,
+  override def createEstimator(
+    //spark: SparkSession,
     model: Model[Float],
     train: DataFrame,
     epochs: Int,
@@ -65,7 +67,7 @@ class KerasModel {
     decayRate: Double,
     batchSize: Int,
     input: Int,
-    output: Int) = {
+    output: Int): DLEstimator[Float] = {
 
     val criterion = MSECriterion() // 68%
     // val criterion = SmoothL1Criterion() // 65% (mean absolute error = good for outliers)
@@ -103,12 +105,19 @@ class KerasModel {
     estimator
   }
 
-  def train(estimator: DLEstimator[Float], train: DataFrame) = {
-    estimator.fit(train.select("features", "label").toDF("features", "label"))
+  override def train(estimator: DLEstimator[Float], train: DataFrame): DLModel[Float] = {
+    println(train.schema)
+
+    val data = train.select("features", "label").toDF("features", "label")
+
+    data.show(5, false)
+    println(data.coalesce(2))
+    estimator.fit(data)
   }
 
-  def testMultiClass(estimatorModel: DLModel[Float], test: DataFrame) = {
-    val results = estimatorModel.transform(test.select("features", "label").toDF("features", "label"))
+  override def test(estimatorModel: DLModel[Float], test: DataFrame) = {
+    val data = test.select("features", "label").toDF("features", "label")
+    val results = estimatorModel.transform(data)
 
     val raw: DataFrame = results.select("prediction", "label")
     raw.show(10, false)

@@ -64,10 +64,11 @@ class Generator(seed: Int) {
   }
 
   def customerProportions(configurations: Configurations) = {
+    println(configurations.simulationConfiguration.numberOfCustomers)
     configurations.customerConfigurations
       .map(customerConf => {
-        val proportion = configurations.simulationConfiguration.numberOfCustomers / customerConf.proportion
-        (customerConf, proportion)
+        val proportion = (configurations.simulationConfiguration.numberOfCustomers / 100.0) * customerConf.proportion
+        (customerConf, Math.round(proportion).toInt)
       })
   }
 
@@ -127,7 +128,10 @@ class Generator(seed: Int) {
 
   def normaliseAttribute(attribute: AttributeConfig, values: List[Value], options: List[OptionConfig]) = {
     val v =
-      values.find(x => x.id == attribute.value).getOrElse(throw new Exception(s"Cannot find value ${attribute.name}"))
+      values
+        .find(x => x.id == attribute.value)
+        .getOrElse(throw new NoSuchElementException(
+          s"Cannot find value ${attribute.name}: ${attribute.id} in: \n ${values.map(v => s"${v.id},\n")}"))
     v match {
       case v: CategoricalConfig => Attribute(attribute.id, attribute.name, normaliseCategorical(v, options))
       case v: ScalarConfig => Attribute(attribute.id, attribute.name, normaliseScalar(v))

@@ -88,7 +88,7 @@ class MockData {
     id = UUID.randomUUID(),
     name = "HighRoller",
     attributeOverrides = List(arrearsAtt3.id, ageAtt3.id, satisfactionAtt3.id, incomeAtt3.id),
-    proportion = 20
+    proportion = 60
   )
 
   val scalarConfigs = List(

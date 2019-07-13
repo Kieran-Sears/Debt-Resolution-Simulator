@@ -124,4 +124,11 @@ class GeneratorSpec extends FlatSpec with Matchers {
 
   }
 
+  it should "return the right number of training examples when given a valid configuration" in {
+    val conf = mockData.getValidConfiguration()
+    val examples = gen.variedTrainingExamples(conf)
+    examples.length shouldBe conf.simulationConfiguration.numberOfCustomers
+
+  }
+
 }
